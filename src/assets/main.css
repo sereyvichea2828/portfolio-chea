@@ -1,35 +1,78 @@
-@import './base.css';
+@import 'tailwindcss';
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+@theme {
+  --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --color-pearl-bg: #F7F7FB;
+  --color-pearl-white: #FFFFFF;
+  --color-pearl-lavender: #EDEBFA;
+  --color-pearl-mist: #E9F0FC;
+  --color-pearl-gray: #E6E8F0;
+  --color-ink-primary: #151827;
+  --color-ink-secondary: #777D8E;
+  --color-lavender-accent: #9B87F5;
+  --color-periwinkle-accent: #7999FA;
+  --color-aqua-highlight: #8CE0E7;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color-scheme: light;
+    background-color: #F7F7FB;
+    color: #151827;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+  section {
+    scroll-margin-top: 5.5rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+    color: #151827;
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+/* Custom refined scrollbar for pearl aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+::-webkit-scrollbar-track {
+  background: #F7F7FB;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D8DAE5;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9B87F5;
+}
+
+/* Lenis Ultra-Smooth Scrolling System */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
