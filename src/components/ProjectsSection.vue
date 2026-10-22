@@ -20,17 +20,17 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   const cards = container.querySelectorAll('.project-card-wrapper');
 
   if (header) {
-    tl.fromTo(header, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' });
+    tl.fromTo(header, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' });
   }
   if (filters) {
-    tl.fromTo(filters, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.4');
+    tl.fromTo(filters, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out' }, '-=0.5');
   }
   if (cards.length > 0) {
     tl.fromTo(
       cards,
-      { y: 32, opacity: 0, scale: 0.96 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.65, stagger: 0.08, ease: 'power2.out' },
-      '-=0.4'
+      { y: 32, opacity: 0, scale: 0.97 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out' },
+      '-=0.45'
     );
   }
 });

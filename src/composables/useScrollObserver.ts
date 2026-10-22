@@ -28,31 +28,48 @@ export function useScrollObserver(
     const scrollY = window.scrollY || window.pageYOffset
     isScrolled.value = scrollY > 40
 
-    // Determine active section based on scroll offset (38% threshold)
-    const viewportThreshold = scrollY + window.innerHeight * 0.38
-    let currentId = sectionIds[0] || 'home'
+    // Stable activation threshold (40% down the viewport)
+    const viewportThreshold = scrollY + window.innerHeight * 0.40
+    let candidateId = activeSection.value
 
+    // Hysteresis boundary: If current active section still comfortably spans the viewport threshold
+    // with a 60px buffer, keep it active to avoid repeated activation near section borders
+    const currentActiveEl = document.getElementById(activeSection.value)
+    if (currentActiveEl) {
+      const rect = currentActiveEl.getBoundingClientRect()
+      const top = rect.top + window.pageYOffset
+      const bottom = top + currentActiveEl.offsetHeight
+      if (viewportThreshold >= top - 60 && viewportThreshold < bottom - 60) {
+        scrollTicking = false
+        return
+      }
+    }
+
+    // Scan sections from bottom to top to identify the centered section
     for (let i = sectionIds.length - 1; i >= 0; i--) {
       const id = sectionIds[i]
       if (!id) continue
       const element = document.getElementById(id)
       if (element) {
         const elementTop = element.getBoundingClientRect().top + window.pageYOffset
-        if (viewportThreshold >= elementTop) {
-          currentId = id
+        if (viewportThreshold >= elementTop - 20) {
+          candidateId = id
           break
         }
       }
     }
 
-    const currentRoute = router.currentRoute.value
-    const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
-
-    if (currentId !== activeSection.value) {
-      activeSection.value = currentId
-      const targetPath = currentId === 'home' ? '/' : `/${currentId}`
-      if (!isModalRoute && typeof window !== 'undefined' && currentRoute.path !== targetPath) {
-        router.replace(targetPath).catch(() => {})
+    if (candidateId !== activeSection.value) {
+      activeSection.value = candidateId
+      // Decouple section highlighting from route churning:
+      // Silently update browser address bar without firing heavy Vue Router navigation loops
+      const targetPath = candidateId === 'home' ? '/' : `/${candidateId}`
+      if (typeof window !== 'undefined' && window.location.pathname !== targetPath) {
+        const currentRoute = router.currentRoute.value
+        const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
+        if (!isModalRoute) {
+          window.history.replaceState(null, '', targetPath)
+        }
       }
     }
 
@@ -90,8 +107,8 @@ export function useScrollObserver(
     if (Math.abs(targetY - currentY) < 12) {
       if (updateUrl) {
         const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
-        if (router.currentRoute.value.path !== targetPath) {
-          router.replace(targetPath).catch(() => {})
+        if (window.location.pathname !== targetPath) {
+          window.history.replaceState(null, '', targetPath)
         }
       }
       return
@@ -101,22 +118,22 @@ export function useScrollObserver(
 
     if (updateUrl) {
       const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
-      if (router.currentRoute.value.path !== targetPath) {
-        router.replace(targetPath).catch(() => {})
+      if (window.location.pathname !== targetPath) {
+        window.history.replaceState(null, '', targetPath)
       }
     }
 
-    // Ultra-smooth GPU accelerated scroll transition
+    // Ultra-smooth 1.45s continuous gliding scroll transition with refined cubic easing
     if (smoothScroll) {
       if (cleanId === 'home') {
         smoothScroll.scrollTo(0, {
           offset: 0,
-          duration: 1.15,
+          duration: 1.45,
         })
       } else {
         smoothScroll.scrollTo(targetElement, {
           offset: -navOffset,
-          duration: 1.15,
+          duration: 1.45,
         })
       }
     } else {
@@ -130,13 +147,13 @@ export function useScrollObserver(
       clearTimeout(navLockTimeout)
     }
 
-    // Release lock once scroll animation completes (1200ms for 1.15s duration)
+    // Release lock once scroll animation completes (1500ms for 1.45s duration)
     navLockTimeout = setTimeout(() => {
       isNavigating.value = false
       const scrollY = window.scrollY || window.pageYOffset
       isScrolled.value = scrollY > 40
       checkScrollState()
-    }, 1200)
+    }, 1500)
   }
 
   const goToNextRoute = (): void => {

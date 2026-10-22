@@ -65,7 +65,7 @@ onMounted(() => {
     tl.fromTo(
       headerRef.value,
       { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }
+      { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' }
     )
 
     // 2. Staggered Technology Cards Reveal
@@ -74,16 +74,16 @@ onMounted(() => {
       if (cards.length > 0) {
         tl.fromTo(
           cards,
-          { y: 24, opacity: 0, scale: 0.95 },
+          { y: 24, opacity: 0, scale: 0.96 },
           {
             y: 0,
             opacity: 1,
             scale: 1,
-            duration: 0.6,
-            stagger: 0.04,
-            ease: 'power2.out',
+            duration: 0.75,
+            stagger: 0.05,
+            ease: 'power3.out',
           },
-          '-=0.4'
+          '-=0.45'
         )
       }
     }

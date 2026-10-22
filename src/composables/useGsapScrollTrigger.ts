@@ -56,11 +56,12 @@ export function useGsapScrollTrigger(
     try {
       setupAnimation({ tl, container, gsap })
 
-      // If section is already within viewport on mount, advance timeline to completion
+      // If section is already scrolled past above viewport on mount, set to completed state.
+      // Otherwise allow ScrollTrigger to animate smoothly.
       requestAnimationFrame(() => {
         ScrollTrigger.refresh()
         const rect = container.getBoundingClientRect()
-        if (rect.top <= window.innerHeight * 0.85) {
+        if (rect.bottom < 0) {
           tl.progress(1)
         }
       })

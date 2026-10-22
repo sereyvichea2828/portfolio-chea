@@ -19,16 +19,16 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   const stats = container.querySelectorAll('.stat-card');
 
   if (header) {
-    tl.fromTo(header, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' });
+    tl.fromTo(header, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power2.out' });
   }
   if (narrative) {
-    tl.fromTo(narrative, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' }, '-=0.4');
+    tl.fromTo(narrative, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.5');
   }
   if (principles.length > 0) {
-    tl.fromTo(principles, { x: 20, opacity: 0 }, { x: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' }, '-=0.5');
+    tl.fromTo(principles, { x: 24, opacity: 0 }, { x: 0, opacity: 1, duration: 0.75, stagger: 0.12, ease: 'power2.out' }, '-=0.5');
   }
   if (stats.length > 0) {
-    tl.fromTo(stats, { y: 20, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.08, ease: 'power2.out' }, '-=0.3');
+    tl.fromTo(stats, { y: 24, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.75, stagger: 0.1, ease: 'power2.out' }, '-=0.4');
   }
 });
 

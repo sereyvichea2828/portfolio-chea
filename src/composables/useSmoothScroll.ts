@@ -44,13 +44,13 @@ export function useSmoothScroll(): SmoothScrollController {
 
     if (!globalLenis) {
       globalLenis = new Lenis({
-        duration: 1.15,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        duration: 1.45,
+        easing: (t: number) => 1 - Math.pow(1 - t, 3.5),
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
-        wheelMultiplier: 0.95,
-        touchMultiplier: 1.4,
+        wheelMultiplier: 0.9,
+        touchMultiplier: 1.25,
       })
 
       // Coordinate Lenis scroll updates with GSAP ScrollTrigger
@@ -106,10 +106,10 @@ export function useSmoothScroll(): SmoothScrollController {
 
     globalLenis.scrollTo(target, {
       offset: navOffset,
-      duration: options?.duration ?? 1.15,
+      duration: options?.duration ?? 1.45,
       immediate: options?.immediate ?? false,
       force: options?.force ?? true,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: (t: number) => 1 - Math.pow(1 - t, 3.5),
       onComplete: options?.onComplete,
     })
   }

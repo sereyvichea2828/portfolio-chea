@@ -13,14 +13,14 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   const cards = container.querySelectorAll('.service-card')
 
   if (header) {
-    tl.fromTo(header, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
+    tl.fromTo(header, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power2.out' })
   }
   if (cards.length > 0) {
     tl.fromTo(
       cards,
-      { y: 28, opacity: 0, scale: 0.96 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.09, ease: 'power2.out' },
-      '-=0.4'
+      { y: 32, opacity: 0, scale: 0.97 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.75, stagger: 0.12, ease: 'power2.out' },
+      '-=0.45'
     )
   }
 })

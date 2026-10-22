@@ -66,9 +66,17 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior() {
-    // Custom smooth programmatic scroll handler controls viewport positioning
-    return false;
+  scrollBehavior(to, from, savedPosition) {
+    // 1. Restore exact scroll coordinate on browser back/forward buttons
+    if (savedPosition) {
+      return savedPosition;
+    }
+    // 2. For same-page anchor routes, let smooth programmatic scroll observer manage positioning
+    if (to.meta?.sectionId && from.meta?.sectionId) {
+      return false;
+    }
+    // 3. For distinct route navigation, smoothly scroll to top
+    return { top: 0, left: 0, behavior: 'smooth' };
   },
 });
 

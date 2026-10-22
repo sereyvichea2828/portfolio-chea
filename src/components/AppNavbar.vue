@@ -137,7 +137,7 @@ onUnmounted(() => {
           <!-- Brand Monogram & Name -->
           <a
             href="#home"
-            class="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded-xl p-1 transition-all duration-200"
+            class="flex items-center gap-3 group border-0 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none rounded-xl p-1 transition-all duration-200 select-none"
             @click.prevent="handleNavClick({ label: 'Home', href: '#home' })"
           >
             <!-- Geometric DT Monogram Tile -->
@@ -162,10 +162,10 @@ onUnmounted(() => {
               v-for="item in NAVIGATION_ITEMS"
               :key="item.href"
               :href="item.href"
-              class="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 relative focus:outline-none focus-visible:ring-1 focus-visible:ring-purple-400 flex items-center"
+              class="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 relative border-0 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none flex items-center select-none"
               :class="[
                 props.activeSection === item.href.replace('#', '')
-                  ? 'text-purple-950 bg-purple-100/90 font-bold shadow-xs border border-purple-200/60'
+                  ? 'text-purple-950 bg-purple-100/90 font-bold shadow-xs'
                   : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/60',
               ]"
               @click.prevent="handleNavClick(item)"
@@ -182,7 +182,7 @@ onUnmounted(() => {
           <div class="hidden sm:flex items-center gap-3">
             <a
               href="#contact"
-              class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-xl text-white bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-purple-500/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 active:scale-95"
+              class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-xl text-white bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-purple-500/20 border-0 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none active:scale-95 select-none"
               @click.prevent="handleNavClick({ label: 'Contact', href: '#contact' })"
             >
               <span>Let's Talk</span>
