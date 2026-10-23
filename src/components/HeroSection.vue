@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { HERO_CONTENT } from '@/data/portfolioData';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import ThreePearlOrb from '@/components/ThreePearlOrb.vue';
@@ -20,11 +20,28 @@ const emit = defineEmits<{
 
 const { isReducedMotion } = useReducedMotion();
 const isMounted = ref<boolean>(false);
+const isEntranceComplete = ref<boolean>(false);
+let entranceTimer: number | null = null;
 
 onMounted(() => {
   requestAnimationFrame(() => {
     isMounted.value = true;
   });
+
+  if (isReducedMotion.value) {
+    isEntranceComplete.value = true;
+  } else {
+    entranceTimer = window.setTimeout(() => {
+      isEntranceComplete.value = true;
+    }, 1100);
+  }
+});
+
+onUnmounted(() => {
+  if (entranceTimer !== null) {
+    clearTimeout(entranceTimer);
+    entranceTimer = null;
+  }
 });
 
 const handlePrimaryClick = (): void => {
@@ -57,11 +74,14 @@ const handleScrollIndicatorClick = (): void => {
         <div class="lg:col-span-7 flex flex-col space-y-3.5 sm:space-y-4">
           <!-- Availability Pill -->
           <div
-            class="flex items-center gap-3 transition-all duration-700 ease-out"
+            class="flex items-center gap-3"
             :class="[
-              isMounted || isReducedMotion
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-3',
+              isEntranceComplete || isReducedMotion
+                ? 'opacity-100 transform-none'
+                : [
+                    'transition-[transform,opacity] duration-700 ease-out',
+                    isMounted ? 'opacity-100 transform-none' : 'opacity-0 translate-y-3',
+                  ],
             ]"
           >
             <div
@@ -79,11 +99,14 @@ const handleScrollIndicatorClick = (): void => {
 
           <!-- Eyebrow Tag -->
           <div
-            class="flex items-center gap-2.5 transition-all duration-700 ease-out delay-75"
+            class="flex items-center gap-2.5"
             :class="[
-              isMounted || isReducedMotion
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-3',
+              isEntranceComplete || isReducedMotion
+                ? 'opacity-100 transform-none'
+                : [
+                    'transition-[transform,opacity] duration-700 ease-out delay-75',
+                    isMounted ? 'opacity-100 transform-none' : 'opacity-0 translate-y-3',
+                  ],
             ]"
           >
             <span class="w-7 h-0.5 bg-linear-to-r from-purple-500 to-indigo-500 rounded-full" />
@@ -94,11 +117,14 @@ const handleScrollIndicatorClick = (): void => {
 
           <!-- Headline -->
           <div
-            class="space-y-2 transition-all duration-700 ease-out delay-150"
+            class="space-y-2"
             :class="[
-              isMounted || isReducedMotion
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4',
+              isEntranceComplete || isReducedMotion
+                ? 'opacity-100 transform-none'
+                : [
+                    'transition-[transform,opacity] duration-700 ease-out delay-150',
+                    isMounted ? 'opacity-100 transform-none' : 'opacity-0 translate-y-4',
+                  ],
             ]"
           >
             <h1
@@ -126,11 +152,14 @@ const handleScrollIndicatorClick = (): void => {
 
           <!-- Supporting Statement -->
           <p
-            class="text-sm sm:text-base text-ink-secondary max-w-xl leading-relaxed transition-all duration-700 ease-out delay-200"
+            class="text-sm sm:text-base text-ink-secondary max-w-xl leading-relaxed"
             :class="[
-              isMounted || isReducedMotion
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4',
+              isEntranceComplete || isReducedMotion
+                ? 'opacity-100 transform-none'
+                : [
+                    'transition-[transform,opacity] duration-700 ease-out delay-200',
+                    isMounted ? 'opacity-100 transform-none' : 'opacity-0 translate-y-4',
+                  ],
             ]"
           >
             {{ HERO_CONTENT.supportingStatement }}
@@ -138,11 +167,14 @@ const handleScrollIndicatorClick = (): void => {
 
           <!-- Core Value Chips -->
           <div
-            class="flex flex-wrap gap-2 pt-0.5 transition-all duration-700 ease-out delay-250"
+            class="flex flex-wrap gap-2 pt-0.5"
             :class="[
-              isMounted || isReducedMotion
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4',
+              isEntranceComplete || isReducedMotion
+                ? 'opacity-100 transform-none'
+                : [
+                    'transition-[transform,opacity] duration-700 ease-out delay-250',
+                    isMounted ? 'opacity-100 transform-none' : 'opacity-0 translate-y-4',
+                  ],
             ]"
           >
             <span
@@ -167,11 +199,14 @@ const handleScrollIndicatorClick = (): void => {
 
           <!-- CTA Buttons -->
           <div
-            class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 transition-all duration-700 ease-out delay-300"
+            class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2"
             :class="[
-              isMounted || isReducedMotion
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-4',
+              isEntranceComplete || isReducedMotion
+                ? 'opacity-100 transform-none'
+                : [
+                    'transition-[transform,opacity] duration-700 ease-out delay-300',
+                    isMounted ? 'opacity-100 transform-none' : 'opacity-0 translate-y-4',
+                  ],
             ]"
           >
             <button
@@ -196,8 +231,15 @@ const handleScrollIndicatorClick = (): void => {
 
         <!-- Right Column: Developer Portrait & Floating Pearl Glass Panels -->
         <div
-          class="lg:col-span-5 relative flex items-center justify-center transition-all duration-1000 ease-out delay-150"
-          :class="[isMounted || isReducedMotion ? 'opacity-100 scale-100' : 'opacity-0 scale-98']"
+          class="lg:col-span-5 relative flex items-center justify-center"
+          :class="[
+            isEntranceComplete || isReducedMotion
+              ? 'opacity-100 transform-none'
+              : [
+                  'transition-[transform,opacity] duration-1000 ease-out delay-150',
+                  isMounted ? 'opacity-100 transform-none' : 'opacity-0 scale-98',
+                ],
+          ]"
         >
           <!-- Portrait & Floating Elements Container -->
           <div class="relative w-full max-w-xs lg:max-w-xs xl:max-w-sm mx-auto">
@@ -210,7 +252,7 @@ const handleScrollIndicatorClick = (): void => {
                 <img
                   :src="HERO_CONTENT.portraitImage"
                   :alt="HERO_CONTENT.portraitAlt"
-                  class="w-full h-auto object-cover object-center aspect-4/5 rounded-2xl transition-all duration-700 ease-out group-hover:scale-104 will-change-transform"
+                  class="w-full h-auto object-cover object-center aspect-4/5 rounded-2xl transition-all duration-700 ease-out group-hover:scale-104"
                   loading="eager"
                 />
 
@@ -273,7 +315,6 @@ const handleScrollIndicatorClick = (): void => {
         </div>
       </div>
     </div>
-
   </section>
 </template>
 

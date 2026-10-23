@@ -6,7 +6,7 @@ export interface ScrollObserverState {
   isScrolled: Ref<boolean>
   activeSection: Ref<string>
   isNavigating: Ref<boolean>
-  scrollToSection: (sectionId: string, updateUrl?: boolean) => void
+  scrollToSection: (sectionId: string, updateUrl?: boolean, pushHistory?: boolean) => void
   goToNextRoute: () => void
   goToPrevRoute: () => void
 }
@@ -15,12 +15,28 @@ export function useScrollObserver(
   sectionIds: readonly string[],
   smoothScroll?: SmoothScrollController
 ): ScrollObserverState {
+  const getInitialTarget = (): string => {
+    if (typeof window === 'undefined') return 'home'
+
+    const hash = window.location.hash.replace('#', '').replace('/', '')
+    if (hash && sectionIds.includes(hash)) return hash
+
+    const path = window.location.pathname.replace(/^\//, '').split('/')[0] || ''
+    if (path && sectionIds.includes(path)) return path
+
+    const metaSection = router.currentRoute.value.meta?.sectionId as string | undefined
+    if (metaSection && sectionIds.includes(metaSection)) return metaSection
+
+    return 'home'
+  }
+
   const isScrolled = ref<boolean>(false)
-  const activeSection = ref<string>(sectionIds[0] || 'home')
+  const activeSection = ref<string>(getInitialTarget())
   const isNavigating = ref<boolean>(false)
 
   let scrollTicking = false
   let navLockTimeout: ReturnType<typeof setTimeout> | null = null
+  let routerCleanup: (() => void) | null = null
 
   const checkScrollState = (): void => {
     if (typeof window === 'undefined' || isNavigating.value) return
@@ -69,6 +85,10 @@ export function useScrollObserver(
         const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
         if (!isModalRoute) {
           window.history.replaceState(null, '', targetPath)
+          const matchedRoute = router.getRoutes().find((r) => r.meta?.sectionId === candidateId)
+          if (matchedRoute?.meta?.title && typeof matchedRoute.meta.title === 'string') {
+            document.title = matchedRoute.meta.title
+          }
         }
       }
     }
@@ -83,7 +103,7 @@ export function useScrollObserver(
     }
   }
 
-  const scrollToSection = (sectionId: string, updateUrl = true): void => {
+  const scrollToSection = (sectionId: string, updateUrl = true, pushHistory = true): void => {
     if (typeof window === 'undefined') return
 
     const cleanId = sectionId.replace('#', '').replace('/', '') || 'home'
@@ -108,7 +128,11 @@ export function useScrollObserver(
       if (updateUrl) {
         const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
         if (window.location.pathname !== targetPath) {
-          window.history.replaceState(null, '', targetPath)
+          if (pushHistory) {
+            router.push(targetPath).catch(() => {})
+          } else {
+            window.history.replaceState(null, '', targetPath)
+          }
         }
       }
       return
@@ -119,21 +143,25 @@ export function useScrollObserver(
     if (updateUrl) {
       const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
       if (window.location.pathname !== targetPath) {
-        window.history.replaceState(null, '', targetPath)
+        if (pushHistory) {
+          router.push(targetPath).catch(() => {})
+        } else {
+          window.history.replaceState(null, '', targetPath)
+        }
       }
     }
 
-    // Ultra-smooth 1.45s continuous gliding scroll transition with refined cubic easing
+    // Moderate, balanced 0.9s gliding scroll transition with exponential deceleration
     if (smoothScroll) {
       if (cleanId === 'home') {
         smoothScroll.scrollTo(0, {
           offset: 0,
-          duration: 1.45,
+          duration: 0.9,
         })
       } else {
         smoothScroll.scrollTo(targetElement, {
           offset: -navOffset,
-          duration: 1.45,
+          duration: 0.9,
         })
       }
     } else {
@@ -147,13 +175,13 @@ export function useScrollObserver(
       clearTimeout(navLockTimeout)
     }
 
-    // Release lock once scroll animation completes (1500ms for 1.45s duration)
+    // Release lock promptly once scroll animation completes (950ms for 0.9s duration)
     navLockTimeout = setTimeout(() => {
       isNavigating.value = false
       const scrollY = window.scrollY || window.pageYOffset
       isScrolled.value = scrollY > 40
       checkScrollState()
-    }, 1500)
+    }, 950)
   }
 
   const goToNextRoute = (): void => {
@@ -197,33 +225,81 @@ export function useScrollObserver(
   // Listen to browser Back / Forward buttons natively
   const handlePopState = (): void => {
     if (typeof window === 'undefined') return
+    const pathTarget = window.location.pathname.replace(/^\//, '').split('/')[0] || ''
     const hashTarget = window.location.hash.replace('#', '').replace('/', '')
-    const pathTarget = window.location.pathname.replace('/', '')
     const matched = (sectionIds.includes(hashTarget) ? hashTarget : '') ||
                     (sectionIds.includes(pathTarget) ? pathTarget : '') ||
                     'home'
     if (sectionIds.includes(matched)) {
-      scrollToSection(matched, false)
+      scrollToSection(matched, false, false)
     }
   }
 
   onMounted(() => {
     if (typeof window === 'undefined') return
+
+    // Prevent browser from restoring stale scroll coordinates before layout completes
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('popstate', handlePopState)
 
-    // Check initial route upon load (e.g. user navigated to /projects, /about, or /#contact)
-    const hashTarget = window.location.hash.replace('#', '').replace('/', '')
-    const pathTarget = window.location.pathname.replace('/', '')
-    const initialTarget = (sectionIds.includes(hashTarget) ? hashTarget : '') ||
-                          (sectionIds.includes(pathTarget) ? pathTarget : '')
+    // Synchronize route changes from programmatic navigation or history traversal
+    routerCleanup = router.afterEach((to, from) => {
+      if (to.path === from.path) return
+      const target = (to.meta?.sectionId as string) || to.path.replace(/^\//, '').split('/')[0] || 'home'
+      if (sectionIds.includes(target) && target !== activeSection.value) {
+        scrollToSection(target, false, false)
+      }
+    })
 
-    if (initialTarget && initialTarget !== 'home') {
+    // Resolve initial target section from URL path, hash, or current route
+    const initialTarget = getInitialTarget()
+
+    if (initialTarget !== 'home') {
+      activeSection.value = initialTarget
+      isNavigating.value = true
+
+      const alignToTarget = (): void => {
+        const el = document.getElementById(initialTarget)
+        if (!el) return
+        const navOffset = 88
+        const currentScrollY = window.scrollY || window.pageYOffset
+        const targetY = Math.max(0, el.getBoundingClientRect().top + currentScrollY - navOffset)
+
+        window.scrollTo({ top: targetY, behavior: 'instant' })
+        if (smoothScroll?.lenis.value) {
+          smoothScroll.scrollTo(el, {
+            offset: -navOffset,
+            immediate: true,
+            force: true,
+          })
+        }
+      }
+
+      // 1. Align immediately on mount
+      alignToTarget()
+
+      // 2. Calibrate on the initial frame
+      requestAnimationFrame(() => {
+        alignToTarget()
+      })
+
+      // 3. Final calibration once fonts and dynamic mockup images settle layout heights
       setTimeout(() => {
-        scrollToSection(initialTarget, false)
-      }, 200)
+        alignToTarget()
+        isNavigating.value = false
+        const scrollY = window.scrollY || window.pageYOffset
+        isScrolled.value = scrollY > 40
+        checkScrollState()
+      }, 150)
     } else {
+      activeSection.value = 'home'
+      const scrollY = window.scrollY || window.pageYOffset
+      isScrolled.value = scrollY > 40
       checkScrollState()
     }
   })
@@ -233,6 +309,11 @@ export function useScrollObserver(
     window.removeEventListener('scroll', handleScroll)
     window.removeEventListener('keydown', handleKeyDown)
     window.removeEventListener('popstate', handlePopState)
+
+    if (routerCleanup) {
+      routerCleanup()
+      routerCleanup = null
+    }
 
     if (navLockTimeout) {
       clearTimeout(navLockTimeout)

@@ -54,40 +54,36 @@ const isFooterVisible = ref<boolean>(false)
 let footerObserver: IntersectionObserver | null = null
 let lenisScrollCleanup: (() => void) | null = null
 
-const checkFooterProximity = (): void => {
+const checkFooterVisibility = (): void => {
   if (typeof window === 'undefined') return
   const footerEl = document.querySelector('footer')
   if (!footerEl) return
   const rect = footerEl.getBoundingClientRect()
-  // Only hide navbar when footer has scrolled into upper viewport (within 140px of top)
-  isFooterVisible.value = rect.top <= 140
+  // Hide navbar smoothly when the footer enters the viewport (top of footer <= window.innerHeight - 60)
+  isFooterVisible.value = rect.top <= window.innerHeight - 60
 }
 
 onMounted(() => {
   if (typeof window === 'undefined') return
 
-  // 1. Initial proximity check
-  checkFooterProximity()
+  checkFooterVisibility()
 
-  // 2. Continuous real-time scroll & resize listeners
-  window.addEventListener('scroll', checkFooterProximity, { passive: true })
-  window.addEventListener('resize', checkFooterProximity, { passive: true })
+  window.addEventListener('scroll', checkFooterVisibility, { passive: true })
+  window.addEventListener('resize', checkFooterVisibility, { passive: true })
 
-  // 3. Connect to Lenis smooth scroll updates
   watch(
     () => smoothScroll.lenis.value,
     (lenisInstance) => {
       if (lenisInstance) {
-        lenisInstance.on('scroll', checkFooterProximity)
+        lenisInstance.on('scroll', checkFooterVisibility)
         lenisScrollCleanup = () => {
-          lenisInstance.off('scroll', checkFooterProximity)
+          lenisInstance.off('scroll', checkFooterVisibility)
         }
       }
     },
     { immediate: true },
   )
 
-  // 4. Fallback IntersectionObserver when footer reaches top zone
   const footerEl = document.querySelector('footer')
   if (footerEl && 'IntersectionObserver' in window) {
     footerObserver = new IntersectionObserver(
@@ -95,12 +91,11 @@ onMounted(() => {
         const entry = entries[0]
         if (entry) {
           isFooterVisible.value =
-            entry.isIntersecting && entry.boundingClientRect.top <= 140
+            entry.isIntersecting && entry.boundingClientRect.top <= window.innerHeight - 60
         }
       },
       {
-        rootMargin: '-100px 0px 0px 0px',
-        threshold: [0, 0.1, 0.2],
+        threshold: [0, 0.05, 0.1, 0.2],
       },
     )
     footerObserver.observe(footerEl)
@@ -117,8 +112,8 @@ onUnmounted(() => {
     lenisScrollCleanup = null
   }
   if (typeof window !== 'undefined') {
-    window.removeEventListener('scroll', checkFooterProximity)
-    window.removeEventListener('resize', checkFooterProximity)
+    window.removeEventListener('scroll', checkFooterVisibility)
+    window.removeEventListener('resize', checkFooterVisibility)
   }
 })
 
@@ -137,7 +132,6 @@ const handleNavigate = (sectionId: string): void => {
 
     <!-- Real-Time Mouse-Following 3D Liquid Glass Sculpture -->
     <MouseFollowGlass />
-
 
     <!-- Floating Pearl Glass Navigation Bar -->
     <AppNavbar
@@ -165,6 +159,11 @@ const handleNavigate = (sectionId: string): void => {
         </Transition>
       </RouterView>
     </main>
+
+    <!-- Section Divider: Content to Footer -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
 
     <!-- Application Footer -->
     <AppFooter />

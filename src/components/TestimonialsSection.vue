@@ -2,25 +2,27 @@
 import { ref } from 'vue';
 import { TESTIMONIALS } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
-import { useReducedMotion } from '@/composables/useReducedMotion';
 import { Quote } from 'lucide-vue-next';
 
 const sectionRef = ref<HTMLElement | null>(null);
-const { isReducedMotion } = useReducedMotion();
 
 useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   const header = container.querySelector('.testimonials-header');
   const cards = container.querySelectorAll('.testimonial-card');
 
   if (header) {
-    tl.fromTo(header, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' });
+    tl.fromTo(
+      header,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', clearProps: 'transform,willChange' }
+    );
   }
   if (cards.length > 0) {
     tl.fromTo(
       cards,
-      { y: 28, opacity: 0, scale: 0.97 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.75, stagger: 0.12, ease: 'power3.out' },
-      '-=0.45'
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: 'power3.out', clearProps: 'transform,scale,willChange' },
+      '-=0.4'
     );
   }
 });

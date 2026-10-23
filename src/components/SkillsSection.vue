@@ -1,22 +1,44 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import { SKILL_GROUPS } from '@/data/portfolioData'
+import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger'
 import { useReducedMotion } from '@/composables/useReducedMotion'
 import FrameworkCenterpiece from '@/components/FrameworkCenterpiece.vue'
-import TechLogo from '@/components/TechLogo.vue'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import TechnologyLogo from '@/components/TechnologyLogo.vue'
 import { Sparkles, Layers, Cpu } from 'lucide-vue-next'
 
-gsap.registerPlugin(ScrollTrigger)
-
 const sectionRef = ref<HTMLElement | null>(null)
-const headerRef = ref<HTMLDivElement | null>(null)
-const cardsContainerRef = ref<HTMLDivElement | null>(null)
 const activeTab = ref<string>('all')
-
 const { isReducedMotion } = useReducedMotion()
-let scrollTriggerInstance: ScrollTrigger | null = null
+
+useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
+  const header = container.querySelector('.skills-header')
+  const cards = container.querySelectorAll('.tech-card')
+
+  if (header) {
+    tl.fromTo(
+      header,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', clearProps: 'transform,willChange' }
+    )
+  }
+
+  if (cards.length > 0) {
+    tl.fromTo(
+      cards,
+      { y: 16, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        stagger: 0.04,
+        ease: 'power3.out',
+        clearProps: 'transform,scale,willChange',
+      },
+      '-=0.4'
+    )
+  }
+})
 
 const tabs = [
   { id: 'all', label: 'All Technologies' },
@@ -40,62 +62,6 @@ const marqueeTechs = [
   { name: 'Git', category: 'VCS' },
   { name: 'Redis', category: 'Caching' },
 ] as const
-
-onMounted(() => {
-  if (typeof window === 'undefined') return
-
-  if (isReducedMotion.value) {
-    if (headerRef.value) headerRef.value.style.opacity = '1'
-    if (cardsContainerRef.value) cardsContainerRef.value.style.opacity = '1'
-    return
-  }
-
-  if (sectionRef.value && headerRef.value) {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.value,
-        start: 'top 75%',
-        once: true,
-      },
-    })
-
-    scrollTriggerInstance = tl.scrollTrigger ?? null
-
-    // 1. Smooth Header Reveal
-    tl.fromTo(
-      headerRef.value,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' }
-    )
-
-    // 2. Staggered Technology Cards Reveal
-    if (cardsContainerRef.value) {
-      const cards = cardsContainerRef.value.querySelectorAll('.tech-card')
-      if (cards.length > 0) {
-        tl.fromTo(
-          cards,
-          { y: 24, opacity: 0, scale: 0.96 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.75,
-            stagger: 0.05,
-            ease: 'power3.out',
-          },
-          '-=0.45'
-        )
-      }
-    }
-  }
-})
-
-onUnmounted(() => {
-  if (scrollTriggerInstance) {
-    scrollTriggerInstance.kill()
-    scrollTriggerInstance = null
-  }
-})
 </script>
 
 <template>
@@ -116,7 +82,7 @@ onUnmounted(() => {
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       <!-- Section Header -->
-      <div ref="headerRef" class="max-w-3xl mb-12 sm:mb-16">
+      <div class="skills-header max-w-3xl mb-12 sm:mb-16">
         <div class="flex items-center gap-2 mb-3">
           <span class="w-8 h-0.5 bg-linear-to-r from-purple-400 to-indigo-400 rounded-full" />
           <p class="text-xs font-bold uppercase tracking-widest text-purple-600">
@@ -195,7 +161,7 @@ onUnmounted(() => {
                 <div
                   class="w-11 h-11 rounded-xl bg-white border border-slate-100 shadow-xs flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:border-purple-200"
                 >
-                  <TechLogo :name="skill.name" size-class="w-6 h-6" />
+                  <TechnologyLogo :name="skill.name" size-class="w-6 h-6" />
                 </div>
 
                 <!-- Info Block -->
@@ -227,31 +193,29 @@ onUnmounted(() => {
         </p>
 
         <!-- Marquee Track with Pause on Hover -->
-        <div class="relative w-full overflow-hidden mask-gradient-x group">
+        <div class="marquee-wrapper relative w-full overflow-hidden mask-gradient-x py-1">
           <div
-            class="flex gap-4 w-max animate-marquee group-hover:[animation-play-state:paused]"
+            class="marquee-track flex gap-4 w-max animate-marquee"
             :class="{ 'animate-none': isReducedMotion }"
           >
             <!-- Original Sequence -->
             <div
               v-for="item in marqueeTechs"
               :key="'m1-' + item.name"
-              class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/70 backdrop-blur-xs border border-white/80 shadow-2xs shrink-0"
+              class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/80 hover:bg-white backdrop-blur-xs border border-white/90 hover:border-purple-300 shadow-2xs hover:shadow-xs transition-all duration-200 shrink-0 cursor-default"
             >
-              <TechLogo :name="item.name" size-class="w-4 h-4" />
+              <TechnologyLogo :name="item.name" size-class="w-4 h-4" />
               <span class="text-xs font-semibold text-slate-800">{{ item.name }}</span>
-              <span class="text-xs text-slate-400 font-mono">({{ item.category }})</span>
             </div>
 
             <!-- Duplicated Sequence for Infinite Smooth Marquee Loop -->
             <div
               v-for="item in marqueeTechs"
               :key="'m2-' + item.name"
-              class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/70 backdrop-blur-xs border border-white/80 shadow-2xs shrink-0"
+              class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/80 hover:bg-white backdrop-blur-xs border border-white/90 hover:border-purple-300 shadow-2xs hover:shadow-xs transition-all duration-200 shrink-0 cursor-default"
             >
-              <TechLogo :name="item.name" size-class="w-4 h-4" />
+              <TechnologyLogo :name="item.name" size-class="w-4 h-4" />
               <span class="text-xs font-semibold text-slate-800">{{ item.name }}</span>
-              <span class="text-xs text-slate-400 font-mono">({{ item.category }})</span>
             </div>
           </div>
         </div>
@@ -272,6 +236,11 @@ onUnmounted(() => {
 
 .animate-marquee {
   animation: marquee 30s linear infinite;
+}
+
+.marquee-wrapper:hover .marquee-track,
+.marquee-track:hover {
+  animation-play-state: paused;
 }
 
 .mask-gradient-x {

@@ -20,7 +20,7 @@ const { registerModal } = useModalState()
 const isResumeModalOpen = ref<boolean>(false)
 const previousPath = ref<string>('/')
 
-const scrollToSection = inject<(sectionId: string, updateUrl?: boolean) => void>('scrollToSection')
+const scrollToSection = inject<(sectionId: string, updateUrl?: boolean, pushHistory?: boolean) => void>('scrollToSection')
 const activeSection = inject<Ref<string>>('activeSection')
 const smoothScroll = inject<SmoothScrollController>('smoothScroll')
 
@@ -80,25 +80,60 @@ const closeResumeModal = (): void => {
       @open-resume="openResumeModal"
     />
 
+    <!-- Section Divider: Hero to About -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
+
     <!-- About Section -->
     <AboutSection
       @navigate="handleNavigate"
     />
 
+    <!-- Section Divider: About to Services -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
+
     <!-- Services Section -->
     <ServicesSection />
+
+    <!-- Section Divider: Services to Skills -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
 
     <!-- Skills & Technology Wall -->
     <SkillsSection />
 
+    <!-- Section Divider: Skills to Projects -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
+
     <!-- Selected Projects Showcase -->
     <ProjectsSection />
+
+    <!-- Section Divider: Projects to Process -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
 
     <!-- My Development Process -->
     <ProcessSection />
 
+    <!-- Section Divider: Process to Testimonials -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
+
     <!-- Testimonials Section -->
     <TestimonialsSection />
+
+    <!-- Section Divider: Testimonials to Contact -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
+      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+    </div>
 
     <!-- Contact Section -->
     <ContactSection />

@@ -2,7 +2,7 @@
 import { EXPERIENCES } from '@/data/portfolioData'
 import { useScrollReveal } from '@/composables/useScrollReveal'
 import { useReducedMotion } from '@/composables/useReducedMotion'
-import { Briefcase, Calendar, MapPin, CheckCircle2, ChevronRight } from 'lucide-vue-next'
+import { Calendar, MapPin } from 'lucide-vue-next'
 
 const { targetRef, isVisible } = useScrollReveal(0.12)
 const { isReducedMotion } = useReducedMotion()
@@ -12,9 +12,9 @@ const { isReducedMotion } = useReducedMotion()
   <section
     id="experience"
     ref="targetRef"
-    class="py-24 relative z-10 transition-all duration-700 ease-out"
+    class="py-24 relative z-10 transition-[transform,opacity] duration-700 ease-out"
     :class="[
-      isVisible || isReducedMotion ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
+      isVisible || isReducedMotion ? 'opacity-100 transform-none' : 'opacity-0 translate-y-6',
     ]"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

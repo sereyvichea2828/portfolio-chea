@@ -4,14 +4,6 @@ import { NAVIGATION_ITEMS, CONTACT_INFO, HERO_CONTENT } from '@/data/portfolioDa
 import type { NavItem } from '@/types/portfolio';
 import DtMonogram from '@/components/DtMonogram.vue';
 import { useScrollReveal } from '@/composables/useScrollReveal';
-
-const FOOTER_NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-] as const;
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import {
   ArrowUp,
@@ -29,6 +21,14 @@ import {
 } from 'lucide-vue-next';
 
 import type { SmoothScrollController } from '@/composables/useSmoothScroll';
+
+const FOOTER_NAV_ITEMS: readonly NavItem[] = [
+  { label: 'Home', href: '#home' },
+  { label: 'About', href: '#about' },
+  { label: 'Services', href: '#services' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Projects', href: '#projects' },
+] as const;
 
 const currentYear = new Date().getFullYear();
 const currentLocalTime = ref<string>('');
@@ -71,7 +71,7 @@ const scrollToTop = (): void => {
     document.activeElement.blur();
   }
   if (smoothScroll) {
-    smoothScroll.scrollTo(0, { offset: 0, duration: 1.2 });
+    smoothScroll.scrollTo(0, { offset: 0, duration: 0.85 });
   } else if (scrollToSection) {
     scrollToSection('home', true);
   } else if (typeof window !== 'undefined') {
@@ -107,13 +107,13 @@ const socialLinks = [
   {
     name: 'LinkedIn',
     handle: 'Try Sereyvichea',
-    url: 'https://linkedin.com/in/sereyvichea-chea',
+    url: 'https://www.linkedin.com/in/try-sereyvichea-8a890a436/',
     icon: Linkedin,
   },
   {
     name: 'Email',
-    handle: 'sereyvichea.dev@gmail.com',
-    url: 'mailto:sereyvichea.dev@gmail.com',
+    handle: 'dyte.vichea.dev@gmail.com',
+    url: 'mailto:dyte.vichea.dev@gmail.com',
     icon: Mail,
   },
 ] as const;
@@ -134,26 +134,16 @@ onUnmounted(() => {
 <template>
   <footer
     ref="targetRef"
-    class="relative z-10 pt-16 sm:pt-20 pb-12 sm:pb-16 overflow-hidden transition-all duration-1000 ease-out"
+    class="relative z-10 pt-16 sm:pt-20 pb-12 sm:pb-16 overflow-hidden transition-[transform,opacity] duration-1000 ease-out"
     :class="[
-      isVisible || isReducedMotion ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
+      isVisible || isReducedMotion ? 'opacity-100 transform-none' : 'opacity-0 translate-y-6',
     ]"
   >
-    <!-- Soft Pearl Ambient Light Background Behind the Footer -->
-    <div
-      class="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-linear-to-br from-purple-200/30 via-indigo-100/20 to-transparent blur-3xl pointer-events-none"
-      aria-hidden="true"
-    />
-    <div
-      class="absolute bottom-0 right-1/4 w-80 h-80 rounded-full bg-linear-to-tl from-cyan-100/30 via-purple-100/20 to-transparent blur-3xl pointer-events-none"
-      aria-hidden="true"
-    />
-
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-      <!-- Main Pearl Glass Grand Card Panel -->
+      <!-- Main Pearl Glass Grand Card Panel (consistent with other sections) -->
       <div
         ref="footerPanelRef"
-        class="relative rounded-3xl bg-white/75 backdrop-blur-xl border border-white/90 shadow-xl shadow-purple-950/5 p-6 sm:p-10 lg:p-12 overflow-hidden transition-all duration-300 group"
+        class="relative rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-md shadow-purple-950/5 p-6 sm:p-10 lg:p-12 overflow-hidden transition-all duration-300 group"
         @mousemove="handlePointerMove"
         @mouseleave="handlePointerLeave"
       >

@@ -98,11 +98,11 @@ onUnmounted(() => {
 
 <template>
   <header
-    class="fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-in-out py-3.5 pointer-events-none"
+    class="fixed top-0 left-0 right-0 z-40 transition-[transform,opacity] duration-500 ease-in-out py-3.5 pointer-events-none"
     :class="[
       props.isFooterVisible || props.isHidden
         ? '-translate-y-full opacity-0 pointer-events-none'
-        : 'translate-y-0 opacity-100',
+        : 'transform-none opacity-100',
     ]"
     :aria-hidden="props.isFooterVisible || props.isHidden"
   >
@@ -113,8 +113,8 @@ onUnmounted(() => {
         :class="[
           props.isFooterVisible || props.isHidden ? 'pointer-events-none' : 'pointer-events-auto',
           props.isScrolled
-            ? 'bg-white/95 backdrop-blur-md border-white/90 shadow-xl shadow-slate-900/10'
-            : 'bg-white/90 backdrop-blur-md border-white/90 shadow-md shadow-purple-950/5',
+            ? 'bg-white/85 backdrop-blur-xl border-white/80 shadow-lg shadow-purple-950/5'
+            : 'bg-white/75 backdrop-blur-xl border-white/80 shadow-md shadow-purple-950/5',
         ]"
         @mousemove="handlePointerMove"
         @mouseleave="handlePointerLeave"

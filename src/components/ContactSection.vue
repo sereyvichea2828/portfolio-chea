@@ -26,13 +26,13 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   const formCol = container.querySelector('.contact-form-col');
 
   if (header) {
-    tl.fromTo(header, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' });
+    tl.fromTo(header, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', clearProps: 'transform,willChange' });
   }
   if (infoCol) {
-    tl.fromTo(infoCol, { x: -24, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, '-=0.5');
+    tl.fromTo(infoCol, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out', clearProps: 'transform,willChange' }, '-=0.45');
   }
   if (formCol) {
-    tl.fromTo(formCol, { x: 24, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out' }, '-=0.6');
+    tl.fromTo(formCol, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: 'power3.out', clearProps: 'transform,willChange' }, '-=0.55');
   }
 });
 

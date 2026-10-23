@@ -92,11 +92,16 @@ const handleMouseMove = (e: MouseEvent): void => {
   }
 }
 
+const handleMouseLeaveWindow = (): void => {
+  targetOpacity = 0.90
+}
+
 const handleVisibilityChange = (): void => {
   if (typeof document === 'undefined') return
   isVisible = !document.hidden
   if (isVisible) {
     lastTime = performance.now()
+    targetOpacity = 0.90
   }
 }
 
@@ -318,6 +323,8 @@ onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove, { passive: true })
   window.addEventListener('resize', handleResize, { passive: true })
   document.addEventListener('visibilitychange', handleVisibilityChange)
+  document.addEventListener('mouseleave', handleMouseLeaveWindow)
+  window.addEventListener('blur', handleMouseLeaveWindow)
 
   lastTime = performance.now()
   animationFrameId = requestAnimationFrame(renderLoop)
@@ -333,6 +340,8 @@ onUnmounted(() => {
     window.removeEventListener('mousemove', handleMouseMove)
     window.removeEventListener('resize', handleResize)
     document.removeEventListener('visibilitychange', handleVisibilityChange)
+    document.removeEventListener('mouseleave', handleMouseLeaveWindow)
+    window.removeEventListener('blur', handleMouseLeaveWindow)
   }
 
   if (outerMesh) {

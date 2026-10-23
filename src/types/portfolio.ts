@@ -1,4 +1,11 @@
-export type ProjectCategory = 'All' | 'Full Stack' | 'Frontend' | 'Backend/API'
+export type ProjectCategory =
+  | 'All'
+  | 'Education'
+  | 'Mathematics'
+  | 'Hardware / Embedded Systems'
+  | 'Full Stack'
+  | 'Frontend'
+  | 'Backend/API'
 
 export interface ProjectMetric {
   label: string
@@ -9,7 +16,7 @@ export interface Project {
   id: string
   title: string
   tagline: string
-  category: 'Full Stack' | 'Frontend' | 'Backend/API'
+  category: 'Education' | 'Mathematics' | 'Hardware / Embedded Systems' | 'Full Stack' | 'Frontend' | 'Backend/API'
   description: string
   challenge: string
   solution: string
@@ -19,7 +26,9 @@ export interface Project {
   demoUrl: string
   githubUrl: string
   accentColor: 'violet' | 'cyan' | 'indigo' | 'emerald'
-  mockupType: 'finance' | 'tasks' | 'api'
+  mockupType: 'finance' | 'tasks' | 'api' | 'campus' | 'math' | 'iee'
+  imageUrl?: string
+  imageAlt?: string
 }
 
 export interface ServiceItem {
@@ -52,6 +61,8 @@ export interface SkillItem {
   name: string
   experience: string
   highlight: string
+  brandColor?: string
+  category?: 'frontend' | 'backend' | 'database' | 'tools'
 }
 
 export interface SkillGroup {

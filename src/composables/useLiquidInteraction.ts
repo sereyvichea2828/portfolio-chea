@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, shallowRef, type Ref, type ShallowRef } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 
 export interface LiquidRipple {
   x: number

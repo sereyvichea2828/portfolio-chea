@@ -2,34 +2,37 @@
 import { ref } from 'vue';
 import { PROCESS_STEPS } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
-import { useReducedMotion } from '@/composables/useReducedMotion';
-import { CheckCircle2, ArrowRight } from 'lucide-vue-next';
 
 const sectionRef = ref<HTMLElement | null>(null);
-const { isReducedMotion } = useReducedMotion();
 
 useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   const header = container.querySelector('.process-header');
-  const line = container.querySelector('.process-line');
   const cards = container.querySelectorAll('.process-card');
 
   if (header) {
-    tl.fromTo(header, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out' });
-  }
-  if (line) {
-    tl.fromTo(line, { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 1, duration: 0.9, ease: 'power3.out' }, '-=0.5');
+    tl.fromTo(
+      header,
+      { y: 20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', clearProps: 'transform,willChange' },
+    );
   }
   if (cards.length > 0) {
     tl.fromTo(
       cards,
-      { y: 28, opacity: 0, scale: 0.97 },
-      { y: 0, opacity: 1, scale: 1, duration: 0.75, stagger: 0.12, ease: 'power3.out' },
-      '-=0.55'
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        stagger: 0.09,
+        ease: 'power3.out',
+        clearProps: 'transform,scale,willChange',
+      },
+      '-=0.4',
     );
   }
 });
 
-const activeHoverStep = ref<string>('01');
 </script>
 
 <template>
@@ -38,6 +41,7 @@ const activeHoverStep = ref<string>('01');
     ref="sectionRef"
     class="py-24 relative z-10 scroll-mt-24"
   >
+
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="process-header max-w-3xl mb-16">
@@ -59,23 +63,13 @@ const activeHoverStep = ref<string>('01');
       </div>
 
       <!-- Process Steps Container -->
-      <!-- Desktop: 5 horizontal connected cards -->
+      <!-- Desktop: 5 horizontal connected cards using pure CSS hover to eliminate stuck states -->
       <div class="hidden lg:grid grid-cols-5 gap-4 relative">
-        <!-- Connecting Line -->
-        <div
-          class="process-line absolute top-1/2 left-4 right-4 h-0.5 bg-linear-to-r from-purple-200 via-indigo-200 to-cyan-200 -translate-y-8 z-0 pointer-events-none"
-        />
-
         <div
           v-for="step in PROCESS_STEPS"
           :key="step.number"
-          class="process-card relative z-10 group bg-white/75 backdrop-blur-xl border rounded-3xl p-5 shadow-md shadow-purple-950/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
-          :class="[
-            activeHoverStep === step.number
-              ? 'border-purple-300 ring-2 ring-purple-100'
-              : 'border-white/80',
-          ]"
-          @mouseenter="activeHoverStep = step.number"
+          tabindex="0"
+          class="process-card relative z-10 group bg-white/85 backdrop-blur-xl border border-white/80 rounded-3xl p-5 shadow-sm shadow-purple-950/5 hover:border-purple-300 hover:ring-2 hover:ring-purple-100 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1 focus-visible:border-purple-300 focus-visible:ring-2 focus-visible:ring-purple-100 focus-visible:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-default outline-none"
         >
           <div class="space-y-4">
             <!-- Step Number Pill -->
@@ -122,7 +116,7 @@ const activeHoverStep = ref<string>('01');
         <div
           v-for="step in PROCESS_STEPS"
           :key="step.number"
-          class="relative bg-white/75 backdrop-blur-xl border border-white/80 rounded-3xl p-6 shadow-md shadow-purple-950/5 space-y-3"
+          class="relative bg-white/75 backdrop-blur-xl border border-white/80 rounded-3xl p-6 shadow-sm shadow-purple-950/5 space-y-3"
         >
           <!-- Timeline Node -->
           <div
