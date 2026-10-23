@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, defineAsyncComponent } from 'vue';
 import { CONTACT_INFO } from '@/data/portfolioData';
 import type { ContactFormData, ContactFormErrors } from '@/types/portfolio';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import ThreePearlOrb from '@/components/ThreePearlOrb.vue';
+
+const ThreePearlOrb = defineAsyncComponent(() => import('@/components/ThreePearlOrb.vue'));
 import {
   Mail,
   Send,

@@ -1,20 +1,34 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, shallowRef } from 'vue'
-import * as THREE from 'three'
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Group,
+  Mesh,
+  SphereGeometry,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Color,
+  DirectionalLight,
+  AmbientLight,
+  PointLight,
+  ACESFilmicToneMapping,
+} from 'three'
 import { useReducedMotion } from '@/composables/useReducedMotion'
 
 const containerRef = ref<HTMLDivElement | null>(null)
 const { isReducedMotion } = useReducedMotion()
 
 const isTouchDevice = ref<boolean>(false)
-const renderer = shallowRef<THREE.WebGLRenderer | null>(null)
+const renderer = shallowRef<WebGLRenderer | null>(null)
 
-let scene: THREE.Scene | null = null
-let camera: THREE.PerspectiveCamera | null = null
-let glassGroup: THREE.Group | null = null
-let outerMesh: THREE.Mesh | null = null
-let innerMesh: THREE.Mesh | null = null
-let movingPointLight: THREE.PointLight | null = null
+let scene: Scene | null = null
+let camera: PerspectiveCamera | null = null
+let glassGroup: Group | null = null
+let outerMesh: Mesh | null = null
+let innerMesh: Mesh | null = null
+let movingPointLight: PointLight | null = null
 let animationFrameId: number | null = null
 
 let targetWorldX = 1.4
@@ -111,19 +125,19 @@ const initThreeScene = (): void => {
   const width = window.innerWidth || 1
   const height = window.innerHeight || 1
 
-  scene = new THREE.Scene()
+  scene = new Scene()
 
-  camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100)
+  camera = new PerspectiveCamera(45, width / height, 0.1, 100)
   camera.position.z = 5.5
 
-  const webglRenderer = new THREE.WebGLRenderer({
+  const webglRenderer = new WebGLRenderer({
     alpha: true,
     antialias: true,
     powerPreference: 'high-performance',
   })
   webglRenderer.setSize(width, height)
   webglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
-  webglRenderer.toneMapping = THREE.ACESFilmicToneMapping
+  webglRenderer.toneMapping = ACESFilmicToneMapping
   webglRenderer.toneMappingExposure = 1.30
 
   // Apply subtle purple pearl drop shadow glow to the canvas
@@ -134,26 +148,26 @@ const initThreeScene = (): void => {
   renderer.value = webglRenderer
 
   // Create composite 3D Liquid Pearl Glass Sculpture
-  glassGroup = new THREE.Group()
+  glassGroup = new Group()
 
   // Outer Rounded Pearl Glass Sphere (matches color in photo & navfooter pearl gradient)
-  const outerGeometry = new THREE.SphereGeometry(0.50, 64, 64)
-  const outerMaterial = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(0xf3e8ff), // Pale lavender pearl base
-    emissive: new THREE.Color(0x9333ea), // Rich violet-purple core radiance matching photo orb
+  const outerGeometry = new SphereGeometry(0.50, 64, 64)
+  const outerMaterial = new MeshPhysicalMaterial({
+    color: new Color(0xf3e8ff), // Pale lavender pearl base
+    emissive: new Color(0x9333ea), // Rich violet-purple core radiance matching photo orb
     emissiveIntensity: 0.24,
     roughness: 0.06,
     metalness: 0.08,
     transmission: 0.70, // Rich pearl glass body with internal refraction
     ior: 1.50,
     thickness: 1.4,
-    attenuationColor: new THREE.Color(0xa855f7), // Violet absorption
+    attenuationColor: new Color(0xa855f7), // Violet absorption
     attenuationDistance: 1.4,
     reflectivity: 0.96,
     clearcoat: 1.0,
     clearcoatRoughness: 0.03,
     sheen: 0.85,
-    sheenColor: new THREE.Color(0x38bdf8), // Electric cyan rim reflection
+    sheenColor: new Color(0x38bdf8), // Electric cyan rim reflection
     sheenRoughness: 0.14,
     iridescence: 0.82,
     iridescenceIOR: 1.50,
@@ -161,14 +175,14 @@ const initThreeScene = (): void => {
     opacity: 0.90,
   })
 
-  outerMesh = new THREE.Mesh(outerGeometry, outerMaterial)
+  outerMesh = new Mesh(outerGeometry, outerMaterial)
   glassGroup.add(outerMesh)
 
   // Inner Rounded Chromatic Core (Smooth violet/indigo specular core)
-  const innerGeometry = new THREE.SphereGeometry(0.26, 32, 32)
-  const innerMaterial = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(0x818cf8),
-    emissive: new THREE.Color(0x7c3aed),
+  const innerGeometry = new SphereGeometry(0.26, 32, 32)
+  const innerMaterial = new MeshStandardMaterial({
+    color: new Color(0x818cf8),
+    emissive: new Color(0x7c3aed),
     emissiveIntensity: 0.45,
     roughness: 0.22,
     metalness: 0.18,
@@ -176,32 +190,32 @@ const initThreeScene = (): void => {
     opacity: 0.65,
   })
 
-  innerMesh = new THREE.Mesh(innerGeometry, innerMaterial)
+  innerMesh = new Mesh(innerGeometry, innerMaterial)
   glassGroup.add(innerMesh)
 
   scene.add(glassGroup)
 
   // Atmospheric Studio Lighting matching ThreePearlOrb & Photo aesthetic
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.3)
+  const ambientLight = new AmbientLight(0xffffff, 1.3)
   scene.add(ambientLight)
 
   // Key light: Vibrant lavender
-  const keyLight = new THREE.DirectionalLight(0x9b87f5, 5.0)
+  const keyLight = new DirectionalLight(0x9b87f5, 5.0)
   keyLight.position.set(-3.5, 4.5, 3.5)
   scene.add(keyLight)
 
   // Rim light: Soft electric aqua/cyan
-  const rimLight = new THREE.DirectionalLight(0x06b6d4, 4.5)
+  const rimLight = new DirectionalLight(0x06b6d4, 4.5)
   rimLight.position.set(3.5, -2.5, -2)
   scene.add(rimLight)
 
   // Top highlight: Cool periwinkle / purple
-  const topLight = new THREE.DirectionalLight(0x818cf8, 3.2)
+  const topLight = new DirectionalLight(0x818cf8, 3.2)
   topLight.position.set(1, 4, 2.5)
   scene.add(topLight)
 
   // Moving radiant orchid point light that tracks the sculpture
-  movingPointLight = new THREE.PointLight(0xe879f9, 2.6, 7)
+  movingPointLight = new PointLight(0xe879f9, 2.6, 7)
   movingPointLight.position.set(currentX + 0.8, currentY + 1.0, 2.0)
   scene.add(movingPointLight)
 }
@@ -282,10 +296,10 @@ const renderLoop = (): void => {
   if (glassGroup) {
     glassGroup.visible = currentOpacity > 0.01
   }
-  if (outerMesh && outerMesh.material instanceof THREE.MeshPhysicalMaterial) {
+  if (outerMesh && outerMesh.material instanceof MeshPhysicalMaterial) {
     outerMesh.material.opacity = currentOpacity * 0.90
   }
-  if (innerMesh && innerMesh.material instanceof THREE.MeshStandardMaterial) {
+  if (innerMesh && innerMesh.material instanceof MeshStandardMaterial) {
     innerMesh.material.opacity = currentOpacity * 0.65
   }
   if (containerRef.value) {

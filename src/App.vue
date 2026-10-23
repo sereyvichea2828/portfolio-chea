@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, watch, provide, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, provide, onMounted, onUnmounted, defineAsyncComponent } from 'vue'
 import { RouterView, useRoute, type RouteLocationNormalizedLoaded } from 'vue-router'
 import LiquidBackground from '@/components/LiquidBackground.vue'
-import MouseFollowGlass from '@/components/MouseFollowGlass.vue'
 import AppNavbar from '@/components/AppNavbar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+
+const MouseFollowGlass = defineAsyncComponent(() => import('@/components/MouseFollowGlass.vue'))
 import { useScrollObserver } from '@/composables/useScrollObserver'
 import { useSmoothScroll } from '@/composables/useSmoothScroll'
 import { useModalState } from '@/composables/useModalState'

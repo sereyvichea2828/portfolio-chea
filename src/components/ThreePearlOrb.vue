@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, shallowRef } from 'vue'
-import * as THREE from 'three'
+import {
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Mesh,
+  SphereGeometry,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Color,
+  DirectionalLight,
+  AmbientLight,
+  PointLight,
+  ACESFilmicToneMapping,
+} from 'three'
 import { useReducedMotion } from '@/composables/useReducedMotion'
 
 interface Props {
@@ -14,12 +27,12 @@ const props = withDefaults(defineProps<Props>(), {
 const containerRef = ref<HTMLDivElement | null>(null)
 const { isReducedMotion } = useReducedMotion()
 
-const renderer = shallowRef<THREE.WebGLRenderer | null>(null)
-let scene: THREE.Scene | null = null
-let camera: THREE.PerspectiveCamera | null = null
-let mesh: THREE.Mesh | null = null
-let innerMesh: THREE.Mesh | null = null
-let pointLight: THREE.PointLight | null = null
+const renderer = shallowRef<WebGLRenderer | null>(null)
+let scene: Scene | null = null
+let camera: PerspectiveCamera | null = null
+let mesh: Mesh | null = null
+let innerMesh: Mesh | null = null
+let pointLight: PointLight | null = null
 let animationFrameId: number | null = null
 
 let targetRotX = 0
@@ -43,42 +56,42 @@ const initThree = (): void => {
   const width = container.clientWidth || 256
   const height = container.clientHeight || 256
 
-  scene = new THREE.Scene()
+  scene = new Scene()
 
-  camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100)
+  camera = new PerspectiveCamera(45, width / height, 0.1, 100)
   camera.position.z = 4.8
 
-  const webglRenderer = new THREE.WebGLRenderer({
+  const webglRenderer = new WebGLRenderer({
     alpha: true,
     antialias: true,
     powerPreference: 'high-performance',
   })
   webglRenderer.setSize(width, height)
   webglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
-  webglRenderer.toneMapping = THREE.ACESFilmicToneMapping
+  webglRenderer.toneMapping = ACESFilmicToneMapping
   webglRenderer.toneMappingExposure = 1.3
 
   container.appendChild(webglRenderer.domElement)
   renderer.value = webglRenderer
 
   // Outer Pearl Glass Physical Sphere with iridescent lavender & cyan refraction
-  const geometry = new THREE.SphereGeometry(1.4, 64, 64)
-  const material = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(0xf3e8ff), // Luminous pale lavender pearl
-    emissive: new THREE.Color(0x8b5cf6), // Subtle violet core radiance
+  const geometry = new SphereGeometry(1.4, 64, 64)
+  const material = new MeshPhysicalMaterial({
+    color: new Color(0xf3e8ff), // Luminous pale lavender pearl
+    emissive: new Color(0x8b5cf6), // Subtle violet core radiance
     emissiveIntensity: 0.12,
     roughness: 0.06,
     metalness: 0.08,
     transmission: 0.82,
     ior: 1.5,
     thickness: 1.4,
-    attenuationColor: new THREE.Color(0xa855f7),
+    attenuationColor: new Color(0xa855f7),
     attenuationDistance: 1.5,
     reflectivity: 0.95,
     clearcoat: 1.0,
     clearcoatRoughness: 0.04,
     sheen: 0.8,
-    sheenColor: new THREE.Color(0x38bdf8),
+    sheenColor: new Color(0x38bdf8),
     sheenRoughness: 0.15,
     iridescence: 0.8,
     iridescenceIOR: 1.5,
@@ -86,43 +99,43 @@ const initThree = (): void => {
     opacity: 0.85,
   })
 
-  mesh = new THREE.Mesh(geometry, material)
+  mesh = new Mesh(geometry, material)
 
   // Inner Chromatic Core Sphere to give subtle internal color refraction
-  const innerGeometry = new THREE.SphereGeometry(0.70, 32, 32)
-  const innerMaterial = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(0x818cf8),
-    emissive: new THREE.Color(0x6366f1),
+  const innerGeometry = new SphereGeometry(0.70, 32, 32)
+  const innerMaterial = new MeshStandardMaterial({
+    color: new Color(0x818cf8),
+    emissive: new Color(0x6366f1),
     emissiveIntensity: 0.35,
     roughness: 0.25,
     metalness: 0.2,
   })
-  innerMesh = new THREE.Mesh(innerGeometry, innerMaterial)
+  innerMesh = new Mesh(innerGeometry, innerMaterial)
   mesh.add(innerMesh)
 
   scene.add(mesh)
 
   // Soft Ambient & Directional Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1.4)
+  const ambientLight = new AmbientLight(0xffffff, 1.4)
   scene.add(ambientLight)
 
   // Vibrant lavender primary key studio light
-  const lavenderLight = new THREE.DirectionalLight(0x9b87f5, 6.0)
+  const lavenderLight = new DirectionalLight(0x9b87f5, 6.0)
   lavenderLight.position.set(-3, 4, 3)
   scene.add(lavenderLight)
 
   // Electric cyan/aqua rim light
-  const aquaLight = new THREE.DirectionalLight(0x06b6d4, 5.5)
+  const aquaLight = new DirectionalLight(0x06b6d4, 5.5)
   aquaLight.position.set(3.5, -2, -2)
   scene.add(aquaLight)
 
   // Top periwinkle accent light
-  const fillLight = new THREE.DirectionalLight(0x6366f1, 4.0)
+  const fillLight = new DirectionalLight(0x6366f1, 4.0)
   fillLight.position.set(1, 4, 2)
   scene.add(fillLight)
 
   // Inside radiant orchid point light
-  pointLight = new THREE.PointLight(0xe879f9, 3.0, 6)
+  pointLight = new PointLight(0xe879f9, 3.0, 6)
   pointLight.position.set(0, 0, 1)
   scene.add(pointLight)
 }

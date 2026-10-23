@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
 import { HERO_CONTENT } from '@/data/portfolioData';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import ThreePearlOrb from '@/components/ThreePearlOrb.vue';
+
+const ThreePearlOrb = defineAsyncComponent(() => import('@/components/ThreePearlOrb.vue'));
 import {
   ArrowDown,
   FileText,

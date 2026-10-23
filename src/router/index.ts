@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+import { nextTick } from 'vue';
 import HomeView from '../views/HomeView.vue';
 
 export interface SectionRouteMeta {
@@ -66,17 +67,52 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior(to, _from, savedPosition) {
-    // 1. Restore exact scroll coordinate on browser back/forward buttons
+  scrollBehavior: async (to, _from, savedPosition) => {
+    // Preserve the previous scroll position on browser Back/Forward.
     if (savedPosition) {
       return savedPosition;
     }
-    // 2. For single-page section routes, delegate scroll positioning to the application observer
-    if (to.meta?.sectionId) {
-      return false;
+
+    // Support ordinary anchor links.
+    if (to.hash) {
+      return {
+        el: to.hash,
+        top: -88, // Adjust for your fixed navbar height.
+        behavior: 'smooth',
+      };
     }
-    // 3. For distinct route navigation, smoothly scroll to top
-    return { top: 0, left: 0, behavior: 'smooth' };
+
+    const sectionId = typeof to.meta.sectionId === 'string' ? to.meta.sectionId : null;
+
+    // Home should start at the top.
+    if (!sectionId || sectionId === 'home') {
+      return { top: 0, left: 0 };
+    }
+
+    // Wait for Vue to render the destination section.
+    await nextTick();
+
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => resolve());
+      });
+    });
+
+    const target = document.getElementById(sectionId);
+
+    if (!target) {
+      console.warn(`[Router] Section "#${sectionId}" was not found. Check the section ID.`);
+
+      return { top: 0, left: 0 };
+    }
+
+    // On refresh, jump directly to the requested section.
+    // During in-app navigation, scroll smoothly to it.
+    return {
+      el: target,
+      top: -88,
+      behavior: _from.name == null ? 'auto' : 'smooth',
+    };
   },
 });
 

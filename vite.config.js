@@ -17,4 +17,35 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'three',
+              test: /[\\/]node_modules[\\/]three[\\/]/,
+            },
+            {
+              name: 'gsap',
+              test: /[\\/]node_modules[\\/]gsap[\\/]/,
+            },
+            {
+              name: 'vue-vendor',
+              test: /[\\/]node_modules[\\/](vue|vue-router|pinia|@vue)[\\/]/,
+            },
+            {
+              name: 'lucide',
+              test: /[\\/]node_modules[\\/]lucide-vue-next[\\/]/,
+            },
+            {
+              name: 'simple-icons',
+              test: /[\\/]node_modules[\\/]simple-icons[\\/]/,
+            },
+          ],
+        },
+      },
+    },
+  },
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, defineAsyncComponent } from 'vue';
 import { PROJECTS } from '@/data/portfolioData';
 import type { Project } from '@/types/portfolio';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
@@ -7,8 +7,9 @@ import { useSmoothScroll } from '@/composables/useSmoothScroll';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import { useModalState } from '@/composables/useModalState';
 import ProjectCard from '@/components/ProjectCard.vue';
-import ProjectModal from '@/components/ProjectModal.vue';
 import { ArrowUpRight } from 'lucide-vue-next';
+
+const ProjectModal = defineAsyncComponent(() => import('@/components/ProjectModal.vue'));
 
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
@@ -111,8 +112,13 @@ const closeCaseStudy = (): void => {
         </div>
       </div>
 
-      <!-- Deep Dive Case Study Modal -->
-      <ProjectModal :project="selectedCaseStudy" :is-open="isModalOpen" @close="closeCaseStudy" />
+      <!-- Deep Dive Case Study Modal (Lazy-loaded upon trigger) -->
+      <ProjectModal
+        v-if="isModalOpen && selectedCaseStudy"
+        :project="selectedCaseStudy"
+        :is-open="isModalOpen"
+        @close="closeCaseStudy"
+      />
     </div>
   </section>
 </template>
