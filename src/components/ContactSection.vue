@@ -13,7 +13,6 @@ import {
   Linkedin,
   MapPin,
   CheckCircle2,
-  Clock,
   ArrowUpRight,
   Loader2,
 } from 'lucide-vue-next';
@@ -148,10 +147,10 @@ const resetSubmission = (): void => {
             <div class="space-y-4 pt-2">
               <a
                 :href="'mailto:' + CONTACT_INFO.email"
-                class="flex items-center gap-3.5 p-3 rounded-2xl bg-white/80 border border-slate-100 hover:border-purple-300 group transition-all shadow-xs"
+                class="flex items-center gap-3.5 p-3 rounded-2xl bg-white/80 border border-slate-200/80 hover:border-slate-300 group transition-all shadow-xs"
               >
                 <div
-                  class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0"
+                  class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center shrink-0 transition-colors"
                 >
                   <Mail class="w-5 h-5" />
                 </div>
@@ -160,7 +159,7 @@ const resetSubmission = (): void => {
                     >DIRECT INBOX</span
                   >
                   <span
-                    class="text-sm font-semibold text-ink-primary group-hover:text-purple-600 transition-colors truncate"
+                    class="text-sm font-semibold text-ink-primary group-hover:text-slate-900 transition-colors truncate"
                   >
                     {{ CONTACT_INFO.email }}
                   </span>
@@ -168,26 +167,10 @@ const resetSubmission = (): void => {
               </a>
 
               <div
-                class="flex items-center gap-3.5 p-3 rounded-2xl bg-white/80 border border-slate-100 shadow-xs"
+                class="flex items-center gap-3.5 p-3 rounded-2xl bg-white/80 border border-slate-200/80 shadow-xs"
               >
                 <div
-                  class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0"
-                >
-                  <Clock class="w-5 h-5" />
-                </div>
-                <div class="flex flex-col">
-                  <span class="text-xs text-ink-secondary uppercase font-semibold">STATUS</span>
-                  <span class="text-sm font-semibold text-ink-primary">
-                    {{ CONTACT_INFO.availability }}
-                  </span>
-                </div>
-              </div>
-
-              <div
-                class="flex items-center gap-3.5 p-3 rounded-2xl bg-white/80 border border-slate-100 shadow-xs"
-              >
-                <div
-                  class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0"
+                  class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0"
                 >
                   <MapPin class="w-5 h-5" />
                 </div>

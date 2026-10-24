@@ -28,7 +28,6 @@ export const HERO_CONTENT = {
     'Engineering high-performance web applications, distributed backend services, and interactive 3D digital experiences with strict architectural rigor.',
   primaryCta: 'View Selected Work',
   secondaryCta: 'Curriculum Vitae',
-  availabilityText: 'Available for selected opportunities',
   portraitImage: '/developer-portrait.jpg',
   portraitAlt: 'Try Sereyvichea — Full-Stack Developer Portrait',
   floatingStats: [
@@ -514,7 +513,6 @@ export const CONTACT_INFO = {
   supportingText: "Let's create something useful, elegant, and technically excellent together.",
   email: 'dyte.vichea.dev@gmail.com',
   location: 'Phnom Penh, Cambodia (UTC+7)',
-  availability: 'Available for selected opportunities',
   socials: [
     { name: 'GitHub', url: 'https://github.com/sereyvichea2828', handle: '@sereyvichea2828' },
     {

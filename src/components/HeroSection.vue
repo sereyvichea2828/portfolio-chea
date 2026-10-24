@@ -6,7 +6,6 @@ import { useReducedMotion } from '@/composables/useReducedMotion';
 import {
   ArrowDown,
   FileText,
-  MapPin,
   Terminal,
   Layers,
   Cpu,
@@ -126,7 +125,6 @@ onMounted(() => {
         // Reduced motion: instant display
         gsap.set(
           [
-            '.hero-status-pill',
             '.hero-headline-item',
             '.hero-subtext',
             '.hero-cta-group',
@@ -142,19 +140,11 @@ onMounted(() => {
 
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      // 1. Availability Status Pill
-      tl.fromTo(
-        '.hero-status-pill',
-        { y: -16, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, delay: 0.15 },
-      );
-
-      // 2. Headline items staggered reveal
+      // 1. Headline items staggered reveal
       tl.fromTo(
         '.hero-headline-item',
         { y: 36, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.09 },
-        '-=0.45',
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.09, delay: 0.15 },
       );
 
       // 3. Subtext statement
@@ -247,20 +237,6 @@ const handleScrollIndicatorClick = (): void => {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-12 items-center">
         <!-- Left Column: Editorial Presentation, Value Proposition & Actions -->
         <div class="lg:col-span-7 flex flex-col space-y-5 sm:space-y-6">
-          <!-- Availability Status Pill -->
-          <div class="hero-status-pill flex flex-wrap items-center gap-3">
-            <div
-              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-white/90 backdrop-blur-md border border-slate-200/80 text-slate-800 shadow-xs"
-            >
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span class="font-medium">{{ HERO_CONTENT.availabilityText }}</span>
-            </div>
-
-            <div class="inline-flex items-center gap-1.5 text-xs text-slate-500">
-              <MapPin class="w-3.5 h-3.5 text-slate-400" />
-              <span>Phnom Penh, Cambodia (UTC+7)</span>
-            </div>
-          </div>
 
           <!-- Headline Stack: Confident Editorial Typography -->
           <div class="space-y-3">
