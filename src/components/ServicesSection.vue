@@ -46,23 +46,23 @@ const getAccentClasses = (color: string) => {
   switch (color) {
     case 'lavender':
       return {
-        iconBg: 'bg-purple-100 text-purple-600',
-        badge: 'text-purple-700 bg-purple-50',
+        iconBg: 'bg-slate-100 text-slate-800 border border-slate-200/80',
+        badge: 'text-slate-800 bg-slate-100',
       }
     case 'periwinkle':
       return {
-        iconBg: 'bg-indigo-100 text-indigo-600',
-        badge: 'text-indigo-700 bg-indigo-50',
+        iconBg: 'bg-slate-100 text-slate-800 border border-slate-200/80',
+        badge: 'text-slate-800 bg-slate-100',
       }
     case 'aqua':
       return {
-        iconBg: 'bg-cyan-100 text-cyan-700',
-        badge: 'text-cyan-800 bg-cyan-50',
+        iconBg: 'bg-emerald-50 text-emerald-700 border border-emerald-200/60',
+        badge: 'text-emerald-800 bg-emerald-50',
       }
     default:
       return {
-        iconBg: 'bg-blue-100 text-blue-600',
-        badge: 'text-blue-700 bg-blue-50',
+        iconBg: 'bg-slate-100 text-slate-800 border border-slate-200/80',
+        badge: 'text-slate-800 bg-slate-100',
       }
   }
 }
@@ -76,17 +76,14 @@ const getAccentClasses = (color: string) => {
   >
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="services-header max-w-3xl mb-16">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="w-8 h-0.5 bg-linear-to-r from-purple-400 to-indigo-400 rounded-full" />
-          <p class="text-xs font-bold uppercase tracking-widest text-purple-600">
-            SERVICES & EXPERTISE
-          </p>
-        </div>
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-wider text-ink-primary leading-tight">
+      <div class="services-header max-w-3xl mb-14 sm:mb-16 space-y-2">
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-500">
+          SERVICES & EXPERTISE
+        </p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
           Services I Offer
         </h2>
-        <p class="mt-4 text-base sm:text-lg text-ink-secondary">
+        <p class="text-base sm:text-lg text-slate-600">
           End-to-end full-stack capabilities combining intuitive user interfaces with resilient distributed backend logic.
         </p>
       </div>
@@ -96,14 +93,8 @@ const getAccentClasses = (color: string) => {
         <div
           v-for="service in SERVICES"
           :key="service.id"
-          class="service-card group relative bg-white/70 backdrop-blur-xl border border-white/80 rounded-3xl p-7 sm:p-8 shadow-md shadow-purple-950/5 hover:shadow-xl hover:shadow-purple-950/10 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+          class="service-card group relative bg-white/80 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-7 sm:p-8 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden"
         >
-          <!-- Soft Moving Specular Highlight on Hover -->
-          <div
-            class="absolute inset-0 bg-linear-to-br from-white/60 via-transparent to-purple-100/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-            aria-hidden="true"
-          />
-
           <div class="relative z-10 space-y-5">
             <!-- Icon & Directional Arrow Header -->
             <div class="flex items-start justify-between">
@@ -115,7 +106,7 @@ const getAccentClasses = (color: string) => {
               </div>
 
               <div
-                class="w-9 h-9 rounded-full bg-white/80 border border-slate-100 flex items-center justify-center text-ink-secondary group-hover:text-purple-600 group-hover:border-purple-200 transition-all"
+                class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200/80 flex items-center justify-center text-slate-500 group-hover:text-slate-900 group-hover:bg-slate-100 transition-all"
               >
                 <ArrowUpRight class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
@@ -123,10 +114,10 @@ const getAccentClasses = (color: string) => {
 
             <!-- Title & Description -->
             <div>
-              <h3 class="text-xl font-bold text-ink-primary tracking-tight group-hover:text-purple-900 transition-colors">
+              <h3 class="text-xl font-bold text-slate-900 tracking-tight transition-colors">
                 {{ service.title }}
               </h3>
-              <p class="text-sm text-ink-secondary leading-relaxed mt-2">
+              <p class="text-sm text-slate-600 leading-relaxed mt-2">
                 {{ service.description }}
               </p>
             </div>
@@ -136,9 +127,9 @@ const getAccentClasses = (color: string) => {
               <div
                 v-for="(item, idx) in service.items"
                 :key="idx"
-                class="flex items-center gap-2.5 text-xs sm:text-sm text-ink-primary/80"
+                class="flex items-center gap-2.5 text-xs sm:text-sm text-slate-700"
               >
-                <CheckCircle2 class="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                <CheckCircle2 class="w-3.5 h-3.5 text-slate-900 shrink-0" />
                 <span>{{ item }}</span>
               </div>
             </div>

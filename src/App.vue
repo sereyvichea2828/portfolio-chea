@@ -127,7 +127,7 @@ const handleNavigate = (sectionId: string): void => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-pearl-bg text-ink-primary flex flex-col relative selection:bg-purple-200 selection:text-purple-900">
+  <div class="min-h-screen bg-pearl-bg text-ink-primary flex flex-col relative selection:bg-slate-900 selection:text-white">
     <!-- Luminous Pearl Glass Interactive Liquid Waves Background -->
     <LiquidBackground />
 
@@ -163,7 +163,7 @@ const handleNavigate = (sectionId: string): void => {
 
     <!-- Section Divider: Content to Footer -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+      <div class="w-full h-px bg-linear-to-r from-transparent via-slate-200/80 to-transparent" />
     </div>
 
     <!-- Application Footer -->

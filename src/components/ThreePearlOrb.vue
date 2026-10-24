@@ -77,38 +77,38 @@ const initThree = (): void => {
   // Outer Pearl Glass Physical Sphere with iridescent lavender & cyan refraction
   const geometry = new SphereGeometry(1.4, 64, 64)
   const material = new MeshPhysicalMaterial({
-    color: new Color(0xf3e8ff), // Luminous pale lavender pearl
-    emissive: new Color(0x8b5cf6), // Subtle violet core radiance
-    emissiveIntensity: 0.12,
-    roughness: 0.06,
-    metalness: 0.08,
-    transmission: 0.82,
-    ior: 1.5,
-    thickness: 1.4,
-    attenuationColor: new Color(0xa855f7),
+    color: new Color(0xffffff), // Pure crystalline pearl white
+    emissive: new Color(0x0f172a), // Subtle obsidian core depth
+    emissiveIntensity: 0.06,
+    roughness: 0.05,
+    metalness: 0.06,
+    transmission: 0.88,
+    ior: 1.48,
+    thickness: 1.2,
+    attenuationColor: new Color(0xf1f5f9),
     attenuationDistance: 1.5,
     reflectivity: 0.95,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.04,
-    sheen: 0.8,
-    sheenColor: new Color(0x38bdf8),
-    sheenRoughness: 0.15,
-    iridescence: 0.8,
-    iridescenceIOR: 1.5,
+    clearcoatRoughness: 0.03,
+    sheen: 0.35,
+    sheenColor: new Color(0x94a3b8), // Platinum reflection
+    sheenRoughness: 0.12,
+    iridescence: 0.45,
+    iridescenceIOR: 1.45,
     transparent: true,
-    opacity: 0.85,
+    opacity: 0.88,
   })
 
   mesh = new Mesh(geometry, material)
 
-  // Inner Chromatic Core Sphere to give subtle internal color refraction
+  // Inner Refractive Core Sphere (Deep obsidian slate)
   const innerGeometry = new SphereGeometry(0.70, 32, 32)
   const innerMaterial = new MeshStandardMaterial({
-    color: new Color(0x818cf8),
-    emissive: new Color(0x6366f1),
-    emissiveIntensity: 0.35,
-    roughness: 0.25,
-    metalness: 0.2,
+    color: new Color(0x1e293b),
+    emissive: new Color(0x334155),
+    emissiveIntensity: 0.25,
+    roughness: 0.20,
+    metalness: 0.25,
   })
   innerMesh = new Mesh(innerGeometry, innerMaterial)
   mesh.add(innerMesh)
@@ -116,26 +116,26 @@ const initThree = (): void => {
   scene.add(mesh)
 
   // Soft Ambient & Directional Lighting
-  const ambientLight = new AmbientLight(0xffffff, 1.4)
+  const ambientLight = new AmbientLight(0xffffff, 1.5)
   scene.add(ambientLight)
 
-  // Vibrant lavender primary key studio light
-  const lavenderLight = new DirectionalLight(0x9b87f5, 6.0)
-  lavenderLight.position.set(-3, 4, 3)
-  scene.add(lavenderLight)
+  // Crisp neutral primary studio light
+  const keyLight = new DirectionalLight(0xffffff, 4.5)
+  keyLight.position.set(-3, 4, 3)
+  scene.add(keyLight)
 
-  // Electric cyan/aqua rim light
-  const aquaLight = new DirectionalLight(0x06b6d4, 5.5)
-  aquaLight.position.set(3.5, -2, -2)
-  scene.add(aquaLight)
+  // Cool slate rim light
+  const rimLight = new DirectionalLight(0x94a3b8, 3.8)
+  rimLight.position.set(3.5, -2, -2)
+  scene.add(rimLight)
 
-  // Top periwinkle accent light
-  const fillLight = new DirectionalLight(0x6366f1, 4.0)
+  // Top platinum fill light
+  const fillLight = new DirectionalLight(0xe2e8f0, 3.0)
   fillLight.position.set(1, 4, 2)
   scene.add(fillLight)
 
-  // Inside radiant orchid point light
-  pointLight = new PointLight(0xe879f9, 3.0, 6)
+  // Soft inside accent point light
+  pointLight = new PointLight(0xffffff, 1.8, 5)
   pointLight.position.set(0, 0, 1)
   scene.add(pointLight)
 }

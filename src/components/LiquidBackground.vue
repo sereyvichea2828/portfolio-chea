@@ -119,50 +119,44 @@ void main() {
   float hU = calculateOceanSwell(displacedUv + vec2(0.0, eps), u_time);
   vec3 normal = normalize(vec3(-(hR - hL), -(hU - hD), 0.32));
 
-  // Domain Palette for Pearl Glass Aesthetic
-  vec3 pearlBase = vec3(0.969, 0.969, 0.984);       // #F7F7FB - Pearl Porcelain
-  vec3 pearlWhite = vec3(1.0, 1.0, 1.0);             // #FFFFFF - Cool White
-  vec3 paleLavender = vec3(0.933, 0.922, 0.984);     // #EDEBFA - Pale Lavender
-  vec3 mistBlue = vec3(0.914, 0.941, 0.988);         // #E9F0FC - Mist Blue
-  vec3 lavenderAccent = vec3(0.608, 0.529, 0.961);   // #9B87F5 - Lavender Accent
-  vec3 periwinkleAccent = vec3(0.475, 0.600, 0.980); // #7999FA - Periwinkle Accent
-  vec3 aquaHighlight = vec3(0.549, 0.878, 0.906);    // #8CE0E7 - Aqua Highlight
+  // Domain Palette for Calm Architectural Porcelain Aesthetic (Non-AI)
+  vec3 pearlBase = vec3(0.976, 0.980, 0.988);       // #F8FAFC - Pure Slate Porcelain
+  vec3 pearlWhite = vec3(1.0, 1.0, 1.0);             // #FFFFFF - Crisp Light
+  vec3 softSlate = vec3(0.945, 0.953, 0.965);        // #F1F5F9 - Soft Slate
+  vec3 mistNeutral = vec3(0.910, 0.925, 0.945);      // #E2E8F0 - Neutral Mist
+  vec3 slateAccent = vec3(0.580, 0.640, 0.720);      // #94A3B8 - Refined Slate Accent
 
   // Depth gradient across porcelain liquid surface
   float depth = smoothstep(-1.2, 1.2, elevation);
-  vec3 surfaceBase = mix(pearlBase, paleLavender, depth * 0.70);
-  surfaceBase = mix(surfaceBase, mistBlue, smoothstep(-0.2, 0.9, elevation) * 0.45);
+  vec3 surfaceBase = mix(pearlBase, softSlate, depth * 0.75);
+  surfaceBase = mix(surfaceBase, mistNeutral, smoothstep(-0.2, 0.9, elevation) * 0.35);
 
   // Directional studio lighting across surface ridges
   vec3 lightDir = normalize(vec3(0.40, 0.75, 0.50));
   float diffuse = max(dot(normal, lightDir), 0.0);
-  float specular = pow(diffuse, 24.0);
+  float specular = pow(diffuse, 28.0);
 
   // Crystalline specular highlights along wave crests
-  vec3 waveSpecular = pearlWhite * specular * 0.45;
+  vec3 waveSpecular = pearlWhite * specular * 0.40;
 
-  // Atmospheric lavender wash
-  float lavenderField = smoothstep(1.3, -0.6, uv.x + uv.y * 0.65);
-  vec3 lavenderSheen = lavenderAccent * (diffuse * 0.10 + specular * 0.18) * lavenderField;
+  // Subtle architectural sheen
+  float sheenField = smoothstep(1.3, -0.6, uv.x + uv.y * 0.65);
+  vec3 surfaceSheen = slateAccent * (diffuse * 0.04 + specular * 0.08) * sheenField;
 
-  // Aqua oceanic reflections along wave crests
-  float aquaField = smoothstep(-1.0, 0.8, uv.x - uv.y * 0.45);
-  vec3 aquaSheen = aquaHighlight * (diffuse * 0.12 + specular * 0.20) * aquaField;
-
-  // Mouse fluid ripple aura
-  float pointerGlow = exp(-distToMouse * 3.8);
-  vec3 pointerWaves = mix(lavenderAccent, aquaHighlight, 0.5) * pointerGlow * (0.16 + clamp(u_speed * 0.08, 0.0, 0.20));
+  // Mouse fluid ripple aura (clean neutral water ripples)
+  float pointerGlow = exp(-distToMouse * 4.0);
+  vec3 pointerWaves = pearlWhite * pointerGlow * (0.12 + clamp(u_speed * 0.06, 0.0, 0.16));
 
   // Trailing wake highlight
-  float wakeGlow = exp(-distToWake * 4.6);
-  vec3 wakeWaves = periwinkleAccent * wakeGlow * clamp(u_speed * 0.07, 0.0, 0.15);
+  float wakeGlow = exp(-distToWake * 4.8);
+  vec3 wakeWaves = slateAccent * wakeGlow * clamp(u_speed * 0.04, 0.0, 0.10);
 
   // Concentric expanding wave rings
-  float rippleAccent = abs(totalRipple) * 0.60;
-  vec3 rippleWaves = mix(lavenderAccent, periwinkleAccent, 0.5) * rippleAccent;
+  float rippleAccent = abs(totalRipple) * 0.40;
+  vec3 rippleWaves = pearlWhite * rippleAccent * 0.5;
 
-  // Composite final illuminated pearl liquid surface
-  vec3 finalColor = surfaceBase + waveSpecular + lavenderSheen + aquaSheen + pointerWaves + wakeWaves + rippleWaves;
+  // Composite final illuminated calm porcelain liquid surface
+  vec3 finalColor = surfaceBase + waveSpecular + surfaceSheen + pointerWaves + wakeWaves + rippleWaves;
 
   gl_FragColor = vec4(finalColor, 1.0);
 }

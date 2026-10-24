@@ -12,7 +12,7 @@ import { GraduationCap, MapPin, CheckCircle2 } from 'lucide-vue-next';
     >
       <div class="flex items-center gap-2 min-w-0">
         <div
-          class="w-6 h-6 rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center shrink-0"
+          class="w-6 h-6 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center shrink-0"
         >
           <GraduationCap class="w-3.5 h-3.5" />
         </div>
@@ -50,14 +50,14 @@ import { GraduationCap, MapPin, CheckCircle2 } from 'lucide-vue-next';
         <div class="my-auto min-w-0 py-1">
           <div class="flex items-baseline gap-1">
             <span class="text-xl font-black text-white tracking-tight leading-none">42</span>
-            <span class="text-xs font-bold text-purple-400">/ 44</span>
+            <span class="text-xs font-bold text-indigo-400">/ 44</span>
             <span class="text-xs text-slate-400 font-medium ml-auto">Present</span>
           </div>
 
           <!-- Progress Bar -->
           <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden mt-1.5">
             <div
-              class="h-full bg-linear-to-r from-purple-500 to-emerald-400 rounded-full"
+              class="h-full bg-linear-to-r from-indigo-500 to-emerald-400 rounded-full"
               style="width: 95.5%"
             />
           </div>
@@ -67,7 +67,7 @@ import { GraduationCap, MapPin, CheckCircle2 } from 'lucide-vue-next';
           class="flex items-center justify-between text-xs pt-1.5 border-t border-slate-800/60 min-w-0 gap-1"
         >
           <div class="flex items-center gap-1 min-w-0">
-            <MapPin class="w-3.5 h-3.5 text-purple-400 shrink-0" />
+            <MapPin class="w-3.5 h-3.5 text-indigo-400 shrink-0" />
             <span class="text-slate-300 font-medium">Geofence</span>
           </div>
           <span class="font-mono text-cyan-400 font-semibold shrink-0">±50m GPS</span>
@@ -83,7 +83,7 @@ import { GraduationCap, MapPin, CheckCircle2 } from 'lucide-vue-next';
             QR TOKEN
           </span>
           <span
-            class="text-xs font-mono font-bold text-purple-300 bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 rounded shrink-0 whitespace-nowrap"
+            class="text-xs font-mono font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.5 rounded shrink-0 whitespace-nowrap"
           >
             15s
           </span>

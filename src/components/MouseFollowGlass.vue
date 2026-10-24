@@ -136,58 +136,55 @@ const initThreeScene = (): void => {
     powerPreference: 'high-performance',
   })
   webglRenderer.setSize(width, height)
-  webglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+  webglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25))
   webglRenderer.toneMapping = ACESFilmicToneMapping
-  webglRenderer.toneMappingExposure = 1.30
+  webglRenderer.toneMappingExposure = 1.15
 
-  // Apply subtle purple pearl drop shadow glow to the canvas
-  webglRenderer.domElement.style.filter =
-    'drop-shadow(0 10px 24px rgba(147, 51, 234, 0.28)) drop-shadow(0 2px 8px rgba(99, 102, 241, 0.20))'
-
+  // Zero-lag rendering: strictly avoid expensive CSS filters on full-screen WebGL canvas
   container.appendChild(webglRenderer.domElement)
   renderer.value = webglRenderer
 
-  // Create composite 3D Liquid Pearl Glass Sculpture
+  // Create compact, exquisite 3D Liquid Crystalline Glass Sculpture
   glassGroup = new Group()
 
-  // Outer Rounded Pearl Glass Sphere (matches color in photo & navfooter pearl gradient)
-  const outerGeometry = new SphereGeometry(0.50, 64, 64)
+  // Outer Compact Architectural Glass Sphere (scaled down from 0.50 to 0.14)
+  const outerGeometry = new SphereGeometry(0.14, 32, 32)
   const outerMaterial = new MeshPhysicalMaterial({
-    color: new Color(0xf3e8ff), // Pale lavender pearl base
-    emissive: new Color(0x9333ea), // Rich violet-purple core radiance matching photo orb
-    emissiveIntensity: 0.24,
-    roughness: 0.06,
-    metalness: 0.08,
-    transmission: 0.70, // Rich pearl glass body with internal refraction
-    ior: 1.50,
-    thickness: 1.4,
-    attenuationColor: new Color(0xa855f7), // Violet absorption
-    attenuationDistance: 1.4,
-    reflectivity: 0.96,
+    color: new Color(0xffffff), // Pure crystal clarity
+    emissive: new Color(0x0f172a), // Subtle deep obsidian depth
+    emissiveIntensity: 0.08,
+    roughness: 0.04,
+    metalness: 0.04,
+    transmission: 0.90, // Pristine optical transmission
+    ior: 1.48,
+    thickness: 0.6,
+    attenuationColor: new Color(0xf1f5f9),
+    attenuationDistance: 1.2,
+    reflectivity: 0.95,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.03,
-    sheen: 0.85,
-    sheenColor: new Color(0x38bdf8), // Electric cyan rim reflection
-    sheenRoughness: 0.14,
-    iridescence: 0.82,
-    iridescenceIOR: 1.50,
+    clearcoatRoughness: 0.02,
+    sheen: 0.25,
+    sheenColor: new Color(0x94a3b8), // Subtle architectural platinum sheen
+    sheenRoughness: 0.10,
+    iridescence: 0.35,
+    iridescenceIOR: 1.45,
     transparent: true,
-    opacity: 0.90,
+    opacity: 0.85,
   })
 
   outerMesh = new Mesh(outerGeometry, outerMaterial)
   glassGroup.add(outerMesh)
 
-  // Inner Rounded Chromatic Core (Smooth violet/indigo specular core)
-  const innerGeometry = new SphereGeometry(0.26, 32, 32)
+  // Inner Compact Refractive Core (0.07 radius)
+  const innerGeometry = new SphereGeometry(0.07, 16, 16)
   const innerMaterial = new MeshStandardMaterial({
-    color: new Color(0x818cf8),
-    emissive: new Color(0x7c3aed),
-    emissiveIntensity: 0.45,
-    roughness: 0.22,
-    metalness: 0.18,
+    color: new Color(0x334155),
+    emissive: new Color(0x1e293b),
+    emissiveIntensity: 0.25,
+    roughness: 0.18,
+    metalness: 0.22,
     transparent: true,
-    opacity: 0.65,
+    opacity: 0.60,
   })
 
   innerMesh = new Mesh(innerGeometry, innerMaterial)
@@ -195,28 +192,28 @@ const initThreeScene = (): void => {
 
   scene.add(glassGroup)
 
-  // Atmospheric Studio Lighting matching ThreePearlOrb & Photo aesthetic
-  const ambientLight = new AmbientLight(0xffffff, 1.3)
+  // Neutral studio lighting for crisp, professional clarity
+  const ambientLight = new AmbientLight(0xffffff, 1.4)
   scene.add(ambientLight)
 
-  // Key light: Vibrant lavender
-  const keyLight = new DirectionalLight(0x9b87f5, 5.0)
+  // Key light: Crisp neutral light
+  const keyLight = new DirectionalLight(0xffffff, 4.2)
   keyLight.position.set(-3.5, 4.5, 3.5)
   scene.add(keyLight)
 
-  // Rim light: Soft electric aqua/cyan
-  const rimLight = new DirectionalLight(0x06b6d4, 4.5)
+  // Rim light: Cool slate edge
+  const rimLight = new DirectionalLight(0x94a3b8, 3.5)
   rimLight.position.set(3.5, -2.5, -2)
   scene.add(rimLight)
 
-  // Top highlight: Cool periwinkle / purple
-  const topLight = new DirectionalLight(0x818cf8, 3.2)
+  // Top highlight
+  const topLight = new DirectionalLight(0xe2e8f0, 2.5)
   topLight.position.set(1, 4, 2.5)
   scene.add(topLight)
 
-  // Moving radiant orchid point light that tracks the sculpture
-  movingPointLight = new PointLight(0xe879f9, 2.6, 7)
-  movingPointLight.position.set(currentX + 0.8, currentY + 1.0, 2.0)
+  // Moving soft point light that tracks the sculpture
+  movingPointLight = new PointLight(0xffffff, 1.6, 5)
+  movingPointLight.position.set(currentX + 0.4, currentY + 0.5, 1.5)
   scene.add(movingPointLight)
 }
 
@@ -231,8 +228,8 @@ const renderLoop = (): void => {
   lastTime = now
 
   if (!isReducedMotion.value) {
-    // 1. Fast & Fluid Damped Position Interpolation toward Cursor (Fast follow)
-    const posDecay = 1.0 - Math.exp(-11.5 * dt)
+    // 1. High-Performance Snappy Position Interpolation (Zero Lag: decay factor 28.0)
+    const posDecay = 1.0 - Math.exp(-28.0 * dt)
     currentX += (targetWorldX - currentX) * posDecay
     currentY += (targetWorldY - currentY) * posDecay
 
@@ -242,23 +239,23 @@ const renderLoop = (): void => {
     prevTargetX = targetWorldX
     prevTargetY = targetWorldY
 
-    const velFilter = 1.0 - Math.exp(-12.0 * dt)
+    const velFilter = 1.0 - Math.exp(-24.0 * dt)
     velocityX += (instVelX - velocityX) * velFilter
     velocityY += (instVelY - velocityY) * velFilter
 
-    // Dynamic rotational tilt based on fast movement velocity
-    const maxTilt = 0.65
-    const targetTiltX = Math.max(-maxTilt, Math.min(maxTilt, -velocityY * 0.040))
-    const targetTiltY = Math.max(-maxTilt, Math.min(maxTilt, velocityX * 0.040))
+    // Dynamic rotational tilt based on movement velocity
+    const maxTilt = 0.55
+    const targetTiltX = Math.max(-maxTilt, Math.min(maxTilt, -velocityY * 0.030))
+    const targetTiltY = Math.max(-maxTilt, Math.min(maxTilt, velocityX * 0.030))
 
-    const tiltDecay = 1.0 - Math.exp(-10.0 * dt)
+    const tiltDecay = 1.0 - Math.exp(-20.0 * dt)
     tiltX += (targetTiltX - tiltX) * tiltDecay
     tiltY += (targetTiltY - tiltY) * tiltDecay
 
-    // 3. Weightless Floating Breathing Oscillation & Organic Liquid Wobble
+    // 3. Subtle Floating Breathing
     const floatTime = now * 0.002
-    const floatOffsetX = Math.cos(floatTime * 0.8) * 0.05
-    const floatOffsetY = Math.sin(floatTime) * 0.08
+    const floatOffsetX = Math.cos(floatTime * 0.8) * 0.02
+    const floatOffsetY = Math.sin(floatTime) * 0.03
 
     glassGroup.position.set(currentX + floatOffsetX, currentY + floatOffsetY, 0)
 

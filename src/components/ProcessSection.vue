@@ -44,42 +44,39 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="process-header max-w-3xl mb-16">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="w-8 h-0.5 bg-linear-to-r from-purple-400 to-indigo-400 rounded-full" />
-          <p class="text-xs font-bold uppercase tracking-widest text-purple-600">
-            WORKFLOW & METHODOLOGY
-          </p>
-        </div>
+      <div class="process-header max-w-3xl mb-14 sm:mb-16 space-y-2">
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-500">
+          WORKFLOW & METHODOLOGY
+        </p>
         <h2
-          class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-wider text-ink-primary leading-tight"
+          class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight"
         >
           My Development Process
         </h2>
-        <p class="mt-4 text-base sm:text-lg text-ink-secondary">
+        <p class="text-base sm:text-lg text-slate-600">
           A disciplined five-step progression engineered to eliminate ambiguity and deliver
           resilient software.
         </p>
       </div>
 
       <!-- Process Steps Container -->
-      <!-- Desktop: 5 horizontal connected cards using pure CSS hover to eliminate stuck states -->
+      <!-- Desktop: 5 horizontal connected cards -->
       <div class="hidden lg:grid grid-cols-5 gap-4 relative">
         <div
           v-for="step in PROCESS_STEPS"
           :key="step.number"
           tabindex="0"
-          class="process-card relative z-10 group bg-white/85 backdrop-blur-xl border border-white/80 rounded-3xl p-5 shadow-sm shadow-purple-950/5 hover:border-purple-300 hover:ring-2 hover:ring-purple-100 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1 focus-visible:border-purple-300 focus-visible:ring-2 focus-visible:ring-purple-100 focus-visible:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-default outline-none"
+          class="process-card relative z-10 group bg-white/80 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-5 shadow-xs hover:border-slate-400 hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between cursor-default outline-none"
         >
           <div class="space-y-4">
             <!-- Step Number Pill -->
             <div class="flex items-center justify-between">
               <span
-                class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center font-mono shadow-xs"
+                class="w-9 h-9 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center font-mono shadow-xs"
               >
                 {{ step.number }}
               </span>
-              <span class="text-xs text-ink-secondary uppercase tracking-wider font-semibold">
+              <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold">
                 Phase
               </span>
             </div>
@@ -87,11 +84,11 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             <!-- Title & Summary -->
             <div>
               <h3
-                class="text-base font-bold text-ink-primary tracking-tight group-hover:text-purple-700 transition-colors"
+                class="text-base font-bold text-slate-900 tracking-tight transition-colors"
               >
                 {{ step.title }}
               </h3>
-              <p class="text-xs text-ink-secondary mt-1.5 leading-relaxed">
+              <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
                 {{ step.summary }}
               </p>
             </div>
@@ -102,9 +99,9 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             <div
               v-for="(deliv, idx) in step.deliverables"
               :key="idx"
-              class="flex items-center gap-1.5 text-xs text-ink-primary/75"
+              class="flex items-center gap-1.5 text-xs text-slate-600"
             >
-              <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />
+              <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
               <span class="truncate">{{ deliv }}</span>
             </div>
           </div>
@@ -112,33 +109,33 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
       </div>
 
       <!-- Mobile & Tablet: Vertical Timeline -->
-      <div class="lg:hidden space-y-6 relative pl-6 border-l-2 border-purple-200">
+      <div class="lg:hidden space-y-6 relative pl-6 border-l-2 border-slate-200">
         <div
           v-for="step in PROCESS_STEPS"
           :key="step.number"
-          class="relative bg-white/75 backdrop-blur-xl border border-white/80 rounded-3xl p-6 shadow-sm shadow-purple-950/5 space-y-3"
+          class="relative bg-white/80 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-3"
         >
           <!-- Timeline Node -->
           <div
-            class="absolute -left-9 top-6 w-6 h-6 rounded-full bg-white border-4 border-purple-500 shadow-xs flex items-center justify-center"
+            class="absolute -left-9 top-6 w-6 h-6 rounded-full bg-white border-4 border-slate-900 shadow-xs flex items-center justify-center"
           />
 
           <div class="flex items-center justify-between">
             <span
-              class="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-purple-100 text-purple-700"
+              class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-slate-900 text-white"
             >
               STEP {{ step.number }}
             </span>
-            <span class="text-xs text-ink-secondary font-medium uppercase">
+            <span class="text-xs text-slate-400 font-medium uppercase">
               Phase {{ step.number }}
             </span>
           </div>
 
-          <h3 class="text-lg font-bold text-ink-primary">
+          <h3 class="text-lg font-bold text-slate-900">
             {{ step.title }}
           </h3>
 
-          <p class="text-sm text-ink-secondary leading-relaxed">
+          <p class="text-sm text-slate-600 leading-relaxed">
             {{ step.description }}
           </p>
 
@@ -146,7 +143,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             <span
               v-for="(deliv, idx) in step.deliverables"
               :key="idx"
-              class="px-2.5 py-1 rounded-full text-xs bg-purple-50 text-purple-700"
+              class="px-2.5 py-1 rounded-md text-xs bg-slate-100 text-slate-700"
             >
               {{ deliv }}
             </span>

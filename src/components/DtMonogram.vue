@@ -14,18 +14,13 @@ const props = withDefaults(defineProps<Props>(), {
   <div
     :class="[
       props.sizeClass,
-      'relative rounded-xl bg-white/95 border border-purple-100/90 shadow-xs shadow-purple-950/5 flex items-center justify-center shrink-0 transition-all duration-300 ease-out group-hover:border-purple-300/70 group-hover:shadow-md group-hover:shadow-purple-500/10 group-hover:scale-102',
+      'relative rounded-xl bg-slate-900 border border-slate-800 shadow-xs flex items-center justify-center shrink-0 transition-all duration-300 ease-out group-hover:bg-slate-800 group-hover:shadow-md group-hover:scale-105',
     ]"
     aria-hidden="true"
   >
-    <!-- Soft lavender ambient glow backdrop -->
-    <div
-      class="absolute inset-0 rounded-xl bg-linear-to-br from-purple-100/40 via-indigo-50/20 to-transparent pointer-events-none"
-    />
-
-    <!-- Geometric DT Monogram SVG (Dark navy-black) -->
+    <!-- Geometric DT Monogram SVG (White) -->
     <svg
-      :class="[props.iconClass, 'relative z-10 text-slate-900 transition-colors duration-200']"
+      :class="[props.iconClass, 'relative z-10 text-white transition-colors duration-200']"
       viewBox="0 0 80 60"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -11,7 +11,6 @@ const ServicesSection = defineAsyncComponent(() => import('@/components/Services
 const SkillsSection = defineAsyncComponent(() => import('@/components/SkillsSection.vue'));
 const ProjectsSection = defineAsyncComponent(() => import('@/components/ProjectsSection.vue'));
 const ProcessSection = defineAsyncComponent(() => import('@/components/ProcessSection.vue'));
-const TestimonialsSection = defineAsyncComponent(() => import('@/components/TestimonialsSection.vue'));
 const ContactSection = defineAsyncComponent(() => import('@/components/ContactSection.vue'));
 const ResumeModal = defineAsyncComponent(() => import('@/components/ResumeModal.vue'));
 
@@ -107,7 +106,7 @@ const closeResumeModal = (): void => {
 
     <!-- Section Divider: Hero to About -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+      <div class="w-full h-px bg-linear-to-r from-transparent via-slate-200/80 to-transparent" />
     </div>
 
     <!-- About Section -->
@@ -115,7 +114,7 @@ const closeResumeModal = (): void => {
 
     <!-- Section Divider: About to Services -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+      <div class="w-full h-px bg-linear-to-r from-transparent via-slate-200/80 to-transparent" />
     </div>
 
     <!-- Services Section -->
@@ -123,7 +122,7 @@ const closeResumeModal = (): void => {
 
     <!-- Section Divider: Services to Skills -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+      <div class="w-full h-px bg-linear-to-r from-transparent via-slate-200/80 to-transparent" />
     </div>
 
     <!-- Skills & Technology Wall -->
@@ -131,7 +130,7 @@ const closeResumeModal = (): void => {
 
     <!-- Section Divider: Skills to Projects -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+      <div class="w-full h-px bg-linear-to-r from-transparent via-slate-200/80 to-transparent" />
     </div>
 
     <!-- Selected Projects Showcase -->
@@ -139,23 +138,15 @@ const closeResumeModal = (): void => {
 
     <!-- Section Divider: Projects to Process -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+      <div class="w-full h-px bg-linear-to-r from-transparent via-slate-200/80 to-transparent" />
     </div>
 
     <!-- My Development Process -->
     <ProcessSection />
 
-    <!-- Section Divider: Process to Testimonials -->
+    <!-- Section Divider: Process to Contact -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
-    </div>
-
-    <!-- Testimonials Section -->
-    <TestimonialsSection />
-
-    <!-- Section Divider: Testimonials to Contact -->
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
-      <div class="w-full h-px bg-linear-to-r from-transparent via-purple-200/60 to-transparent" />
+      <div class="w-full h-px bg-linear-to-r from-transparent via-slate-200/80 to-transparent" />
     </div>
 
     <!-- Contact Section -->

@@ -59,67 +59,64 @@ const handleExploreClick = (): void => {
   >
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
-      <div class="about-header max-w-3xl mb-16">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="w-8 h-0.5 bg-linear-to-r from-purple-400 to-indigo-400 rounded-full" />
-          <p class="text-xs font-bold uppercase tracking-widest text-purple-600">
-            {{ ABOUT_CONTENT.sectionTag }}
-          </p>
-        </div>
+      <div class="about-header max-w-3xl mb-14 sm:mb-16 space-y-2">
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-500">
+          {{ ABOUT_CONTENT.sectionTag }}
+        </p>
         <h2
-          class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-wider text-ink-primary leading-tight"
+          class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight"
         >
           {{ ABOUT_CONTENT.headline }}
         </h2>
       </div>
 
       <!-- Main Narrative & Principles Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 items-stretch">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-14 sm:mb-16 items-stretch">
         <!-- Left: Narrative & Primary Statement -->
         <div class="narrative-card lg:col-span-6 flex flex-col">
           <div
-            class="h-full flex flex-col justify-between bg-white/70 backdrop-blur-xl border border-white/80 rounded-3xl p-6 sm:p-8 shadow-md shadow-purple-950/5 space-y-6"
+            class="h-full flex flex-col justify-between bg-white/80 backdrop-blur-xl border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6"
           >
             <div class="space-y-4 sm:space-y-5">
-              <p class="text-base sm:text-lg text-ink-primary leading-relaxed font-normal">
+              <p class="text-base sm:text-lg text-slate-900 leading-relaxed font-normal">
                 {{ ABOUT_CONTENT.leadBio }}
               </p>
-              <p class="text-sm sm:text-base text-ink-secondary leading-relaxed">
+              <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
                 {{ ABOUT_CONTENT.detailedBio }}
               </p>
             </div>
             <div class="pt-2">
               <button
                 type="button"
-                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100/80 font-semibold text-xs tracking-wide transition-all group focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 cursor-pointer min-h-11"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-semibold text-xs tracking-wide transition-all group focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 cursor-pointer min-h-11 shadow-xs"
                 @click="handleExploreClick"
               >
-                <span>EXPLORE MY SERVICES</span>
+                <span>EXPLORE SERVICES</span>
                 <ArrowRight class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Right: Core Principles in Pearl Glass Cards -->
+        <!-- Right: Core Principles in Refined Cards -->
         <div class="lg:col-span-6 flex flex-col gap-4 h-full">
           <div
             v-for="principle in ABOUT_CONTENT.principles"
             :key="principle.id"
-            class="principle-card flex-1 flex flex-col justify-center bg-white/70 backdrop-blur-xl border border-white/80 rounded-2xl p-5 sm:p-6 shadow-md shadow-purple-950/5 hover:shadow-lg transition-all duration-300"
+            class="principle-card flex-1 flex flex-col justify-center bg-white/80 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-300"
           >
             <div class="flex items-start gap-4">
-              <!-- Pastel Domain Icon Container -->
+              <!-- Domain Icon Container -->
               <div
-                class="w-10 h-10 rounded-xl bg-purple-100/80 text-purple-600 flex items-center justify-center shrink-0 shadow-xs"
+                class="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/70 flex items-center justify-center shrink-0 shadow-xs"
               >
                 <component :is="getPrincipleIcon(principle.iconName)" class="w-5 h-5" />
               </div>
               <div class="space-y-1">
-                <h3 class="text-base font-bold text-ink-primary tracking-tight">
+                <h3 class="text-base font-bold text-slate-900 tracking-tight">
                   {{ principle.title }}
                 </h3>
-                <p class="text-sm text-ink-secondary leading-relaxed">
+                <p class="text-sm text-slate-600 leading-relaxed">
                   {{ principle.description }}
                 </p>
               </div>
@@ -133,17 +130,17 @@ const handleExploreClick = (): void => {
         <div
           v-for="stat in ABOUT_CONTENT.stats"
           :key="stat.label"
-          class="stat-card bg-white/70 backdrop-blur-xl border border-white/80 rounded-2xl p-6 sm:p-7 shadow-md shadow-purple-950/5 text-center flex flex-col justify-center hover:shadow-lg transition-shadow"
+          class="stat-card bg-white/80 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-6 sm:p-7 shadow-xs text-center flex flex-col justify-center hover:shadow-md transition-shadow"
         >
           <span
-            class="text-4xl sm:text-5xl font-extrabold tracking-tight bg-linear-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-1 font-heading"
+            class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-1 font-heading"
           >
             {{ stat.value }}
           </span>
-          <span class="text-sm sm:text-base font-bold text-ink-primary mb-1">
+          <span class="text-sm sm:text-base font-bold text-slate-900 mb-1">
             {{ stat.label }}
           </span>
-          <span class="text-xs text-ink-secondary">
+          <span class="text-xs text-slate-500">
             {{ stat.detail }}
           </span>
         </div>

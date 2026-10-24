@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { gsap } from 'gsap';
 import { NAVIGATION_ITEMS } from '@/data/portfolioData';
 import type { NavItem } from '@/types/portfolio';
 import DtMonogram from '@/components/DtMonogram.vue';
@@ -24,7 +25,9 @@ const emit = defineEmits<{
 
 const { isReducedMotion } = useReducedMotion();
 const isMobileMenuOpen = ref<boolean>(false);
+const headerRef = ref<HTMLElement | null>(null);
 const navBarRef = ref<HTMLDivElement | null>(null);
+let gsapCtx: gsap.Context | null = null;
 
 const toggleMobileMenu = (): void => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
@@ -85,10 +88,24 @@ watch(
 onMounted(() => {
   if (typeof window !== 'undefined') {
     window.addEventListener('keydown', handleKeyDown);
+
+    if (!isReducedMotion.value && headerRef.value) {
+      gsapCtx = gsap.context(() => {
+        gsap.fromTo(
+          headerRef.value,
+          { y: -24, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.85, ease: 'power3.out', delay: 0.1 },
+        );
+      }, headerRef.value);
+    }
   }
 });
 
 onUnmounted(() => {
+  if (gsapCtx) {
+    gsapCtx.revert();
+    gsapCtx = null;
+  }
   if (typeof window !== 'undefined') {
     window.removeEventListener('keydown', handleKeyDown);
     document.body.classList.remove('overflow-hidden');
@@ -98,34 +115,43 @@ onUnmounted(() => {
 
 <template>
   <header
-    class="fixed top-0 left-0 right-0 z-40 transition-[transform,opacity] duration-500 ease-in-out py-3.5 pointer-events-none"
+    ref="headerRef"
+    class="fixed top-0 left-0 right-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none"
     :class="[
       props.isFooterVisible || props.isHidden
         ? '-translate-y-full opacity-0 pointer-events-none'
         : 'transform-none opacity-100',
+      props.isScrolled ? 'pt-0' : 'pt-3.5 sm:pt-4',
     ]"
     :aria-hidden="props.isFooterVisible || props.isHidden"
   >
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div
+      class="w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+      :class="[
+        props.isScrolled
+          ? 'max-w-full px-6 sm:px-8 lg:px-12 mx-0'
+          : 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8',
+      ]"
+    >
       <div
         ref="navBarRef"
-        class="relative w-full rounded-2xl transition-all duration-300 border px-4 sm:px-5 py-2 overflow-hidden shadow-lg shadow-purple-950/5"
+        class="relative w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] border overflow-hidden"
         :class="[
           props.isFooterVisible || props.isHidden ? 'pointer-events-none' : 'pointer-events-auto',
           props.isScrolled
-            ? 'bg-white/85 backdrop-blur-xl border-white/80 shadow-lg shadow-purple-950/5'
-            : 'bg-white/75 backdrop-blur-xl border-white/80 shadow-md shadow-purple-950/5',
+            ? 'rounded-none border-x-0 border-t-0 border-b border-slate-200/80 bg-white/92 backdrop-blur-xl shadow-xs px-0 py-2.5 sm:py-3'
+            : 'rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-xl shadow-xs px-4 sm:px-5 py-2 sm:py-2.5',
         ]"
         @mousemove="handlePointerMove"
         @mouseleave="handlePointerLeave"
       >
-        <!-- Subtle Ambient Specular Light Following Pointer -->
+        <!-- Subtle Non-AI Ambient Specular Light Following Pointer -->
         <div
           class="absolute inset-0 pointer-events-none transition-opacity duration-300 z-0"
           style="
             background: radial-gradient(
-              350px circle at var(--light-x, 50%) var(--light-y, 50%),
-              rgba(168, 85, 247, 0.12),
+              320px circle at var(--light-x, 50%) var(--light-y, 50%),
+              rgba(15, 23, 42, 0.04),
               transparent 70%
             );
             opacity: var(--light-opacity, 0);
@@ -144,14 +170,14 @@ onUnmounted(() => {
             <DtMonogram size-class="w-9 h-9" icon-class="w-5 h-4" />
 
             <!-- Identity Text -->
-            <div class="flex flex-col text-left">
+            <div class="flex flex-col text-left transition-transform duration-200 group-hover:translate-x-0.5">
               <span
-                class="text-xs sm:text-sm font-bold tracking-tight text-slate-900 group-hover:text-purple-700 transition-colors"
+                class="text-xs sm:text-sm font-bold tracking-tight text-slate-900 group-hover:text-slate-950 transition-colors"
               >
                 Try Sereyvichea
               </span>
               <span class="text-xs font-medium text-slate-500 hidden sm:inline">
-                Full-Stack Developer
+                Full-Stack Engineer
               </span>
             </div>
           </a>
@@ -162,17 +188,17 @@ onUnmounted(() => {
               v-for="item in NAVIGATION_ITEMS"
               :key="item.href"
               :href="item.href"
-              class="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 relative border-0 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none flex items-center select-none"
+              class="px-3 py-1.5 text-xs font-medium rounded-xl transition-all duration-200 relative border-0 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none flex items-center select-none"
               :class="[
                 props.activeSection === item.href.replace('#', '')
-                  ? 'text-purple-950 bg-purple-100/90 font-bold shadow-xs'
-                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100/60',
+                  ? 'text-slate-950 bg-slate-100 font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50',
               ]"
               @click.prevent="handleNavClick(item)"
             >
               <span
                 v-if="props.activeSection === item.href.replace('#', '')"
-                class="w-1.5 h-1.5 rounded-full bg-purple-600 inline-block mr-1.5"
+                class="w-1.5 h-1.5 rounded-full bg-slate-900 inline-block mr-1.5"
               />
               <span>{{ item.label }}</span>
             </a>
@@ -182,7 +208,7 @@ onUnmounted(() => {
           <div class="hidden sm:flex items-center gap-3">
             <a
               href="#contact"
-              class="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-xl text-white bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-purple-500/20 border-0 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none active:scale-95 select-none"
+              class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl text-white bg-slate-900 hover:bg-slate-800 transition-all duration-200 shadow-xs hover:shadow-sm border border-slate-800 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none active:scale-95 select-none cursor-pointer"
               @click.prevent="handleNavClick({ label: 'Contact', href: '#contact' })"
             >
               <span>Let's Talk</span>
@@ -194,7 +220,7 @@ onUnmounted(() => {
           <div class="flex md:hidden">
             <button
               type="button"
-              class="w-11 h-11 rounded-xl bg-white/90 border border-white text-ink-primary flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 shadow-xs cursor-pointer"
+              class="w-11 h-11 rounded-xl bg-white/90 border border-slate-200/80 text-slate-900 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 shadow-xs cursor-pointer"
               :aria-expanded="isMobileMenuOpen"
               aria-label="Toggle navigation menu"
               @click="toggleMobileMenu"
@@ -209,32 +235,32 @@ onUnmounted(() => {
       <!-- Mobile Drawer Overlay Menu -->
       <div
         v-if="isMobileMenuOpen"
-        class="md:hidden mt-3 w-full pointer-events-auto bg-white/98 backdrop-blur-2xl border border-white/90 rounded-2xl shadow-2xl p-6 transition-all duration-300"
+        class="md:hidden mt-2 w-full pointer-events-auto bg-white/98 backdrop-blur-2xl border border-slate-200/90 rounded-2xl shadow-xl p-6 transition-all duration-300"
       >
         <nav class="flex flex-col space-y-1">
           <a
             v-for="item in NAVIGATION_ITEMS"
             :key="item.href"
             :href="item.href"
-            class="flex items-center justify-between px-4 py-3 text-sm font-semibold rounded-xl transition-colors min-h-11"
+            class="flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-colors min-h-11"
             :class="[
               props.activeSection === item.href.replace('#', '')
-                ? 'bg-purple-50 text-purple-900 font-bold'
-                : 'text-slate-600 hover:bg-purple-50/50 hover:text-slate-900',
+                ? 'bg-slate-100 text-slate-950 font-semibold'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950',
             ]"
             @click.prevent="handleNavClick(item)"
           >
             <span>{{ item.label }}</span>
             <span
               v-if="props.activeSection === item.href.replace('#', '')"
-              class="w-2 h-2 rounded-full bg-purple-500"
+              class="w-2 h-2 rounded-full bg-slate-900"
             />
           </a>
 
           <div class="pt-4 mt-2 border-t border-slate-100">
             <a
               href="#contact"
-              class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-linear-to-r from-purple-500 to-indigo-600 text-white font-semibold text-sm shadow-md shadow-purple-500/20 min-h-11"
+              class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm shadow-xs min-h-11 cursor-pointer transition-all"
               @click.prevent="handleNavClick({ label: 'Contact', href: '#contact' })"
             >
               <span>Let's Talk</span>

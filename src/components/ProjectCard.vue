@@ -50,7 +50,7 @@ const hasLiveDemo = computed<boolean>(() => {
       <!-- Category Badge: Compact margin -->
       <div class="mb-1.5 flex items-center">
         <span
-          class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-md bg-purple-50 text-purple-700 border border-purple-100/80 uppercase tracking-wider"
+          class="inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-md bg-slate-100 text-slate-800 border border-slate-200/80 uppercase tracking-wider"
         >
           {{ props.project.category }}
         </span>
@@ -58,7 +58,7 @@ const hasLiveDemo = computed<boolean>(() => {
 
       <!-- Project Title -->
       <h3
-        class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-purple-600 transition-colors mb-2 flex items-start"
+        class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug group-hover:text-slate-700 transition-colors mb-2 flex items-start"
       >
         {{ props.project.title }}
       </h3>
@@ -88,7 +88,7 @@ const hasLiveDemo = computed<boolean>(() => {
             :href="props.project.demoUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="h-10 px-3 py-2 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:shadow-purple-600/20 transition-all duration-200 cursor-pointer whitespace-nowrap min-w-0 flex items-center justify-center gap-1.5"
+            class="h-10 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs hover:shadow-sm transition-all duration-200 cursor-pointer whitespace-nowrap min-w-0 flex items-center justify-center gap-1.5"
             @click.stop
           >
             <span class="truncate">Live Demo</span>
@@ -97,7 +97,7 @@ const hasLiveDemo = computed<boolean>(() => {
           <button
             v-else
             type="button"
-            class="h-10 px-3 py-2 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:shadow-purple-600/20 transition-all duration-200 cursor-pointer whitespace-nowrap min-w-0 flex items-center justify-center gap-1.5"
+            class="h-10 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs hover:shadow-sm transition-all duration-200 cursor-pointer whitespace-nowrap min-w-0 flex items-center justify-center gap-1.5"
             @click.stop="emit('select-case-study', props.project)"
           >
             <FileText class="w-3.5 h-3.5 shrink-0" />
@@ -125,8 +125,8 @@ const hasLiveDemo = computed<boolean>(() => {
 <style scoped>
 .project-card {
   box-shadow:
-    0 2px 8px rgba(30, 41, 59, 0.035),
-    0 10px 30px rgba(99, 102, 241, 0.045);
+    0 2px 8px rgba(15, 23, 42, 0.04),
+    0 10px 24px rgba(15, 23, 42, 0.05);
   border-color: rgba(226, 232, 240, 0.85);
   transition:
     box-shadow 250ms ease,
@@ -136,10 +136,8 @@ const hasLiveDemo = computed<boolean>(() => {
 }
 
 .project-card:hover {
-  box-shadow:
-    0 6px 16px rgba(30, 41, 59, 0.055),
-    0 16px 36px rgba(99, 102, 241, 0.075);
-  border-color: rgba(192, 132, 252, 0.7);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  border-color: rgba(148, 163, 184, 0.6);
   transform: translateY(-4px);
 }
 

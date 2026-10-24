@@ -66,20 +66,20 @@ onUnmounted(() => {
       <!-- Header (Fixed at top) -->
       <div class="p-6 sm:p-8 pb-4 border-b border-slate-100 flex items-start justify-between gap-4 shrink-0">
         <div>
-          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700">
+          <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200/80 uppercase tracking-wider">
             {{ props.project.category }}
           </span>
-          <h3 class="text-2xl font-extrabold text-ink-primary mt-2 tracking-tight">
+          <h3 class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">
             {{ props.project.title }}
           </h3>
-          <p class="text-xs sm:text-sm text-ink-secondary mt-0.5">
+          <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
             {{ props.project.tagline }}
           </p>
         </div>
 
         <button
           type="button"
-          class="w-11 h-11 rounded-full bg-slate-100/80 hover:bg-slate-200/80 text-ink-primary flex items-center justify-center border border-slate-200/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 shrink-0 cursor-pointer shadow-xs transition-colors"
+          class="w-11 h-11 rounded-full bg-slate-100/80 hover:bg-slate-200/80 text-slate-900 flex items-center justify-center border border-slate-200/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 shrink-0 cursor-pointer shadow-xs transition-colors"
           aria-label="Close modal"
           @click="handleClose"
         >
@@ -93,13 +93,13 @@ onUnmounted(() => {
         <div class="space-y-4">
           <div>
             <h4
-              class="text-xs font-bold uppercase tracking-wider text-purple-700 mb-1 flex items-center gap-1.5"
+              class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-1 flex items-center gap-1.5"
             >
-              <Cpu class="w-3.5 h-3.5 text-purple-600" />
+              <Cpu class="w-3.5 h-3.5 text-slate-700" />
               The Architectural Challenge
             </h4>
             <p
-              class="text-sm text-ink-primary/90 leading-relaxed bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100"
+              class="text-sm text-slate-800 leading-relaxed bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80"
             >
               {{ props.project.challenge }}
             </p>
@@ -107,13 +107,13 @@ onUnmounted(() => {
 
           <div>
             <h4
-              class="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1 flex items-center gap-1.5"
+              class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-1 flex items-center gap-1.5"
             >
-              <ShieldCheck class="w-3.5 h-3.5 text-indigo-600" />
+              <ShieldCheck class="w-3.5 h-3.5 text-slate-700" />
               Engineered Solution
             </h4>
             <p
-              class="text-sm text-ink-primary/90 leading-relaxed bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100"
+              class="text-sm text-slate-800 leading-relaxed bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80"
             >
               {{ props.project.solution }}
             </p>
@@ -122,31 +122,31 @@ onUnmounted(() => {
 
         <!-- Benchmark Metrics -->
         <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-ink-secondary mb-2">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
             Verified Performance Benchmarks
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div
               v-for="metric in props.project.metrics"
               :key="metric.label"
-              class="p-3.5 rounded-2xl bg-white border border-slate-100 shadow-xs text-center"
+              class="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs text-center"
             >
-              <span class="text-xs text-ink-secondary block">{{ metric.label }}</span>
-              <span class="text-sm sm:text-base font-bold text-purple-700">{{ metric.value }}</span>
+              <span class="text-xs text-slate-500 block">{{ metric.label }}</span>
+              <span class="text-sm sm:text-base font-bold text-slate-900">{{ metric.value }}</span>
             </div>
           </div>
         </div>
 
         <!-- Tech Stack Badges -->
         <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-ink-secondary mb-2">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
             Technology Stack
           </h4>
           <div class="flex flex-wrap gap-2">
             <span
               v-for="tag in props.project.tags"
               :key="tag"
-              class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-ink-primary/90"
+              class="px-3 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200/80"
             >
               {{ tag }}
             </span>
@@ -162,7 +162,7 @@ onUnmounted(() => {
           :href="props.project.githubUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-ink-primary text-xs font-semibold transition-colors min-h-11 shadow-xs"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-200/80 text-xs font-semibold transition-colors min-h-11 shadow-xs"
         >
           <Github class="w-4 h-4" />
           <span>Source Repository</span>
@@ -172,7 +172,7 @@ onUnmounted(() => {
           :href="props.project.demoUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-linear-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white text-xs font-semibold transition-all min-h-11 shadow-sm"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-all min-h-11 shadow-xs cursor-pointer"
         >
           <span>Live Deployment</span>
           <ExternalLink class="w-4 h-4" />

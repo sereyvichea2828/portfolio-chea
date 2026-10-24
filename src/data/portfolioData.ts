@@ -23,11 +23,11 @@ export const NAVIGATION_ITEMS: readonly NavItem[] = [
 export const HERO_CONTENT = {
   eyebrow: 'FULL-STACK SOFTWARE ENGINEER',
   name: 'Try Sereyvichea',
-  title: 'Full-Stack Developer & Architect',
+  title: 'Full-Stack Engineer & Architect',
   supportingStatement:
-    'I build thoughtful digital experiences, powerful web applications, and scalable systems that connect beautiful interfaces with reliable engineering.',
-  primaryCta: 'View My Work',
-  secondaryCta: 'Download Resume',
+    'Engineering high-performance web applications, distributed backend services, and interactive 3D digital experiences with strict architectural rigor.',
+  primaryCta: 'View Selected Work',
+  secondaryCta: 'Curriculum Vitae',
   availabilityText: 'Available for selected opportunities',
   portraitImage: '/developer-portrait.jpg',
   portraitAlt: 'Try Sereyvichea — Full-Stack Developer Portrait',
@@ -358,7 +358,7 @@ export const PROJECTS: readonly Project[] = [
     id: 'ite-a3-ecosystem',
     title: 'ITE A3 Academic Ecosystem',
     tagline: 'Campus operations platform, geofenced QR attendance & duty orchestration',
-    category: 'Education',
+    category: 'Education Platform',
     description:
       'Enterprise-grade academic operations platform featuring anti-proxy geofenced QR attendance, automated duty orchestration, and real-time Google Sheets synchronization.',
     challenge:
@@ -374,54 +374,8 @@ export const PROJECTS: readonly Project[] = [
     featured: true,
     demoUrl: 'https://itea3.vercel.app',
     githubUrl: 'https://github.com/sereyvichea2828/website-pickup-slide',
-    accentColor: 'violet',
-    mockupType: 'campus',
-  },
-  {
-    id: 'linear-systems-optimizer',
-    title: 'Healthcare Optimization',
-    tagline: 'Numerical linear algebra solver, Gaussian elimination & least squares allocation',
-    category: 'Mathematics',
-    description:
-      'Computational mathematical modeling platform applying numerical linear algebra and least-squares optimization with partial pivoting to hospital resource distribution.',
-    challenge:
-      'Implementing numerically stable Gaussian elimination and least squares normal equations (AᵀAx = Aᵀb) in client-side JavaScript without catastrophic floating-point cancellation or precision degradation on rectangular matrices.',
-    solution:
-      'Engineered an in-browser numerical solver incorporating partial pivoting, automated epsilon zero-tolerance thresholds (1e-10), dynamic matrix transposition, and reactive augmented matrix stepwise visualizers.',
-    metrics: [
-      { label: 'Algorithm', value: 'O(n³) Gaussian' },
-      { label: 'Matrix Scale', value: 'Up to 10×10' },
-      { label: 'Tolerance', value: '1e-10 Epsilon' },
-    ],
-    tags: ['Vue 3', 'Linear Algebra', 'Numerical Methods'],
-    featured: true,
-    demoUrl: 'https://github.com/sereyvichea2828/math-project',
-    githubUrl: 'https://github.com/sereyvichea2828/math-project',
-    accentColor: 'cyan',
-    mockupType: 'math',
-  },
-  {
-    id: 'iee-smart-access-control',
-    title: 'IEE Biometric Access Control',
-    tagline: 'Multi-factor smart lock, Web Serial API hardware bridge & telemetry',
-    category: 'Embedded Systems',
-    description:
-      'Embedded access-control platform bridging physical dual-MCU Arduino architectures with browser-based Web Serial telemetry, biometric fingerprint, and RFID verification.',
-    challenge:
-      'Establishing deterministic, low-latency bi-directional UART communication between browser web workers and Arduino microcontrollers over Web Serial and Web Bluetooth APIs without buffer overflows or serial frame tearing.',
-    solution:
-      'Engineered an asynchronous stream reader/writer with auto-reconnecting baud rate synchronization (9600 bps), packet framing guards, dual-door channel switching (OUTSIDE / INSIDE), and hardware diagnostic ping monitors.',
-    metrics: [
-      { label: 'Comm Latency', value: '<8ms Serial' },
-      { label: 'MFA Vectors', value: '4 Independent' },
-      { label: 'Hardware Bus', value: 'Dual-MCU UART' },
-    ],
-    tags: ['Arduino', 'Web Serial API', 'Embedded C++'],
-    featured: true,
-    demoUrl: 'https://github.com/sereyvichea2828/IEE-Project',
-    githubUrl: 'https://github.com/sereyvichea2828/IEE-Project',
     accentColor: 'indigo',
-    mockupType: 'iee',
+    mockupType: 'campus',
   },
 ] as const;
 

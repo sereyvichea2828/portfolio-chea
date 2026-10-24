@@ -73,21 +73,21 @@ onUnmounted(() => {
       >
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center shadow-xs"
+            class="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 border border-slate-200/80 flex items-center justify-center shadow-xs"
           >
             <FileCheck class="w-5 h-5" />
           </div>
           <div>
-            <h3 class="text-xl font-bold text-ink-primary tracking-tight">
+            <h3 class="text-xl font-bold text-slate-900 tracking-tight">
               Curriculum Vitae / Resume
             </h3>
-            <p class="text-xs text-ink-secondary">Try Sereyvichea — Senior Full-Stack Engineer</p>
+            <p class="text-xs text-slate-500">Try Sereyvichea — Senior Full-Stack Engineer</p>
           </div>
         </div>
 
         <button
           type="button"
-          class="w-11 h-11 rounded-full bg-slate-100/80 hover:bg-slate-200/80 text-ink-primary flex items-center justify-center border border-slate-200/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 cursor-pointer shadow-xs"
+          class="w-11 h-11 rounded-full bg-slate-100/80 hover:bg-slate-200/80 text-slate-900 flex items-center justify-center border border-slate-200/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 cursor-pointer shadow-xs transition-colors"
           aria-label="Close modal"
           @click="handleClose"
         >
@@ -100,11 +100,11 @@ onUnmounted(() => {
         class="flex-1 overflow-y-auto p-6 sm:p-8 py-5 space-y-6 overscroll-contain"
       >
         <!-- Quick Executive Summary -->
-        <div class="space-y-3 bg-slate-50/80 p-4 rounded-2xl border border-slate-100">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-purple-700">
+        <div class="space-y-3 bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">
             Executive Summary
           </h4>
-          <p class="text-xs sm:text-sm text-ink-primary/90 leading-relaxed">
+          <p class="text-xs sm:text-sm text-slate-800 leading-relaxed">
             Full-Stack Developer with 4+ years of production experience engineering reactive Vue 3
             web applications, high-concurrency Node.js services, and interactive 3D WebGL
             experiences. Proven track record of shipping fault-tolerant architectures and mentoring
@@ -114,32 +114,32 @@ onUnmounted(() => {
 
         <!-- Core Competencies -->
         <div class="space-y-2">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-ink-secondary">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">
             Core Competencies
           </h4>
-          <div class="grid grid-cols-2 gap-2 text-xs text-ink-primary">
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-800">
             <div class="flex items-center gap-2">
-              <CheckCircle2 class="w-3.5 h-3.5 text-purple-600 shrink-0" />
+              <CheckCircle2 class="w-3.5 h-3.5 text-slate-900 shrink-0" />
               <span>Vue 3 & Composition API</span>
             </div>
             <div class="flex items-center gap-2">
-              <CheckCircle2 class="w-3.5 h-3.5 text-purple-600 shrink-0" />
+              <CheckCircle2 class="w-3.5 h-3.5 text-slate-900 shrink-0" />
               <span>Strict TypeScript Contracts</span>
             </div>
             <div class="flex items-center gap-2">
-              <CheckCircle2 class="w-3.5 h-3.5 text-purple-600 shrink-0" />
+              <CheckCircle2 class="w-3.5 h-3.5 text-slate-900 shrink-0" />
               <span>Node.js RESTful Services</span>
             </div>
             <div class="flex items-center gap-2">
-              <CheckCircle2 class="w-3.5 h-3.5 text-purple-600 shrink-0" />
+              <CheckCircle2 class="w-3.5 h-3.5 text-slate-900 shrink-0" />
               <span>PostgreSQL & MongoDB</span>
             </div>
             <div class="flex items-center gap-2">
-              <CheckCircle2 class="w-3.5 h-3.5 text-purple-600 shrink-0" />
+              <CheckCircle2 class="w-3.5 h-3.5 text-slate-900 shrink-0" />
               <span>Three.js & Interactive 3D</span>
             </div>
             <div class="flex items-center gap-2">
-              <CheckCircle2 class="w-3.5 h-3.5 text-purple-600 shrink-0" />
+              <CheckCircle2 class="w-3.5 h-3.5 text-slate-900 shrink-0" />
               <span>Docker & CI/CD Pipelines</span>
             </div>
           </div>
@@ -151,15 +151,15 @@ onUnmounted(() => {
       >
         <a
           href="mailto:dyte.vichea.dev@gmail.com?subject=Portfolio%20Inquiry%20-%20Resume%20Request"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-ink-primary text-xs font-semibold transition-colors min-h-11 shadow-xs"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 border border-slate-200/80 text-xs font-semibold transition-colors min-h-11 shadow-xs"
         >
-          <Mail class="w-4 h-4 text-ink-secondary" />
+          <Mail class="w-4 h-4 text-slate-500" />
           <span>Request Custom Dossier</span>
         </a>
 
         <button
           type="button"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-linear-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold text-xs shadow-md shadow-purple-500/20 transition-all cursor-pointer min-h-11"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition-all cursor-pointer min-h-11"
           @click="handleDownloadAction"
         >
           <Download class="w-4 h-4" />
