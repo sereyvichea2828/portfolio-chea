@@ -45,9 +45,7 @@ const tabs = [
 
 useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   if (isReducedMotion.value) {
-    const all = container.querySelectorAll(
-      '.skills-header, .primary-stack-strip, .category-group',
-    );
+    const all = container.querySelectorAll('.skills-header, .primary-stack-strip, .category-group');
     all.forEach((el) => {
       (el as HTMLElement).style.opacity = '1';
       (el as HTMLElement).style.transform = 'none';
@@ -107,11 +105,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 </script>
 
 <template>
-  <section
-    id="skills"
-    ref="sectionRef"
-    class="py-14 sm:py-20 relative z-10 scroll-mt-24"
-  >
+  <section id="skills" ref="sectionRef" class="py-14 sm:py-20 relative z-10 scroll-mt-24">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 1. Section Header -->
       <div class="skills-header max-w-3xl mb-10 sm:mb-12 space-y-2.5">
@@ -124,7 +118,8 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
           កសាងឡើងដោយបច្ចេកវិទ្យាទំនើប
         </h2>
         <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal text-pretty">
-          ឧបករណ៍ ភាសាសរសេរកូដ និងគ្រោងការងារកម្មវិធី ដែលខ្ញុំប្រើប្រាស់ក្នុងការបង្កើតប្រព័ន្ធឌីជីថលកម្រិតខ្ពស់។
+          ឧបករណ៍ ភាសាសរសេរកូដ និងគ្រោងការងារកម្មវិធី
+          ដែលខ្ញុំប្រើប្រាស់ក្នុងការបង្កើតប្រព័ន្ធឌីជីថលកម្រិតខ្ពស់។
         </p>
       </div>
 
@@ -134,24 +129,20 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
           <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">
             បច្ចេកវិទ្យាស្នូលសម្រាប់ការអភិវឌ្ឍ
           </span>
-          <span class="text-xs font-mono text-slate-400">
-            Core Production Stack
-          </span>
+          <span class="text-xs font-mono text-slate-400"> Core Production Stack </span>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 pt-1">
-          <div
-            v-for="tool in primaryStack"
-            :key="tool.name"
-            class="group flex items-start gap-3"
-          >
+          <div v-for="tool in primaryStack" :key="tool.name" class="group flex items-start gap-3">
             <div
               class="w-6 h-6 shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-200"
             >
               <TechnologyLogo :name="tool.name" size-class="w-6 h-6" />
             </div>
             <div class="flex flex-col min-w-0">
-              <span class="text-sm font-bold text-slate-900 group-hover:text-slate-950 transition-colors font-heading truncate">
+              <span
+                class="text-sm font-bold text-slate-900 group-hover:text-slate-950 transition-colors font-heading truncate"
+              >
                 {{ tool.name }}
               </span>
               <span class="text-xs font-sans text-slate-500 leading-normal mt-0.5">
@@ -214,7 +205,9 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
           </div>
 
           <!-- Technical Grid Entries (3 cols desktop, 2 cols tablet, 1 col mobile) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 sm:gap-x-10 gap-y-6 sm:gap-y-7">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 sm:gap-x-10 gap-y-6 sm:gap-y-7"
+          >
             <div
               v-for="skill in group.skills"
               :key="skill.name"
@@ -266,15 +259,6 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
           @click="handleNavigate('#projects')"
         >
           <span>មើលគម្រោងជាក់ស្តែងដែលបានបង្កើតឡើងដោយបច្ចេកវិទ្យាទាំងនេះ</span>
-          <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
-        </button>
-
-        <button
-          type="button"
-          class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-          @click="handleNavigate('#experience')"
-        >
-          <span>ស្វែងយល់ពីបទពិសោធន៍ការងារ</span>
           <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
         </button>
       </div>

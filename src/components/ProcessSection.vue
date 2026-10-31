@@ -139,18 +139,11 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
       <div
         class="pt-10 sm:pt-14 mt-12 sm:mt-16 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm"
       >
-        <p class="text-slate-600 leading-relaxed font-normal">
+        <p
+          class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+        >
           មានគម្រោងថ្មី ឬត្រូវការប្រឹក្សាលើប្រព័ន្ធបច្ចេកវិទ្យា?
         </p>
-
-        <button
-          type="button"
-          class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-          @click="handleNavigate('#contact')"
-        >
-          <span>ចាប់ផ្តើមពិភាក្សាការងារជាមួយខ្ញុំ</span>
-          <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
-        </button>
       </div>
     </div>
   </section>

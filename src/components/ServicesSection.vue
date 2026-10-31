@@ -162,25 +162,6 @@ const getServiceIcon = (name: string) => {
           <span>ស្វែងយល់ពីជំនាញបច្ចេកវិទ្យាដែលខ្ញុំប្រើប្រាស់</span>
           <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
         </button>
-
-        <div class="flex items-center gap-6">
-          <button
-            type="button"
-            class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-            @click="handleNavigate('#projects')"
-          >
-            <span>មើលគម្រោងស្នាដៃ</span>
-            <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
-          </button>
-          <button
-            type="button"
-            class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-            @click="handleNavigate('#contact')"
-          >
-            <span>ពិភាក្សាគម្រោង</span>
-            <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
-          </button>
-        </div>
       </div>
     </div>
   </section>

@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { ABOUT_CONTENT } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
+import { useCertificateModal } from '@/composables/useCertificateModal';
 import { ArrowRight, ArrowUpRight } from 'lucide-vue-next';
 
 const emit = defineEmits<{
@@ -77,6 +78,15 @@ const handleNavigate = (targetId: string): void => {
   }
   emit('navigate', targetId);
 };
+
+const { openCertificate } = useCertificateModal();
+
+const handleOpenCertificate = (): void => {
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  openCertificate();
+};
 </script>
 
 <template>
@@ -119,7 +129,7 @@ const handleNavigate = (targetId: string): void => {
           <button
             type="button"
             class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center gap-1 cursor-pointer ml-1.5 underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-400 rounded-xs"
-            @click="handleNavigate('#experience')"
+            @click="handleOpenCertificate"
           >
             <span>មើលវិញ្ញាបនបត្រ</span>
             <ArrowUpRight class="w-3.5 h-3.5" />
@@ -187,11 +197,11 @@ const handleNavigate = (targetId: string): void => {
         >
           <button
             type="button"
-            class="font-medium text-slate-600 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+            class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
             @click="handleNavigate('#contact')"
           >
             <span>ពិភាក្សាការងារជាមួយខ្ញុំ</span>
-            <ArrowUpRight class="w-4 h-4 text-slate-400" />
+            <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
           </button>
         </div>
       </div>

@@ -5,6 +5,7 @@ import type { ExperienceCertificate } from '@/types/portfolio';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import { useModalState } from '@/composables/useModalState';
+import { useCertificateModal } from '@/composables/useCertificateModal';
 import {
   Calendar,
   Check,
@@ -35,9 +36,13 @@ const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
 const { registerModal } = useModalState();
 
-// Certificate Lightbox State
-const isModalOpen = ref<boolean>(false);
-const selectedCert = ref<ExperienceCertificate | null>(null);
+// Certificate Lightbox State (shared via useCertificateModal singleton)
+const {
+  isCertificateModalOpen: isModalOpen,
+  selectedCertificate: selectedCert,
+  openCertificate,
+  closeCertificate,
+} = useCertificateModal();
 const isZoomed = ref<boolean>(false);
 const modalRef = ref<HTMLDivElement | null>(null);
 const closeButtonRef = ref<HTMLButtonElement | null>(null);
@@ -101,16 +106,14 @@ const toggleZoom = (): void => {
 const openCertificateModal = async (cert: ExperienceCertificate): Promise<void> => {
   lastFocusedElement =
     typeof document !== 'undefined' ? (document.activeElement as HTMLElement) : null;
-  selectedCert.value = cert;
   isZoomed.value = false;
-  isModalOpen.value = true;
+  openCertificate(cert);
   await nextTick();
   closeButtonRef.value?.focus();
 };
 
 const closeCertificateModal = (): void => {
-  isModalOpen.value = false;
-  selectedCert.value = null;
+  closeCertificate();
   isZoomed.value = false;
   if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
     lastFocusedElement.focus();
@@ -152,8 +155,15 @@ const handleKeyDown = (e: KeyboardEvent): void => {
   }
 };
 
-watch(isModalOpen, (isOpen) => {
+watch(isModalOpen, async (isOpen) => {
   registerModal('certificate-lightbox', isOpen);
+  if (isOpen) {
+    if (!lastFocusedElement && typeof document !== 'undefined') {
+      lastFocusedElement = document.activeElement as HTMLElement;
+    }
+    await nextTick();
+    closeButtonRef.value?.focus();
+  }
 });
 
 onMounted(() => {
@@ -163,6 +173,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  closeCertificate();
   registerModal('certificate-lightbox', false);
   if (typeof window !== 'undefined') {
     window.removeEventListener('keydown', handleKeyDown);
@@ -545,15 +556,6 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
         >
           <span>ស្វែងយល់ពីដំណើរការ និងរបៀបដែលខ្ញុំធ្វើការ</span>
           <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
-        </button>
-
-        <button
-          type="button"
-          class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-          @click="handleNavigate('#contact')"
-        >
-          <span>ពិភាក្សាការងារជាមួយខ្ញុំ</span>
-          <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
         </button>
       </div>
     </div>
