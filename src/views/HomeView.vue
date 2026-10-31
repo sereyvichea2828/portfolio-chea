@@ -12,16 +12,16 @@ import {
 import { useRouter, useRoute } from 'vue-router';
 import HeroSection from '@/components/HeroSection.vue';
 import AboutSection from '@/components/AboutSection.vue';
+import ServicesSection from '@/components/ServicesSection.vue';
+import SkillsSection from '@/components/SkillsSection.vue';
+import ProjectsSection from '@/components/ProjectsSection.vue';
 import ExperienceSection from '@/components/ExperienceSection.vue';
+import ProcessSection from '@/components/ProcessSection.vue';
+import ContactSection from '@/components/ContactSection.vue';
 import type { SmoothScrollController } from '@/composables/useSmoothScroll';
 import { useModalState } from '@/composables/useModalState';
 
-// Critical below-the-fold async components
-const ServicesSection = defineAsyncComponent(() => import('@/components/ServicesSection.vue'));
-const SkillsSection = defineAsyncComponent(() => import('@/components/SkillsSection.vue'));
-const ProjectsSection = defineAsyncComponent(() => import('@/components/ProjectsSection.vue'));
-const ProcessSection = defineAsyncComponent(() => import('@/components/ProcessSection.vue'));
-const ContactSection = defineAsyncComponent(() => import('@/components/ContactSection.vue'));
+// Overlay modals (lazy-loaded upon request)
 const ResumeModal = defineAsyncComponent(() => import('@/components/ResumeModal.vue'));
 
 const router = useRouter();

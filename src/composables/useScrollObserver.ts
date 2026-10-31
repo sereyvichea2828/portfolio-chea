@@ -181,8 +181,8 @@ export function useScrollObserver(
           duration: 0.9,
         })
       } else {
-        smoothScroll.scrollTo(targetElement, {
-          offset: -navOffset,
+        smoothScroll.scrollTo(targetY, {
+          offset: 0,
           duration: 0.9,
         })
       }
@@ -300,8 +300,8 @@ export function useScrollObserver(
 
         window.scrollTo({ top: targetY, behavior: 'instant' })
         if (smoothScroll?.lenis.value) {
-          smoothScroll.scrollTo(el, {
-            offset: -navOffset,
+          smoothScroll.scrollTo(targetY, {
+            offset: 0,
             immediate: true,
             force: true,
           })
@@ -314,11 +314,11 @@ export function useScrollObserver(
 
       // Calibrate across rendering frames to handle async components and font settlement
       let attempts = 0
-      const maxAttempts = 20
+      const maxAttempts = 15
       const pollTarget = (): void => {
         attempts++
-        const aligned = alignToTarget()
-        if (aligned || attempts >= maxAttempts) {
+        alignToTarget()
+        if (attempts >= maxAttempts) {
           isNavigating.value = false
           checkScrollState()
         } else {
@@ -329,6 +329,18 @@ export function useScrollObserver(
       requestAnimationFrame(() => {
         pollTarget()
       })
+
+      if (typeof window !== 'undefined') {
+        window.addEventListener(
+          'load',
+          () => {
+            alignToTarget()
+            isNavigating.value = false
+            checkScrollState()
+          },
+          { once: true },
+        )
+      }
     } else {
       activeSection.value = 'home'
       checkScrollState()
