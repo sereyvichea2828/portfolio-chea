@@ -3,9 +3,21 @@ import { ref } from 'vue';
 import { PROCESS_STEPS } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
+import { ArrowUpRight } from 'lucide-vue-next';
+
+const emit = defineEmits<{
+  (e: 'navigate', sectionId: string): void;
+}>();
 
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
+
+const handleNavigate = (targetId: string): void => {
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  emit('navigate', targetId);
+};
 
 useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   if (isReducedMotion.value) {
@@ -121,6 +133,24 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Navigation to Next Section (Contact) -->
+      <div
+        class="pt-10 sm:pt-14 mt-12 sm:mt-16 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm"
+      >
+        <p class="text-slate-600 leading-relaxed font-normal">
+          មានគម្រោងថ្មី ឬត្រូវការប្រឹក្សាលើប្រព័ន្ធបច្ចេកវិទ្យា?
+        </p>
+
+        <button
+          type="button"
+          class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          @click="handleNavigate('#contact')"
+        >
+          <span>ចាប់ផ្តើមពិភាក្សាការងារជាមួយខ្ញុំ</span>
+          <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
+        </button>
       </div>
     </div>
   </section>

@@ -102,7 +102,9 @@ const handleNavigate = (targetId: string): void => {
 
       <!-- 2. Personal Story (Core Focus: Completely Unboxed, Typography-Led) -->
       <div class="about-story max-w-4xl mb-16 sm:mb-20 space-y-6">
-        <p class="text-lg sm:text-xl lg:text-2xl font-medium text-slate-900 leading-relaxed font-heading">
+        <p
+          class="text-lg sm:text-xl lg:text-2xl font-medium text-slate-900 leading-relaxed font-heading"
+        >
           {{ ABOUT_CONTENT.leadBio }}
         </p>
 
@@ -114,6 +116,14 @@ const handleNavigate = (targetId: string): void => {
 
         <p class="text-sm sm:text-base text-slate-500 leading-relaxed pt-2">
           {{ ABOUT_CONTENT.credentialNote }}
+          <button
+            type="button"
+            class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center gap-1 cursor-pointer ml-1.5 underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-400 rounded-xs"
+            @click="handleNavigate('#experience')"
+          >
+            <span>មើលវិញ្ញាបនបត្រ</span>
+            <ArrowUpRight class="w-3.5 h-3.5" />
+          </button>
         </p>
       </div>
 
@@ -132,11 +142,7 @@ const handleNavigate = (targetId: string): void => {
 
           <!-- Clean 2-column editorial text layout (No cards, no boxes, no numbers, no dots) -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 sm:gap-y-10">
-            <div
-              v-for="item in ABOUT_CONTENT.capabilities"
-              :key="item.id"
-              class="space-y-2"
-            >
+            <div v-for="item in ABOUT_CONTENT.capabilities" :key="item.id" class="space-y-2">
               <h4 class="text-base sm:text-lg font-bold text-slate-900 font-heading">
                 {{ item.title }}
               </h4>
@@ -176,16 +182,9 @@ const handleNavigate = (targetId: string): void => {
         </div>
 
         <!-- Chapter C: Restrained, Understated Navigation Actions -->
-        <div class="pt-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 text-sm sm:text-base">
-          <button
-            type="button"
-            class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-2 cursor-pointer py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-            @click="handleNavigate('#projects')"
-          >
-            <span>មើលគម្រោងស្នាដៃដែលខ្ញុំបានបង្កើត</span>
-            <ArrowRight class="w-4 h-4 text-slate-400" />
-          </button>
-
+        <div
+          class="pt-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 text-sm sm:text-base"
+        >
           <button
             type="button"
             class="font-medium text-slate-600 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"

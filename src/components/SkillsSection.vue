@@ -4,6 +4,18 @@ import { SKILL_GROUPS } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import TechnologyLogo from '@/components/TechnologyLogo.vue';
+import { ArrowRight } from 'lucide-vue-next';
+
+const emit = defineEmits<{
+  (e: 'navigate', sectionId: string): void;
+}>();
+
+const handleNavigate = (targetId: string): void => {
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  emit('navigate', targetId);
+};
 
 interface PrimaryTool {
   name: string;
@@ -242,6 +254,29 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Navigation Link to Projects Showcase -->
+      <div
+        class="pt-10 sm:pt-14 mt-12 sm:mt-16 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm"
+      >
+        <button
+          type="button"
+          class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          @click="handleNavigate('#projects')"
+        >
+          <span>មើលគម្រោងជាក់ស្តែងដែលបានបង្កើតឡើងដោយបច្ចេកវិទ្យាទាំងនេះ</span>
+          <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
+        </button>
+
+        <button
+          type="button"
+          class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          @click="handleNavigate('#experience')"
+        >
+          <span>ស្វែងយល់ពីបទពិសោធន៍ការងារ</span>
+          <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
+        </button>
       </div>
     </div>
   </section>

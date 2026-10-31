@@ -16,7 +16,20 @@ import {
   X,
   Maximize2,
   Minimize2,
+  ArrowRight,
+  ArrowUpRight,
 } from 'lucide-vue-next';
+
+const emit = defineEmits<{
+  (e: 'navigate', sectionId: string): void;
+}>();
+
+const handleNavigate = (targetId: string): void => {
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  emit('navigate', targetId);
+};
 
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
@@ -519,6 +532,29 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             </div>
           </div>
         </article>
+      </div>
+
+      <!-- Navigation to Next Section (Process) -->
+      <div
+        class="pt-10 sm:pt-14 mt-12 sm:mt-16 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm"
+      >
+        <button
+          type="button"
+          class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          @click="handleNavigate('#process')"
+        >
+          <span>ស្វែងយល់ពីដំណើរការ និងរបៀបដែលខ្ញុំធ្វើការ</span>
+          <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
+        </button>
+
+        <button
+          type="button"
+          class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          @click="handleNavigate('#contact')"
+        >
+          <span>ពិភាក្សាការងារជាមួយខ្ញុំ</span>
+          <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
+        </button>
       </div>
     </div>
 

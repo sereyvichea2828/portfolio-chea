@@ -126,7 +126,7 @@ const closeResumeModal = (): void => {
     </div>
 
     <!-- Services Section -->
-    <ServicesSection />
+    <ServicesSection @navigate="handleNavigate" />
 
     <!-- Section Divider: Services to Skills -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
@@ -134,7 +134,7 @@ const closeResumeModal = (): void => {
     </div>
 
     <!-- Skills & Technology Wall -->
-    <SkillsSection />
+    <SkillsSection @navigate="handleNavigate" />
 
     <!-- Section Divider: Skills to Projects -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
@@ -142,7 +142,7 @@ const closeResumeModal = (): void => {
     </div>
 
     <!-- Selected Projects Showcase -->
-    <ProjectsSection />
+    <ProjectsSection @navigate="handleNavigate" />
 
     <!-- Section Divider: Projects to Experience -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
@@ -150,7 +150,7 @@ const closeResumeModal = (): void => {
     </div>
 
     <!-- Engineering Journey & Experience Section -->
-    <ExperienceSection />
+    <ExperienceSection @navigate="handleNavigate" />
 
     <!-- Section Divider: Experience to Process -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
@@ -158,7 +158,7 @@ const closeResumeModal = (): void => {
     </div>
 
     <!-- My Development Process -->
-    <ProcessSection />
+    <ProcessSection @navigate="handleNavigate" />
 
     <!-- Section Divider: Process to Contact -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" aria-hidden="true">
@@ -166,7 +166,7 @@ const closeResumeModal = (): void => {
     </div>
 
     <!-- Contact Section -->
-    <ContactSection />
+    <ContactSection @navigate="handleNavigate" />
 
     <!-- Resume / CV Viewer Modal (Lazy-loaded upon trigger) -->
     <ResumeModal v-if="isResumeModalOpen" :is-open="isResumeModalOpen" @close="closeResumeModal" />

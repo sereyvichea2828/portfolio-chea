@@ -3,10 +3,21 @@ import { ref } from 'vue';
 import { SERVICES } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import { Layout, Server, Layers, Database, Check } from 'lucide-vue-next';
+import { Layout, Server, Layers, Database, Check, ArrowRight, ArrowUpRight } from 'lucide-vue-next';
+
+const emit = defineEmits<{
+  (e: 'navigate', sectionId: string): void;
+}>();
 
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
+
+const handleNavigate = (targetId: string): void => {
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  emit('navigate', targetId);
+};
 
 useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   if (isReducedMotion.value) {
@@ -136,6 +147,39 @@ const getServiceIcon = (name: string) => {
               </li>
             </ul>
           </div>
+        </div>
+      </div>
+
+      <!-- Quiet Navigation Links to Adjacent Sections -->
+      <div
+        class="pt-10 sm:pt-14 mt-12 sm:mt-16 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm"
+      >
+        <button
+          type="button"
+          class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          @click="handleNavigate('#skills')"
+        >
+          <span>ស្វែងយល់ពីជំនាញបច្ចេកវិទ្យាដែលខ្ញុំប្រើប្រាស់</span>
+          <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
+        </button>
+
+        <div class="flex items-center gap-6">
+          <button
+            type="button"
+            class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+            @click="handleNavigate('#projects')"
+          >
+            <span>មើលគម្រោងស្នាដៃ</span>
+            <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
+          </button>
+          <button
+            type="button"
+            class="font-medium text-slate-600 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+            @click="handleNavigate('#contact')"
+          >
+            <span>ពិភាក្សាគម្រោង</span>
+            <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
+          </button>
         </div>
       </div>
     </div>

@@ -6,6 +6,10 @@ import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import { ArrowUpRight, Send } from 'lucide-vue-next';
 
+defineEmits<{
+  (e: 'navigate', sectionId: string): void;
+}>();
+
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
 

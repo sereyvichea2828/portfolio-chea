@@ -10,9 +10,20 @@ import { ArrowUpRight, ArrowRight, Github, ChevronDown, Check } from 'lucide-vue
 
 const ProjectModal = defineAsyncComponent(() => import('@/components/ProjectModal.vue'));
 
+const emit = defineEmits<{
+  (e: 'navigate', sectionId: string): void;
+}>();
+
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
 const { registerModal } = useModalState();
+
+const handleNavigate = (targetId: string): void => {
+  if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+  emit('navigate', targetId);
+};
 
 // Active Selected Project (defaults to the first or featured project)
 const selectedProjectId = ref<string>(
@@ -444,27 +455,21 @@ const closeCaseStudy = (): void => {
         </Transition>
       </div>
 
-      <!-- 9. Quiet, Simple GitHub Link Footer -->
+      <!-- 9. Quiet, Simple GitHub Link & Section Transition Footer -->
       <div
-        class="projects-footer pt-12 sm:pt-16 mt-12 sm:mt-16 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs sm:text-sm text-slate-500"
+        class="projects-footer pt-12 sm:pt-16 mt-12 sm:mt-16 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm text-slate-500"
       >
-        <a
-          href="https://github.com/sereyvichea2828?tab=repositories"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 cursor-pointer no-underline"
-        >
-          <span>គម្រោងកូដចំហផ្សេងទៀតនៅលើ GitHub</span>
-        </a>
-        <a
-          href="https://github.com/sereyvichea2828?tab=repositories"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="font-medium text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1 no-underline"
-        >
-          <span>github.com/sereyvichea2828</span>
-          <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
-        </a>
+        <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+          <a
+            href="https://github.com/sereyvichea2828?tab=repositories"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 cursor-pointer no-underline"
+          >
+            <span>គម្រោងផ្សេងទៀតនៅលើ GitHub</span>
+            <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
+          </a>
+        </div>
       </div>
 
       <!-- 10. Deep-Dive Case Study Modal (Lazy-loaded upon trigger) -->
