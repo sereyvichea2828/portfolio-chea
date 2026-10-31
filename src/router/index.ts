@@ -95,22 +95,20 @@ const router = createRouter({
   },
 });
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to) => {
   // Normalize trailing slash (except root '/')
   if (to.path !== '/' && to.path.endsWith('/')) {
     const cleanPath = to.path.replace(/\/+$/, '');
-    next({ path: cleanPath, hash: to.hash, query: to.query, replace: true });
-    return;
+    return { path: cleanPath, hash: to.hash, query: to.query, replace: true };
   }
 
   // Normalize uppercase paths
   const lowerPath = to.path.toLowerCase();
   if (to.path !== lowerPath) {
-    next({ path: lowerPath, hash: to.hash, query: to.query, replace: true });
-    return;
+    return { path: lowerPath, hash: to.hash, query: to.query, replace: true };
   }
 
-  next();
+  return true;
 });
 
 router.afterEach((to, from) => {
