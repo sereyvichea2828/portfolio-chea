@@ -129,14 +129,12 @@ export interface PrincipleItem {
 
 export interface AboutCapabilityItem {
   id: string;
-  number: string;
   title: string;
   description: string;
 }
 
 export interface AboutPrincipleItem {
   id: string;
-  number: string;
   title: string;
   description: string;
 }

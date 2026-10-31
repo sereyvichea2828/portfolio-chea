@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { ABOUT_CONTENT } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import { ArrowRight } from 'lucide-vue-next';
+import { ArrowRight, ArrowUpRight } from 'lucide-vue-next';
 
 const emit = defineEmits<{
   (e: 'navigate', sectionId: string): void;
@@ -14,9 +14,7 @@ const { isReducedMotion } = useReducedMotion();
 
 useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   if (isReducedMotion.value) {
-    const all = container.querySelectorAll(
-      '.about-header, .about-story, .about-capabilities, .about-principles, .about-actions',
-    );
+    const all = container.querySelectorAll('.about-header, .about-story, .about-body');
     all.forEach((el) => {
       (el as HTMLElement).style.opacity = '1';
       (el as HTMLElement).style.transform = 'none';
@@ -24,26 +22,51 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
     return;
   }
 
-  const elements = [
-    container.querySelector('.about-header'),
-    container.querySelector('.about-story'),
-    container.querySelector('.about-capabilities'),
-    container.querySelector('.about-principles'),
-    container.querySelector('.about-actions'),
-  ].filter(Boolean);
+  const header = container.querySelector('.about-header');
+  const story = container.querySelector('.about-story');
+  const body = container.querySelector('.about-body');
 
-  if (elements.length > 0) {
+  if (header) {
     tl.fromTo(
-      elements,
+      header,
       { y: 16, opacity: 0 },
       {
         y: 0,
         opacity: 1,
         duration: 0.65,
-        stagger: 0.12,
         ease: 'power3.out',
         clearProps: 'transform,willChange',
       },
+    );
+  }
+
+  if (story) {
+    tl.fromTo(
+      story,
+      { y: 16, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power3.out',
+        clearProps: 'transform,willChange',
+      },
+      '-=0.4',
+    );
+  }
+
+  if (body) {
+    tl.fromTo(
+      body,
+      { y: 16, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.65,
+        ease: 'power3.out',
+        clearProps: 'transform,willChange',
+      },
+      '-=0.35',
     );
   }
 });
@@ -57,133 +80,115 @@ const handleNavigate = (targetId: string): void => {
 </script>
 
 <template>
-  <section id="about" ref="sectionRef" class="py-14 sm:py-20 lg:py-24 relative z-10 scroll-mt-24">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- 1. Editorial Section Header -->
-      <div class="about-header max-w-3xl mb-12 sm:mb-16 space-y-3">
+  <section id="about" ref="sectionRef" class="py-16 sm:py-20 lg:py-24 relative z-10 scroll-mt-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 1. Section Header -->
+      <div class="about-header mb-12 sm:mb-16 space-y-3">
         <p class="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
           {{ ABOUT_CONTENT.sectionTag }}
         </p>
         <h2
-          class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-snug sm:leading-snug font-heading tracking-normal"
+          class="text-2xl sm:text-3xl lg:text-[38px] font-extrabold text-slate-900 leading-snug sm:leading-snug font-heading tracking-normal"
         >
           {{ ABOUT_CONTENT.headline }}
         </h2>
       </div>
 
-      <!-- 2. Personal Story & Identity (Authentic Narrative) -->
-      <div class="about-story mb-14 sm:mb-20">
-        <div class="bg-white/80 border border-slate-200/90 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-2xs space-y-6">
-          <!-- Lead Introduction -->
-          <div class="border-l-2 border-slate-900 pl-4 sm:pl-5">
-            <p class="text-base sm:text-lg lg:text-xl font-medium text-slate-900 leading-relaxed font-heading">
-              {{ ABOUT_CONTENT.leadBio }}
-            </p>
-          </div>
+      <!-- 2. Personal Story (Core Focus: Completely Unboxed, Typography-Led) -->
+      <div class="about-story mb-16 sm:mb-20 space-y-6">
+        <p class="text-lg sm:text-xl lg:text-2xl font-medium text-slate-900 leading-relaxed font-heading">
+          {{ ABOUT_CONTENT.leadBio }}
+        </p>
 
-          <!-- Extended Story Paragraphs -->
-          <div class="space-y-4 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-            <p v-for="(paragraph, pIndex) in ABOUT_CONTENT.storyParagraphs" :key="pIndex">
-              {{ paragraph }}
-            </p>
-          </div>
-
-          <!-- Genuine Credential & Study Note -->
-          <div class="pt-4 border-t border-slate-200/80 flex items-start gap-3 text-xs sm:text-sm text-slate-500">
-            <span class="inline-block w-2 h-2 rounded-full bg-emerald-600 mt-1.5 shrink-0" aria-hidden="true" />
-            <p class="leading-relaxed">
-              {{ ABOUT_CONTENT.credentialNote }}
-            </p>
-          </div>
+        <div class="space-y-5 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          <p v-for="(paragraph, pIndex) in ABOUT_CONTENT.storyParagraphs" :key="pIndex">
+            {{ paragraph }}
+          </p>
         </div>
+
+        <p class="text-sm sm:text-base text-slate-500 leading-relaxed pt-2">
+          {{ ABOUT_CONTENT.credentialNote }}
+        </p>
       </div>
 
-      <!-- 3. What I Have Learned & Can Build (Core Capabilities in Everyday Khmer) -->
-      <div class="about-capabilities mb-14 sm:mb-20 space-y-6 sm:space-y-8">
-        <div class="space-y-1.5">
-          <p class="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
-            ចំណេះដឹង និងបទពិសោធន៍
-          </p>
-          <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 font-heading">
-            អ្វីដែលខ្ញុំបានហាត់រៀន និងអាចកសាងបាន
-          </h3>
-        </div>
+      <!-- 3. Two Editorial Chapters (Unboxed, Pure Spacing & Typography) -->
+      <div class="about-body space-y-16 sm:space-y-20">
+        <!-- Chapter A: Knowledge & Experience -->
+        <div class="space-y-8 sm:space-y-10">
+          <div class="space-y-1.5">
+            <p class="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
+              ចំណេះដឹង និងការអនុវត្ត
+            </p>
+            <h3 class="text-xl sm:text-2xl font-bold text-slate-900 font-heading">
+              អ្វីដែលខ្ញុំបានហាត់រៀន និងអាចកសាងបាន
+            </h3>
+          </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-          <div
-            v-for="item in ABOUT_CONTENT.capabilities"
-            :key="item.id"
-            class="bg-white/70 border border-slate-200/80 rounded-2xl p-5 sm:p-6 hover:border-slate-300 hover:shadow-xs transition-all duration-200 flex flex-col justify-between"
-          >
-            <div class="space-y-2.5">
-              <span class="text-xs font-bold text-indigo-600 tracking-wider">
-                {{ item.number }}
-              </span>
-              <h4 class="text-base sm:text-lg font-bold text-slate-900">
+          <!-- Clean 2-column editorial text layout (No cards, no boxes, no numbers, no dots) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 sm:gap-y-10">
+            <div
+              v-for="item in ABOUT_CONTENT.capabilities"
+              :key="item.id"
+              class="space-y-2"
+            >
+              <h4 class="text-base sm:text-lg font-bold text-slate-900 font-heading">
                 {{ item.title }}
               </h4>
-              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
                 {{ item.description }}
               </p>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- 4. My Working Approach (Genuine Principles) -->
-      <div class="about-principles mb-12 sm:mb-16 space-y-6 sm:space-y-8">
-        <div class="space-y-1.5">
-          <p class="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
-            របៀបធ្វើការ
-          </p>
-          <h3 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 font-heading">
-            គោលការណ៍ការងារដែលខ្ញុំប្រកាន់ខ្ជាប់
-          </h3>
-        </div>
+        <!-- Chapter B: Working Principles -->
+        <div class="space-y-8 sm:space-y-10">
+          <div class="space-y-1.5">
+            <p class="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
+              របៀបធ្វើការ
+            </p>
+            <h3 class="text-xl sm:text-2xl font-bold text-slate-900 font-heading">
+              គោលការណ៍ការងារដែលខ្ញុំប្រកាន់ខ្ជាប់
+            </h3>
+          </div>
 
-        <div class="border-t border-slate-200/80 divide-y divide-slate-200/80">
-          <div
-            v-for="principle in ABOUT_CONTENT.principles"
-            :key="principle.id"
-            class="py-4 sm:py-5 grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-6 items-baseline group"
-          >
-            <div class="sm:col-span-1">
-              <span class="text-xs sm:text-sm font-semibold text-slate-400 group-hover:text-indigo-600 transition-colors">
-                {{ principle.number }}
-              </span>
-            </div>
-            <div class="sm:col-span-4">
-              <h4 class="text-sm sm:text-base font-bold text-slate-900 group-hover:text-slate-950 transition-colors">
+          <!-- Natural sequence of concise statements (No numbers, no dots, no table lines) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-7 sm:gap-y-8">
+            <div
+              v-for="principle in ABOUT_CONTENT.principles"
+              :key="principle.id"
+              class="space-y-1.5"
+            >
+              <h4 class="text-base sm:text-lg font-bold text-slate-900 font-heading">
                 {{ principle.title }}
               </h4>
-            </div>
-            <div class="sm:col-span-7">
-              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
                 {{ principle.description }}
               </p>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- 5. Purposeful Actions -->
-      <div class="about-actions pt-8 border-t border-slate-200/80 flex flex-wrap items-center gap-3.5">
-        <button
-          type="button"
-          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-xs sm:text-sm shadow-xs transition-all duration-200 cursor-pointer min-h-11 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-          @click="handleNavigate('#projects')"
-        >
-          <span>មើលគម្រោងស្នាដៃដែលខ្ញុំបានបង្កើត</span>
-          <ArrowRight class="w-4 h-4" />
-        </button>
+        <!-- Chapter C: Restrained, Understated Navigation Actions -->
+        <div class="pt-6 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 text-sm sm:text-base">
+          <button
+            type="button"
+            class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-2 cursor-pointer py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+            @click="handleNavigate('#projects')"
+          >
+            <span>មើលគម្រោងស្នាដៃដែលខ្ញុំបានបង្កើត</span>
+            <ArrowRight class="w-4 h-4 text-slate-400" />
+          </button>
 
-        <button
-          type="button"
-          class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-slate-800 border border-slate-200/90 hover:bg-slate-50 active:bg-slate-100 font-semibold text-xs sm:text-sm shadow-2xs transition-all duration-200 cursor-pointer min-h-11 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-          @click="handleNavigate('#contact')"
-        >
-          <span>ពិភាក្សាការងារជាមួយខ្ញុំ</span>
-        </button>
+          <button
+            type="button"
+            class="font-medium text-slate-600 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+            @click="handleNavigate('#contact')"
+          >
+            <span>ពិភាក្សាការងារជាមួយខ្ញុំ</span>
+            <ArrowUpRight class="w-4 h-4 text-slate-400" />
+          </button>
+        </div>
       </div>
     </div>
   </section>
