@@ -78,7 +78,6 @@ export function useSmoothScroll(): SmoothScrollController {
       }
 
       gsap.ticker.add(tickerListener)
-      gsap.ticker.lagSmoothing(0)
 
       // If document is already locked when Lenis mounts (e.g. direct load on /resume), pause immediately
       if (typeof document !== 'undefined' && document.body.classList.contains('overflow-hidden')) {
@@ -100,7 +99,7 @@ export function useSmoothScroll(): SmoothScrollController {
       onComplete?: () => void
     }
   ): void => {
-    const navOffset = options?.offset ?? -84
+    const navOffset = options?.offset ?? (typeof target === 'number' ? 0 : -84)
 
     if (isReducedMotion.value || !globalLenis) {
       // Native accessible fallback

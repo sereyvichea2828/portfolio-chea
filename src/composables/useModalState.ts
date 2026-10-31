@@ -102,16 +102,19 @@ export function useModalState(): ModalStateController {
    * navigation, unmounted views, or broken modal lifecycles.
    */
   const forceReleaseAllLocks = (): void => {
-    if (activeModals.value.size > 0 || isPhysicallyLocked) {
-      if (import.meta.env.DEV) {
-        console.warn(
-          `[ScrollLock] ⚠️ Emergency release: clearing ${activeModals.value.size} active lock(s):`,
-          Array.from(activeModals.value)
-        )
-      }
-      activeModals.value = new Set()
-      updatePhysicalScrollLock()
+    if (import.meta.env.DEV && activeModals.value.size > 0) {
+      console.warn(
+        `[ScrollLock] ⚠️ Emergency release: clearing ${activeModals.value.size} active lock(s):`,
+        Array.from(activeModals.value),
+      )
     }
+    activeModals.value = new Set()
+    isPhysicallyLocked = false
+    if (typeof document !== 'undefined') {
+      document.body.classList.remove('overflow-hidden')
+      document.documentElement.classList.remove('lenis-stopped')
+    }
+    startGlobalLenis()
   }
 
   const syncScrollState = (): void => {
