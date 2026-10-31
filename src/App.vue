@@ -44,10 +44,7 @@ const handleBeforeLeave = (_el: Element): void => {
 }
 
 const handleAfterEnter = (_el: Element): void => {
-  if (!route.meta?.sectionId && typeof window !== 'undefined') {
-    window.scrollTo({ top: 0, left: 0 })
-    smoothScroll?.scrollTo(0, { immediate: true })
-  }
+  // View transition settled
 }
 
 const isFooterVisible = ref<boolean>(false)

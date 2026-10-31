@@ -3,6 +3,23 @@ import { useRouter, type Router } from 'vue-router'
 import type { SmoothScrollController } from '@/composables/useSmoothScroll'
 import { useModalState } from '@/composables/useModalState'
 
+export interface NavigationTraceEvent {
+  id: string
+  timestamp: string
+  source: string
+  action: string
+  previousRoute: string
+  newRoute?: string
+  previousActiveSection: string
+  newActiveSection?: string
+  currentScrollY: number
+  targetY?: number
+  reason?: string
+  isRestoringRoute: boolean
+  isNavigating: boolean
+  details?: Record<string, unknown>
+}
+
 export interface ScrollObserverState {
   isScrolled: Ref<boolean>
   activeSection: Ref<string>
@@ -12,16 +29,60 @@ export interface ScrollObserverState {
   goToPrevRoute: () => void
 }
 
-function logDiag(action: string, details?: Record<string, unknown>): void {
-  if (!import.meta.env.DEV) return
+let traceEventCounter = 0
+const navTraceHistory: NavigationTraceEvent[] = []
+
+function logNavigationTrace(params: {
+  source: string
+  action: string
+  previousRoute: string
+  newRoute?: string
+  previousActiveSection: string
+  newActiveSection?: string
+  currentScrollY: number
+  targetY?: number
+  reason?: string
+  isRestoringRoute: boolean
+  isNavigating: boolean
+  details?: Record<string, unknown>
+}): void {
+  traceEventCounter++
   const now = new Date()
   const time = `${now.toTimeString().split(' ')[0]}.${String(now.getMilliseconds()).padStart(3, '0')}`
-  console.log(
-    `%c[${time}] [ScrollEngine] %c${action}`,
-    'color: #6366F1; font-weight: bold;',
-    'color: #0F172A; font-weight: 500;',
-    details ?? ''
-  )
+  const eventId = `NAV-${String(traceEventCounter).padStart(4, '0')}`
+
+  const eventRecord: NavigationTraceEvent = {
+    id: eventId,
+    timestamp: time,
+    ...params,
+  }
+
+  navTraceHistory.push(eventRecord)
+  if (navTraceHistory.length > 200) {
+    navTraceHistory.shift()
+  }
+
+  if (import.meta.env.DEV) {
+    console.log(
+      `%c[${time}] %c[${eventId}] %c[${params.source}] %c${params.action}`,
+      'color: #64748B; font-size: 11px;',
+      'color: #6366F1; font-weight: bold; font-size: 11px;',
+      'color: #0F172A; font-weight: 600; font-size: 11px;',
+      'color: #2563EB; font-weight: bold; font-size: 11px;',
+      {
+        prevRoute: params.previousRoute,
+        newRoute: params.newRoute ?? params.previousRoute,
+        prevSection: params.previousActiveSection,
+        newSection: params.newActiveSection ?? params.previousActiveSection,
+        scrollY: params.currentScrollY,
+        targetY: params.targetY,
+        reason: params.reason ?? '',
+        isRestoring: params.isRestoringRoute,
+        isNavigating: params.isNavigating,
+        details: params.details,
+      }
+    )
+  }
 }
 
 export function useScrollObserver(
@@ -79,16 +140,28 @@ export function useScrollObserver(
   // Release programmatic navigation lock instantly when the user rolls mouse wheel or touches screen
   const onUserManualIntervention = (e?: Event): void => {
     if (isRestoringRoute.value) {
-      logDiag('🖐️ User manual scroll intervened during initial restoration. Unfreezing.', {
-        eventType: e?.type,
-        scrollY: getScrollY(),
+      logNavigationTrace({
+        source: 'useScrollObserver:manualIntervention',
+        action: 'RESTORE_UNFROZEN_BY_USER',
+        previousRoute: router.currentRoute.value.path,
+        previousActiveSection: activeSection.value,
+        currentScrollY: getScrollY(),
+        reason: `User manual scroll intervention (${e?.type || 'input'}) during restoration`,
+        isRestoringRoute: false,
+        isNavigating: isNavigating.value,
       })
       isRestoringRoute.value = false
     }
     if (isNavigating.value) {
-      logDiag('🖐️ User manual scroll intervened during navigation lock. Unlocking.', {
-        eventType: e?.type,
-        activeSection: activeSection.value,
+      logNavigationTrace({
+        source: 'useScrollObserver:manualIntervention',
+        action: 'NAV_LOCK_RELEASED_BY_USER',
+        previousRoute: router.currentRoute.value.path,
+        previousActiveSection: activeSection.value,
+        currentScrollY: getScrollY(),
+        reason: `User manual scroll intervention (${e?.type || 'input'}) during navigation lock`,
+        isRestoringRoute: isRestoringRoute.value,
+        isNavigating: false,
       })
       isNavigating.value = false
       navigatingToTargetId = null
@@ -107,24 +180,46 @@ export function useScrollObserver(
 
     urlSyncTimeout = setTimeout(() => {
       if (isNavigating.value || isRestoringRoute.value) {
-        logDiag('⏸️ syncUrlToActiveSection skipped (restoring or navigating)', {
-          isNavigating: isNavigating.value,
-          isRestoringRoute: isRestoringRoute.value,
-          attemptedSection: newSectionId,
-        })
         return
       }
       if (typeof document !== 'undefined' && document.body.classList.contains('overflow-hidden')) return
+
+      const currentScrollY = getScrollY()
+
+      // CRITICAL SAFETY GUARD:
+      // A missing or miscalculated section measurement must NEVER sync URL to '/' when
+      // the user is scrolled down into the page (> 150px)!
+      if (newSectionId === 'home' && currentScrollY > 150) {
+        logNavigationTrace({
+          source: 'useScrollObserver:syncUrl',
+          action: 'BLOCKED_INVALID_HOME_SYNC',
+          previousRoute: router.currentRoute.value.path,
+          previousActiveSection: activeSection.value,
+          newActiveSection: newSectionId,
+          currentScrollY,
+          reason: 'Attempted to sync URL to "/" while scrollY is > 150. Operation aborted.',
+          isRestoringRoute: isRestoringRoute.value,
+          isNavigating: isNavigating.value,
+        })
+        return
+      }
 
       const targetPath = newSectionId === 'home' ? '/' : `/${newSectionId}`
       const currentRoute = router.currentRoute.value
       const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
 
       if (!isModalRoute && currentRoute.path !== targetPath) {
-        logDiag(`🔄 syncUrlToActiveSection -> replace route to "${targetPath}"`, {
-          previousPath: currentRoute.path,
-          newSectionId,
-          scrollY: getScrollY(),
+        logNavigationTrace({
+          source: 'useScrollObserver:syncUrl',
+          action: 'PASSIVE_URL_REPLACE',
+          previousRoute: currentRoute.path,
+          newRoute: targetPath,
+          previousActiveSection: activeSection.value,
+          newActiveSection: newSectionId,
+          currentScrollY,
+          reason: `Active section changed to "${newSectionId}". Updating URL via router.replace.`,
+          isRestoringRoute: isRestoringRoute.value,
+          isNavigating: isNavigating.value,
         })
 
         isPassiveScrollSync.value = true
@@ -178,35 +273,54 @@ export function useScrollObserver(
     const scrollHeight = document.documentElement.scrollHeight
     let candidateId = activeSection.value
 
-    // 1. Extreme boundary: Top of page
+    // 1. Extreme boundary: Top of page (user is actually at the very top)
     if (scrollY <= 50) {
       candidateId = 'home'
     }
-    // 2. Extreme boundary: Bottom of page
+    // 2. Extreme boundary: Bottom of page (user is at the very bottom)
     else if (scrollY + innerHeight >= scrollHeight - 50) {
       candidateId = sectionIds[sectionIds.length - 1] || 'contact'
     }
-    // 3. In-between sections: Stable 35% viewport threshold
+    // 3. In-between sections: Precise viewport intersection check
     else {
+      const navOffset = 88
       const viewportThreshold = innerHeight * 0.35 + 20
+      let foundMatchingSection = false
+
       for (let i = sectionIds.length - 1; i >= 0; i--) {
         const id = sectionIds[i]
         if (!id) continue
         const element = document.getElementById(id)
         if (element) {
-          const rectTop = element.getBoundingClientRect().top
-          if (rectTop <= viewportThreshold) {
+          const rect = element.getBoundingClientRect()
+          // Section must have entered viewport threshold AND its bottom must still be below the nav offset.
+          // This prevents sections scrolled completely past (such as #home with negative rect.bottom) from matching!
+          if (rect.top <= viewportThreshold && rect.bottom > navOffset) {
             candidateId = id
+            foundMatchingSection = true
             break
           }
         }
       }
+
+      // CRITICAL RULE: If no section cleanly meets the boundary threshold (e.g. during rapid scroll or layout reflow),
+      // NEVER default or fall back to 'home'! Retain the existing activeSection.
+      if (!foundMatchingSection) {
+        candidateId = activeSection.value
+      }
     }
 
     if (candidateId && candidateId !== activeSection.value) {
-      logDiag(`📍 Active section changed: "${activeSection.value}" -> "${candidateId}"`, {
-        scrollY,
-        candidateId,
+      logNavigationTrace({
+        source: 'useScrollObserver:checkScrollState',
+        action: 'SECTION_CHANGED',
+        previousRoute: router.currentRoute.value.path,
+        previousActiveSection: activeSection.value,
+        newActiveSection: candidateId,
+        currentScrollY: scrollY,
+        reason: `Viewport intersection moved active section from "${activeSection.value}" to "${candidateId}"`,
+        isRestoringRoute: isRestoringRoute.value,
+        isNavigating: isNavigating.value,
       })
       activeSection.value = candidateId
       syncUrlToActiveSection(candidateId)
@@ -231,10 +345,21 @@ export function useScrollObserver(
     if (typeof window === 'undefined') return
 
     const cleanId = sectionId.replace('#', '').replace('/', '') || 'home'
+    if (navigatingToTargetId === cleanId) return
     const targetElement = document.getElementById(cleanId)
 
     if (!targetElement) {
-      logDiag(`⚠️ scrollToSection target element not found: #${cleanId}`)
+      logNavigationTrace({
+        source: `useScrollObserver:scrollToSection:${source}`,
+        action: 'TARGET_NOT_FOUND',
+        previousRoute: router.currentRoute.value.path,
+        previousActiveSection: activeSection.value,
+        newActiveSection: cleanId,
+        currentScrollY: getScrollY(),
+        reason: `scrollToSection target element not found: #${cleanId}`,
+        isRestoringRoute: isRestoringRoute.value,
+        isNavigating: isNavigating.value,
+      })
       return
     }
 
@@ -251,12 +376,18 @@ export function useScrollObserver(
     const elementTop = targetElement.getBoundingClientRect().top + (window.scrollY || window.pageYOffset)
     const targetY = Math.max(0, cleanId === 'home' ? 0 : elementTop - navOffset)
 
-    logDiag(`🚀 scrollToSection -> #${cleanId}`, {
-      source,
-      targetY,
+    logNavigationTrace({
+      source: `useScrollObserver:scrollToSection:${source}`,
+      action: 'SCROLL_INITIATED',
+      previousRoute: router.currentRoute.value.path,
+      previousActiveSection: activeSection.value,
+      newActiveSection: cleanId,
       currentScrollY: getScrollY(),
-      updateUrl,
-      pushHistory,
+      targetY,
+      reason: `Programmatic scroll initiated to #${cleanId} from ${source}`,
+      isRestoringRoute: isRestoringRoute.value,
+      isNavigating: true,
+      details: { updateUrl, pushHistory },
     })
 
     if (updateUrl) {
@@ -283,8 +414,17 @@ export function useScrollObserver(
     }
 
     const onScrollFinished = (): void => {
-      logDiag(`✅ scrollToSection finished -> #${cleanId}`, {
-        finalScrollY: getScrollY(),
+      logNavigationTrace({
+        source: `useScrollObserver:scrollToSection:${source}`,
+        action: 'SCROLL_COMPLETED',
+        previousRoute: router.currentRoute.value.path,
+        previousActiveSection: activeSection.value,
+        newActiveSection: cleanId,
+        currentScrollY: getScrollY(),
+        targetY,
+        reason: `Programmatic scroll to #${cleanId} finished`,
+        isRestoringRoute: isRestoringRoute.value,
+        isNavigating: false,
       })
       isNavigating.value = false
       navigatingToTargetId = null
@@ -358,20 +498,34 @@ export function useScrollObserver(
   }
 
   const handlePopState = (): void => {
+    if (isRestoringRoute.value) {
+      logNavigationTrace({
+        source: 'useScrollObserver:popstate',
+        action: 'IGNORED_POPSTATE_DURING_RESTORATION',
+        previousRoute: router.currentRoute.value.path,
+        previousActiveSection: activeSection.value,
+        currentScrollY: getScrollY(),
+        reason: 'Browser popstate ignored while initial route restoration is active',
+        isRestoringRoute: true,
+        isNavigating: isNavigating.value,
+      })
+      return
+    }
     isPopStateNavigation = true
-    logDiag('⬅️➡️ Browser popstate event fired (Back/Forward navigation)')
+    logNavigationTrace({
+      source: 'useScrollObserver:popstate',
+      action: 'POPSTATE_TRIGGERED',
+      previousRoute: router.currentRoute.value.path,
+      previousActiveSection: activeSection.value,
+      currentScrollY: getScrollY(),
+      reason: 'Browser Back/Forward navigation event fired',
+      isRestoringRoute: false,
+      isNavigating: isNavigating.value,
+    })
   }
 
   onMounted(async () => {
     if (typeof window === 'undefined') return
-
-    logDiag('🎬 useScrollObserver onMounted', {
-      initialTarget,
-      pathname: window.location.pathname,
-      scrollY: window.scrollY,
-      activeSection: activeSection.value,
-      isRestoringRoute: isRestoringRoute.value,
-    })
 
     // Prevent browser from restoring stale scroll coordinates before layout completes
     if ('scrollRestoration' in window.history) {
@@ -401,14 +555,6 @@ export function useScrollObserver(
     // Synchronize route changes from true browser history traversal (Back/Forward buttons ONLY)
     // CRITICAL: NEVER command Lenis to scroll during internal passive route synchronization!
     routerCleanup = router.afterEach((to, from) => {
-      logDiag('🧭 router.afterEach fired', {
-        toPath: to.path,
-        fromPath: from?.path,
-        isPopStateNavigation,
-        isPassiveScrollSync: isPassiveScrollSync.value,
-        navigatingToTargetId,
-      })
-
       if (to.path === from.path && to.hash === from.hash) return
 
       // ONLY command smooth scroll if this navigation was genuinely triggered by browser Back/Forward!
@@ -440,19 +586,48 @@ export function useScrollObserver(
       isNavigating.value = true
       isRestoringRoute.value = true
 
-      logDiag(`🎯 Beginning initial section restoration to #${targetOnMount}`)
+      logNavigationTrace({
+        source: 'useScrollObserver:onMounted',
+        action: 'BEGIN_INITIAL_RESTORATION',
+        previousRoute: router.currentRoute.value.path,
+        previousActiveSection: 'none',
+        newActiveSection: targetOnMount,
+        currentScrollY: getScrollY(),
+        reason: `Restoring page to direct section route #${targetOnMount}`,
+        isRestoringRoute: true,
+        isNavigating: true,
+      })
 
       const alignToTarget = (reason = 'align'): boolean => {
         const el = document.getElementById(targetOnMount)
         if (!el) {
-          logDiag(`⚠️ alignToTarget: element #${targetOnMount} not found`)
+          logNavigationTrace({
+            source: 'useScrollObserver:alignToTarget',
+            action: 'ELEMENT_NOT_YET_MOUNTED',
+            previousRoute: router.currentRoute.value.path,
+            previousActiveSection: activeSection.value,
+            currentScrollY: getScrollY(),
+            reason: `Target #${targetOnMount} not found during [${reason}]. Retaining section state.`,
+            isRestoringRoute: isRestoringRoute.value,
+            isNavigating: isNavigating.value,
+          })
           return false
         }
         const navOffset = 88
         const currentScrollY = window.scrollY || window.pageYOffset
         const targetY = Math.max(0, el.getBoundingClientRect().top + currentScrollY - navOffset)
 
-        logDiag(`📐 alignToTarget [${reason}] -> targetY: ${targetY}, currentY: ${currentScrollY}`)
+        logNavigationTrace({
+          source: 'useScrollObserver:alignToTarget',
+          action: `ALIGN_${reason.toUpperCase()}`,
+          previousRoute: router.currentRoute.value.path,
+          previousActiveSection: activeSection.value,
+          currentScrollY,
+          targetY,
+          reason: `Aligning scroll to #${targetOnMount} at targetY: ${targetY}`,
+          isRestoringRoute: isRestoringRoute.value,
+          isNavigating: isNavigating.value,
+        })
 
         window.scrollTo(0, targetY)
         if (smoothScroll?.lenis.value) {
@@ -487,7 +662,16 @@ export function useScrollObserver(
           resizeObserver.disconnect()
           resizeObserver = null
         }
-        logDiag(`🎉 Initial restoration complete for #${targetOnMount}. Passive scroll sync is now active.`)
+        logNavigationTrace({
+          source: 'useScrollObserver:finishRestoration',
+          action: 'RESTORATION_COMPLETE',
+          previousRoute: router.currentRoute.value.path,
+          previousActiveSection: activeSection.value,
+          currentScrollY: getScrollY(),
+          reason: `Initial restoration completed via trigger [${trigger}]. Passive scroll sync is now active.`,
+          isRestoringRoute: false,
+          isNavigating: false,
+        })
         checkScrollState()
       }
 
@@ -545,9 +729,10 @@ export function useScrollObserver(
     }
   })
 
-  // Development Diagnostic Support (window.__PORTFOLIO_DIAGNOSTICS__)
+  // Development Diagnostic Support (window.__PORTFOLIO_DIAGNOSTICS__ & window.__PORTFOLIO_NAV_TRACE__)
   if (typeof window !== 'undefined' && import.meta.env.DEV) {
-    (window as unknown as { __PORTFOLIO_DIAGNOSTICS__: unknown }).__PORTFOLIO_DIAGNOSTICS__ = {
+    (window as unknown as { __PORTFOLIO_NAV_TRACE__: unknown }).__PORTFOLIO_NAV_TRACE__ = navTraceHistory
+    ;(window as unknown as { __PORTFOLIO_DIAGNOSTICS__: unknown }).__PORTFOLIO_DIAGNOSTICS__ = {
       getRoute: () => router.currentRoute.value.path,
       getSection: () => router.currentRoute.value.meta?.sectionId,
       getActiveSection: () => activeSection.value,
@@ -558,6 +743,7 @@ export function useScrollObserver(
       isModalOpen: () => isAnyModalOpen.value,
       modalLocks: () => activeModalIds.value,
       isLenisStopped: () => Boolean(smoothScroll?.lenis.value?.isStopped),
+      getTraceLog: () => navTraceHistory,
     }
   }
 
