@@ -127,6 +127,30 @@ export interface PrincipleItem {
   iconName: 'Layers' | 'Cpu' | 'ShieldCheck';
 }
 
+export interface AboutCapabilityItem {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+}
+
+export interface AboutPrincipleItem {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+}
+
+export interface AboutContentData {
+  sectionTag: string;
+  headline: string;
+  leadBio: string;
+  storyParagraphs: string[];
+  credentialNote: string;
+  capabilities: AboutCapabilityItem[];
+  principles: AboutPrincipleItem[];
+}
+
 export interface NavItem {
   label: string;
   href: string;
