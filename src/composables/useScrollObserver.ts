@@ -1,5 +1,5 @@
 import { ref, watch, onMounted, onUnmounted, type Ref } from 'vue'
-import router from '@/router'
+import { useRouter, type Router } from 'vue-router'
 import type { SmoothScrollController } from '@/composables/useSmoothScroll'
 
 export interface ScrollObserverState {
@@ -13,8 +13,10 @@ export interface ScrollObserverState {
 
 export function useScrollObserver(
   sectionIds: readonly string[],
-  smoothScroll?: SmoothScrollController
+  smoothScroll?: SmoothScrollController,
+  routerInstance?: Router
 ): ScrollObserverState {
+  const router = routerInstance || useRouter()
   const getInitialTarget = (): string => {
     if (typeof window === 'undefined') return 'home'
 
@@ -437,6 +439,14 @@ export function useScrollObserver(
     }
   })
 
+  // Development Diagnostic Support (window.__PORTFOLIO_DEBUG__)
+  if (typeof window !== 'undefined' && import.meta.env.DEV) {
+    (window as unknown as { __PORTFOLIO_DEBUG__: unknown }).__PORTFOLIO_DEBUG__ = {
+      getRoute: () => router.currentRoute.value.path,
+      getSection: () => router.currentRoute.value.meta?.sectionId,
+    }
+  }
+
   return {
     isScrolled,
     activeSection,
@@ -444,13 +454,5 @@ export function useScrollObserver(
     scrollToSection,
     goToNextRoute,
     goToPrevRoute,
-  }
-}
-
-// Development Diagnostic Support (window.__PORTFOLIO_DEBUG__)
-if (typeof window !== 'undefined' && import.meta.env.DEV) {
-  (window as unknown as { __PORTFOLIO_DEBUG__: unknown }).__PORTFOLIO_DEBUG__ = {
-    getRoute: () => router.currentRoute.value.path,
-    getSection: () => router.currentRoute.value.meta?.sectionId,
   }
 }

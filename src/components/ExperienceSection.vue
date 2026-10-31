@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 import { EXPERIENCES } from '@/data/portfolioData';
 import type { ExperienceCertificate } from '@/types/portfolio';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
@@ -47,6 +48,16 @@ const isZoomed = ref<boolean>(false);
 const modalRef = ref<HTMLDivElement | null>(null);
 const closeButtonRef = ref<HTMLButtonElement | null>(null);
 let lastFocusedElement: HTMLElement | null = null;
+
+const route = useRoute();
+watch(
+  () => route?.path,
+  (newPath, oldPath) => {
+    if (newPath !== oldPath && isModalOpen.value) {
+      closeCertificate();
+    }
+  },
+);
 
 // Track failed images to fallback to clean document placeholder
 const failedImages = ref<Set<string>>(new Set());

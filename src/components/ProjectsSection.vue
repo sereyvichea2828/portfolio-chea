@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
+import { useRoute } from 'vue-router';
 import { PROJECTS } from '@/data/portfolioData';
 import type { Project } from '@/types/portfolio';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import router from '@/router';
 import ProjectPreview from '@/components/ProjectPreview.vue';
 import { ArrowUpRight, ArrowRight, Github, ChevronDown, Check } from 'lucide-vue-next';
 
@@ -179,12 +179,16 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 const selectedCaseStudy = ref<Project | null>(null);
 const isModalOpen = ref<boolean>(false);
 
+const route = useRoute();
 // Automatically close case study modal if route changes
-router.afterEach((to, from) => {
-  if (to.path !== from.path && isModalOpen.value) {
-    closeCaseStudy();
-  }
-});
+watch(
+  () => route?.path,
+  (newPath, oldPath) => {
+    if (newPath !== oldPath && isModalOpen.value) {
+      closeCaseStudy();
+    }
+  },
+);
 
 const openCaseStudy = (project: Project): void => {
   selectedCaseStudy.value = project;
