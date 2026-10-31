@@ -115,7 +115,8 @@ router.afterEach((to, from) => {
   if (typeof document !== 'undefined' && to.meta && typeof to.meta.title === 'string') {
     document.title = to.meta.title;
   }
-  if (from?.meta?.isModalRoute && !to?.meta?.isModalRoute) {
+  // When navigating to a new path, safely clear all active modal locks to prevent stuck scroll
+  if (to.path !== from?.path) {
     const { forceReleaseAllLocks } = useModalState();
     forceReleaseAllLocks();
   }

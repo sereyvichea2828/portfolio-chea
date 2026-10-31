@@ -33,8 +33,11 @@ export function useScrollObserver(
   const isScrolled = ref<boolean>(false)
   const activeSection = ref<string>(getInitialTarget())
   const isNavigating = ref<boolean>(false)
+  const isRestoringRoute = ref<boolean>(false)
+  const isPassiveScrollSync = ref<boolean>(false)
 
   let scrollTicking = false
+  let urlSyncTimeout: ReturnType<typeof setTimeout> | null = null
   let navLockTimeout: ReturnType<typeof setTimeout> | null = null
   let routerCleanup: (() => void) | null = null
   let stopLenisWatch: (() => void) | null = null
@@ -47,6 +50,42 @@ export function useScrollObserver(
     return window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
   }
 
+  const syncUrlToActiveSection = (newSectionId: string): void => {
+    if (urlSyncTimeout) {
+      clearTimeout(urlSyncTimeout)
+      urlSyncTimeout = null
+    }
+
+    urlSyncTimeout = setTimeout(() => {
+      if (isNavigating.value || isRestoringRoute.value) return
+      if (typeof document !== 'undefined' && document.body.classList.contains('overflow-hidden')) return
+
+      const targetPath = newSectionId === 'home' ? '/' : `/${newSectionId}`
+      const currentRoute = router.currentRoute.value
+      const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
+
+      if (!isModalRoute && currentRoute.path !== targetPath) {
+        isPassiveScrollSync.value = true
+        router
+          .replace({
+            path: targetPath,
+            query: currentRoute.query,
+            hash: currentRoute.hash,
+          })
+          .catch(() => {})
+          .finally(() => {
+            if (typeof window !== 'undefined') {
+              window.requestAnimationFrame(() => {
+                isPassiveScrollSync.value = false
+              })
+            } else {
+              isPassiveScrollSync.value = false
+            }
+          })
+      }
+    }, 100)
+  }
+
   const checkScrollState = (): void => {
     if (typeof window === 'undefined') {
       scrollTicking = false
@@ -54,63 +93,52 @@ export function useScrollObserver(
     }
 
     const scrollY = getScrollY()
-    // Immediate threshold: switches navbar to full-width edge-to-edge as soon as scrolling starts
     isScrolled.value = scrollY > 15
 
-    // Pause section ID computation only when programmatic scroll animation is active
-    if (isNavigating.value) {
+    // Pause section ID computation during programmatic scroll or route restoration
+    if (isNavigating.value || isRestoringRoute.value) {
       scrollTicking = false
       return
     }
 
-    // Stable activation threshold (40% down the viewport)
-    const viewportThreshold = scrollY + window.innerHeight * 0.40
+    // Pause section ID computation if an overlay modal is open
+    if (document.body.classList.contains('overflow-hidden')) {
+      scrollTicking = false
+      return
+    }
+
+    const innerHeight = window.innerHeight
+    const scrollHeight = document.documentElement.scrollHeight
     let candidateId = activeSection.value
 
-    // Hysteresis boundary: If current active section still comfortably spans the viewport threshold
-    // with a 60px buffer, keep it active to avoid repeated activation near section borders
-    const currentActiveEl = document.getElementById(activeSection.value)
-    if (currentActiveEl) {
-      const rect = currentActiveEl.getBoundingClientRect()
-      const top = rect.top + (window.scrollY || window.pageYOffset)
-      const bottom = top + currentActiveEl.offsetHeight
-      if (viewportThreshold >= top - 60 && viewportThreshold < bottom - 60) {
-        scrollTicking = false
-        return
-      }
+    // 1. Extreme boundary: Top of page
+    if (scrollY <= 50) {
+      candidateId = 'home'
     }
-
-    // Scan sections from bottom to top to identify the centered section
-    for (let i = sectionIds.length - 1; i >= 0; i--) {
-      const id = sectionIds[i]
-      if (!id) continue
-      const element = document.getElementById(id)
-      if (element) {
-        const elementTop = element.getBoundingClientRect().top + (window.scrollY || window.pageYOffset)
-        if (viewportThreshold >= elementTop - 20) {
-          candidateId = id
-          break
-        }
-      }
+    // 2. Extreme boundary: Bottom of page
+    else if (scrollY + innerHeight >= scrollHeight - 50) {
+      candidateId = sectionIds[sectionIds.length - 1] || 'contact'
     }
-
-    if (candidateId !== activeSection.value) {
-      activeSection.value = candidateId
-      // Decouple section highlighting from route churning:
-      // Silently update browser address bar without wiping Vue Router's history state
-      const targetPath = candidateId === 'home' ? '/' : `/${candidateId}`
-      if (typeof window !== 'undefined' && window.location.pathname !== targetPath) {
-        const currentRoute = router.currentRoute.value
-        const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
-        if (!isModalRoute) {
-          const nextState = window.history.state ? { ...window.history.state, current: targetPath } : null
-          window.history.replaceState(nextState, '', targetPath)
-          const matchedRoute = router.getRoutes().find((r) => r.meta?.sectionId === candidateId)
-          if (matchedRoute?.meta?.title && typeof matchedRoute.meta.title === 'string') {
-            document.title = matchedRoute.meta.title
+    // 3. In-between sections: Stable 35% viewport threshold
+    else {
+      const viewportThreshold = scrollY + innerHeight * 0.35
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i]
+        if (!id) continue
+        const element = document.getElementById(id)
+        if (element) {
+          const top = element.getBoundingClientRect().top + scrollY
+          if (viewportThreshold >= top - 20) {
+            candidateId = id
+            break
           }
         }
       }
+    }
+
+    if (candidateId && candidateId !== activeSection.value) {
+      activeSection.value = candidateId
+      syncUrlToActiveSection(candidateId)
     }
 
     scrollTicking = false
@@ -147,12 +175,23 @@ export function useScrollObserver(
     if (Math.abs(targetY - currentY) < 12) {
       if (updateUrl) {
         const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
-        if (router.currentRoute.value.path !== targetPath || window.location.pathname !== targetPath) {
+        if (router.currentRoute.value.path !== targetPath) {
           if (pushHistory) {
-            router.push(targetPath).catch(() => {})
+            router.push({ path: targetPath, query: router.currentRoute.value.query }).catch(() => {})
           } else {
-            const nextState = window.history.state ? { ...window.history.state, current: targetPath } : null
-            window.history.replaceState(nextState, '', targetPath)
+            isPassiveScrollSync.value = true
+            router
+              .replace({ path: targetPath, query: router.currentRoute.value.query })
+              .catch(() => {})
+              .finally(() => {
+                if (typeof window !== 'undefined') {
+                  window.requestAnimationFrame(() => {
+                    isPassiveScrollSync.value = false
+                  })
+                } else {
+                  isPassiveScrollSync.value = false
+                }
+              })
           }
         }
       }
@@ -163,12 +202,23 @@ export function useScrollObserver(
 
     if (updateUrl) {
       const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
-      if (router.currentRoute.value.path !== targetPath || window.location.pathname !== targetPath) {
+      if (router.currentRoute.value.path !== targetPath) {
         if (pushHistory) {
-          router.push(targetPath).catch(() => {})
+          router.push({ path: targetPath, query: router.currentRoute.value.query }).catch(() => {})
         } else {
-          const nextState = window.history.state ? { ...window.history.state, current: targetPath } : null
-          window.history.replaceState(nextState, '', targetPath)
+          isPassiveScrollSync.value = true
+          router
+            .replace({ path: targetPath, query: router.currentRoute.value.query })
+            .catch(() => {})
+            .finally(() => {
+              if (typeof window !== 'undefined') {
+                window.requestAnimationFrame(() => {
+                  isPassiveScrollSync.value = false
+                })
+              } else {
+                isPassiveScrollSync.value = false
+              }
+            })
         }
       }
     }
@@ -244,7 +294,7 @@ export function useScrollObserver(
     }
   }
 
-  onMounted(() => {
+  onMounted(async () => {
     if (typeof window === 'undefined') return
 
     // Prevent browser from restoring stale scroll coordinates before layout completes
@@ -273,6 +323,11 @@ export function useScrollObserver(
     routerCleanup = router.afterEach((to, from) => {
       if (to.path === from.path && to.hash === from.hash) return
 
+      // If route change was triggered passively by user scrolling, do not command Lenis to scroll!
+      if (isPassiveScrollSync.value) {
+        return
+      }
+
       const hashTarget = to.hash ? to.hash.replace('#', '').replace('/', '') : ''
       const pathTarget = (to.meta?.sectionId as string) || to.path.replace(/^\//, '').split('/')[0] || ''
       const target = (sectionIds.includes(hashTarget) ? hashTarget : '') ||
@@ -284,12 +339,16 @@ export function useScrollObserver(
       }
     })
 
+    // Wait for router readiness to ensure initial route resolution is 100% complete
+    await router.isReady()
+
     // Resolve initial target section from URL path, hash, or current route
     const initialTarget = getInitialTarget()
 
     if (initialTarget !== 'home') {
       activeSection.value = initialTarget
       isNavigating.value = true
+      isRestoringRoute.value = true
 
       const alignToTarget = (): boolean => {
         const el = document.getElementById(initialTarget)
@@ -312,7 +371,7 @@ export function useScrollObserver(
       // Initial alignment attempt
       alignToTarget()
 
-      // Calibrate across rendering frames to handle async components and font settlement
+      // Multi-frame calibration to account for fonts, layout, and images
       let attempts = 0
       const maxAttempts = 15
       const pollTarget = (): void => {
@@ -320,6 +379,7 @@ export function useScrollObserver(
         alignToTarget()
         if (attempts >= maxAttempts) {
           isNavigating.value = false
+          isRestoringRoute.value = false
           checkScrollState()
         } else {
           setTimeout(pollTarget, 40)
@@ -330,19 +390,19 @@ export function useScrollObserver(
         pollTarget()
       })
 
-      if (typeof window !== 'undefined') {
-        window.addEventListener(
-          'load',
-          () => {
-            alignToTarget()
-            isNavigating.value = false
-            checkScrollState()
-          },
-          { once: true },
-        )
-      }
+      window.addEventListener(
+        'load',
+        () => {
+          alignToTarget()
+          isNavigating.value = false
+          isRestoringRoute.value = false
+          checkScrollState()
+        },
+        { once: true },
+      )
     } else {
       activeSection.value = 'home'
+      isRestoringRoute.value = false
       checkScrollState()
     }
   })
@@ -351,6 +411,11 @@ export function useScrollObserver(
     if (typeof window === 'undefined') return
     window.removeEventListener('scroll', handleScroll)
     window.removeEventListener('keydown', handleKeyDown)
+
+    if (urlSyncTimeout) {
+      clearTimeout(urlSyncTimeout)
+      urlSyncTimeout = null
+    }
 
     if (stopLenisWatch) {
       stopLenisWatch()
@@ -379,5 +444,13 @@ export function useScrollObserver(
     scrollToSection,
     goToNextRoute,
     goToPrevRoute,
+  }
+}
+
+// Development Diagnostic Support (window.__PORTFOLIO_DEBUG__)
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
+  (window as unknown as { __PORTFOLIO_DEBUG__: unknown }).__PORTFOLIO_DEBUG__ = {
+    getRoute: () => router.currentRoute.value.path,
+    getSection: () => router.currentRoute.value.meta?.sectionId,
   }
 }

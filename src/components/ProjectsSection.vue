@@ -4,7 +4,7 @@ import { PROJECTS } from '@/data/portfolioData';
 import type { Project } from '@/types/portfolio';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import { useModalState } from '@/composables/useModalState';
+import router from '@/router';
 import ProjectPreview from '@/components/ProjectPreview.vue';
 import { ArrowUpRight, ArrowRight, Github, ChevronDown, Check } from 'lucide-vue-next';
 
@@ -16,7 +16,6 @@ const emit = defineEmits<{
 
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
-const { registerModal } = useModalState();
 
 const handleNavigate = (targetId: string): void => {
   if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
@@ -127,7 +126,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  registerModal('project-case-study', false);
   if (typeof window !== 'undefined') {
     document.removeEventListener('click', handleClickOutside);
   }
@@ -181,8 +179,11 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 const selectedCaseStudy = ref<Project | null>(null);
 const isModalOpen = ref<boolean>(false);
 
-watch(isModalOpen, (isOpen) => {
-  registerModal('project-case-study', isOpen);
+// Automatically close case study modal if route changes
+router.afterEach((to, from) => {
+  if (to.path !== from.path && isModalOpen.value) {
+    closeCaseStudy();
+  }
 });
 
 const openCaseStudy = (project: Project): void => {
@@ -203,19 +204,17 @@ const closeCaseStudy = (): void => {
     class="py-12 sm:py-16 lg:py-20 relative z-10 scroll-mt-24"
   >
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- 1. Original Editorial Section Header -->
-      <div class="projects-header mb-8 sm:mb-10 lg:mb-12">
+      <!-- 1. Section Header (Standardized Editorial Hierarchy) -->
+      <div class="projects-header max-w-3xl mb-10 sm:mb-12 lg:mb-16 space-y-2.5">
         <p class="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
           ស្នាដៃដែលខ្ញុំបានបង្កើតឡើង
         </p>
         <h2
-          class="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-slate-900 font-heading leading-normal sm:leading-snug tracking-normal"
+          class="text-2xl sm:text-3xl lg:text-4xl xl:text-[40px] font-extrabold text-slate-900 leading-[1.3] font-heading tracking-normal"
         >
           គម្រោងដែលខ្ញុំបានបង្កើត
         </h2>
-        <p
-          class="text-base sm:text-lg text-slate-600 mt-2.5 max-w-2xl font-normal leading-relaxed text-pretty"
-        >
+        <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal text-pretty">
           កម្មវិធីដែលបានដាក់ឱ្យប្រើប្រាស់ជាក់ស្តែង និងដំណោះស្រាយបច្ចេកវិទ្យាដែលដោះស្រាយបញ្ហាពិត។
         </p>
       </div>

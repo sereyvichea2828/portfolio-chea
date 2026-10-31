@@ -19,14 +19,12 @@ import ExperienceSection from '@/components/ExperienceSection.vue';
 import ProcessSection from '@/components/ProcessSection.vue';
 import ContactSection from '@/components/ContactSection.vue';
 import type { SmoothScrollController } from '@/composables/useSmoothScroll';
-import { useModalState } from '@/composables/useModalState';
 
 // Overlay modals (lazy-loaded upon request)
 const ResumeModal = defineAsyncComponent(() => import('@/components/ResumeModal.vue'));
 
 const router = useRouter();
 const route = useRoute();
-const { registerModal } = useModalState();
 
 const isResumeModalOpen = ref<boolean>(false);
 const previousPath = ref<string>('/');
@@ -65,14 +63,6 @@ watch(
   },
   { immediate: true },
 );
-
-watch(isResumeModalOpen, (isOpen) => {
-  registerModal('resume', isOpen);
-});
-
-onUnmounted(() => {
-  registerModal('resume', false);
-});
 
 const handleNavigate = (sectionId: string): void => {
   const cleanId = sectionId.replace('#', '').replace('/', '') || 'home';
