@@ -81,21 +81,27 @@ const handleNavigate = (targetId: string): void => {
 
 <template>
   <section id="about" ref="sectionRef" class="py-16 sm:py-20 lg:py-24 relative z-10 scroll-mt-24">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- 1. Section Header -->
-      <div class="about-header mb-12 sm:mb-16 space-y-3">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- 1. Section Header (Standardized Editorial Hierarchy) -->
+      <div class="about-header max-w-3xl mb-12 sm:mb-16 space-y-2.5">
         <p class="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
           {{ ABOUT_CONTENT.sectionTag }}
         </p>
         <h2
-          class="text-2xl sm:text-3xl lg:text-[38px] font-extrabold text-slate-900 leading-snug sm:leading-snug font-heading tracking-normal"
+          class="text-2xl sm:text-3xl lg:text-4xl xl:text-[40px] font-extrabold text-slate-900 leading-[1.3] font-heading tracking-normal"
         >
           {{ ABOUT_CONTENT.headline }}
         </h2>
+        <p
+          v-if="ABOUT_CONTENT.subheadline"
+          class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal"
+        >
+          {{ ABOUT_CONTENT.subheadline }}
+        </p>
       </div>
 
       <!-- 2. Personal Story (Core Focus: Completely Unboxed, Typography-Led) -->
-      <div class="about-story mb-16 sm:mb-20 space-y-6">
+      <div class="about-story max-w-4xl mb-16 sm:mb-20 space-y-6">
         <p class="text-lg sm:text-xl lg:text-2xl font-medium text-slate-900 leading-relaxed font-heading">
           {{ ABOUT_CONTENT.leadBio }}
         </p>
@@ -112,7 +118,7 @@ const handleNavigate = (targetId: string): void => {
       </div>
 
       <!-- 3. Two Editorial Chapters (Unboxed, Pure Spacing & Typography) -->
-      <div class="about-body space-y-16 sm:space-y-20">
+      <div class="about-body max-w-4xl space-y-16 sm:space-y-20">
         <!-- Chapter A: Knowledge & Experience -->
         <div class="space-y-8 sm:space-y-10">
           <div class="space-y-1.5">

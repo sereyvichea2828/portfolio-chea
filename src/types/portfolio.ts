@@ -142,6 +142,7 @@ export interface AboutPrincipleItem {
 export interface AboutContentData {
   sectionTag: string;
   headline: string;
+  subheadline?: string;
   leadBio: string;
   storyParagraphs: string[];
   credentialNote: string;
