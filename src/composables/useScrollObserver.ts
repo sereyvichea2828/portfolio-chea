@@ -1,14 +1,27 @@
 import { ref, watch, onMounted, onUnmounted, nextTick, type Ref } from 'vue'
 import { useRouter, type Router } from 'vue-router'
 import type { SmoothScrollController } from '@/composables/useSmoothScroll'
+import { useModalState } from '@/composables/useModalState'
 
 export interface ScrollObserverState {
   isScrolled: Ref<boolean>
   activeSection: Ref<string>
   isNavigating: Ref<boolean>
-  scrollToSection: (sectionId: string, updateUrl?: boolean, pushHistory?: boolean) => void
+  scrollToSection: (sectionId: string, updateUrl?: boolean, pushHistory?: boolean, source?: string) => void
   goToNextRoute: () => void
   goToPrevRoute: () => void
+}
+
+function logDiag(action: string, details?: Record<string, unknown>): void {
+  if (!import.meta.env.DEV) return
+  const now = new Date()
+  const time = `${now.toTimeString().split(' ')[0]}.${String(now.getMilliseconds()).padStart(3, '0')}`
+  console.log(
+    `%c[${time}] [ScrollEngine] %c${action}`,
+    'color: #6366F1; font-weight: bold;',
+    'color: #0F172A; font-weight: 500;',
+    details ?? ''
+  )
 }
 
 export function useScrollObserver(
@@ -17,6 +30,7 @@ export function useScrollObserver(
   routerInstance?: Router
 ): ScrollObserverState {
   const router = routerInstance || useRouter()
+  const { isAnyModalOpen, activeModalIds } = useModalState()
 
   const getInitialTarget = (): string => {
     if (typeof window === 'undefined') return 'home'
@@ -49,21 +63,33 @@ export function useScrollObserver(
   let stopLenisWatch: (() => void) | null = null
   let navigatingToTargetId: string | null = null
   let resizeObserver: ResizeObserver | null = null
+  let isPopStateNavigation = false
 
   const getScrollY = (): number => {
     if (typeof window === 'undefined') return 0
-    if (smoothScroll?.lenis.value?.scroll !== undefined) {
-      return smoothScroll.lenis.value.scroll
+    const nativeY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+    const lenisY = smoothScroll?.lenis.value?.scroll
+    // Guard against desynchronized 0 when window is actually scrolled
+    if (lenisY !== undefined && !Number.isNaN(lenisY)) {
+      return Math.max(nativeY, lenisY)
     }
-    return window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+    return nativeY
   }
 
   // Release programmatic navigation lock instantly when the user rolls mouse wheel or touches screen
-  const onUserManualIntervention = (): void => {
+  const onUserManualIntervention = (e?: Event): void => {
     if (isRestoringRoute.value) {
+      logDiag('🖐️ User manual scroll intervened during initial restoration. Unfreezing.', {
+        eventType: e?.type,
+        scrollY: getScrollY(),
+      })
       isRestoringRoute.value = false
     }
     if (isNavigating.value) {
+      logDiag('🖐️ User manual scroll intervened during navigation lock. Unlocking.', {
+        eventType: e?.type,
+        activeSection: activeSection.value,
+      })
       isNavigating.value = false
       navigatingToTargetId = null
       if (navLockTimeout) {
@@ -80,7 +106,14 @@ export function useScrollObserver(
     }
 
     urlSyncTimeout = setTimeout(() => {
-      if (isNavigating.value || isRestoringRoute.value) return
+      if (isNavigating.value || isRestoringRoute.value) {
+        logDiag('⏸️ syncUrlToActiveSection skipped (restoring or navigating)', {
+          isNavigating: isNavigating.value,
+          isRestoringRoute: isRestoringRoute.value,
+          attemptedSection: newSectionId,
+        })
+        return
+      }
       if (typeof document !== 'undefined' && document.body.classList.contains('overflow-hidden')) return
 
       const targetPath = newSectionId === 'home' ? '/' : `/${newSectionId}`
@@ -88,13 +121,18 @@ export function useScrollObserver(
       const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
 
       if (!isModalRoute && currentRoute.path !== targetPath) {
+        logDiag(`🔄 syncUrlToActiveSection -> replace route to "${targetPath}"`, {
+          previousPath: currentRoute.path,
+          newSectionId,
+          scrollY: getScrollY(),
+        })
+
         isPassiveScrollSync.value = true
         router
           .replace({
             path: targetPath,
             query: currentRoute.query,
             hash: currentRoute.hash,
-            state: { ...window.history.state, scrollSync: true },
           })
           .catch(() => {})
           .finally(() => {
@@ -107,7 +145,7 @@ export function useScrollObserver(
             }
           })
       }
-    }, 80)
+    }, 90)
   }
 
   const checkScrollState = (): void => {
@@ -166,6 +204,10 @@ export function useScrollObserver(
     }
 
     if (candidateId && candidateId !== activeSection.value) {
+      logDiag(`📍 Active section changed: "${activeSection.value}" -> "${candidateId}"`, {
+        scrollY,
+        candidateId,
+      })
       activeSection.value = candidateId
       syncUrlToActiveSection(candidateId)
     }
@@ -180,13 +222,21 @@ export function useScrollObserver(
     }
   }
 
-  const scrollToSection = (sectionId: string, updateUrl = true, pushHistory = true): void => {
+  const scrollToSection = (
+    sectionId: string,
+    updateUrl = true,
+    pushHistory = true,
+    source = 'unknown'
+  ): void => {
     if (typeof window === 'undefined') return
 
     const cleanId = sectionId.replace('#', '').replace('/', '') || 'home'
     const targetElement = document.getElementById(cleanId)
 
-    if (!targetElement) return
+    if (!targetElement) {
+      logDiag(`⚠️ scrollToSection target element not found: #${cleanId}`)
+      return
+    }
 
     // Immediately blur clicked element to prevent stuck focus outline
     if (document.activeElement instanceof HTMLElement) {
@@ -201,6 +251,14 @@ export function useScrollObserver(
     const elementTop = targetElement.getBoundingClientRect().top + (window.scrollY || window.pageYOffset)
     const targetY = Math.max(0, cleanId === 'home' ? 0 : elementTop - navOffset)
 
+    logDiag(`🚀 scrollToSection -> #${cleanId}`, {
+      source,
+      targetY,
+      currentScrollY: getScrollY(),
+      updateUrl,
+      pushHistory,
+    })
+
     if (updateUrl) {
       const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
       if (router.currentRoute.value.path !== targetPath) {
@@ -209,7 +267,7 @@ export function useScrollObserver(
         } else {
           isPassiveScrollSync.value = true
           router
-            .replace({ path: targetPath, query: router.currentRoute.value.query, state: { ...window.history.state, scrollSync: true } })
+            .replace({ path: targetPath, query: router.currentRoute.value.query })
             .catch(() => {})
             .finally(() => {
               if (typeof window !== 'undefined') {
@@ -225,6 +283,9 @@ export function useScrollObserver(
     }
 
     const onScrollFinished = (): void => {
+      logDiag(`✅ scrollToSection finished -> #${cleanId}`, {
+        finalScrollY: getScrollY(),
+      })
       isNavigating.value = false
       navigatingToTargetId = null
       if (navLockTimeout) {
@@ -263,7 +324,7 @@ export function useScrollObserver(
     if (currentIndex >= 0 && currentIndex < sectionIds.length - 1) {
       const nextId = sectionIds[currentIndex + 1]
       if (nextId) {
-        scrollToSection(nextId)
+        scrollToSection(nextId, true, true, 'key-pagedown')
       }
     }
   }
@@ -273,7 +334,7 @@ export function useScrollObserver(
     if (currentIndex > 0) {
       const prevId = sectionIds[currentIndex - 1]
       if (prevId) {
-        scrollToSection(prevId)
+        scrollToSection(prevId, true, true, 'key-pageup')
       }
     }
   }
@@ -296,8 +357,21 @@ export function useScrollObserver(
     }
   }
 
+  const handlePopState = (): void => {
+    isPopStateNavigation = true
+    logDiag('⬅️➡️ Browser popstate event fired (Back/Forward navigation)')
+  }
+
   onMounted(async () => {
     if (typeof window === 'undefined') return
+
+    logDiag('🎬 useScrollObserver onMounted', {
+      initialTarget,
+      pathname: window.location.pathname,
+      scrollY: window.scrollY,
+      activeSection: activeSection.value,
+      isRestoringRoute: isRestoringRoute.value,
+    })
 
     // Prevent browser from restoring stale scroll coordinates before layout completes
     if ('scrollRestoration' in window.history) {
@@ -308,6 +382,7 @@ export function useScrollObserver(
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('wheel', onUserManualIntervention, { passive: true })
     window.addEventListener('touchmove', onUserManualIntervention, { passive: true })
+    window.addEventListener('popstate', handlePopState)
 
     // Synchronize directly with Lenis smooth-scroll updates
     stopLenisWatch = watch(
@@ -323,14 +398,24 @@ export function useScrollObserver(
       { immediate: true },
     )
 
-    // Synchronize route changes from programmatic navigation or history traversal (Back/Forward)
+    // Synchronize route changes from true browser history traversal (Back/Forward buttons ONLY)
+    // CRITICAL: NEVER command Lenis to scroll during internal passive route synchronization!
     routerCleanup = router.afterEach((to, from) => {
+      logDiag('🧭 router.afterEach fired', {
+        toPath: to.path,
+        fromPath: from?.path,
+        isPopStateNavigation,
+        isPassiveScrollSync: isPassiveScrollSync.value,
+        navigatingToTargetId,
+      })
+
       if (to.path === from.path && to.hash === from.hash) return
 
-      // Skip scroll if route update was passively triggered by user scrolling
-      if (isPassiveScrollSync.value || (window.history.state as { scrollSync?: boolean })?.scrollSync) {
+      // ONLY command smooth scroll if this navigation was genuinely triggered by browser Back/Forward!
+      if (!isPopStateNavigation) {
         return
       }
+      isPopStateNavigation = false
 
       const hashTarget = to.hash ? to.hash.replace('#', '').replace('/', '') : ''
       const pathTarget = (to.meta?.sectionId as string) || to.path.replace(/^\//, '').split('/')[0] || ''
@@ -338,13 +423,8 @@ export function useScrollObserver(
                      (sectionIds.includes(pathTarget) ? pathTarget : '') ||
                      'home'
 
-      // Skip re-triggering if scrollToSection is already actively navigating to this exact target
-      if (navigatingToTargetId === target) {
-        return
-      }
-
       if (sectionIds.includes(target)) {
-        scrollToSection(target, false, false)
+        scrollToSection(target, false, false, 'browser-popstate')
       }
     })
 
@@ -360,12 +440,19 @@ export function useScrollObserver(
       isNavigating.value = true
       isRestoringRoute.value = true
 
-      const alignToTarget = (): boolean => {
+      logDiag(`🎯 Beginning initial section restoration to #${targetOnMount}`)
+
+      const alignToTarget = (reason = 'align'): boolean => {
         const el = document.getElementById(targetOnMount)
-        if (!el) return false
+        if (!el) {
+          logDiag(`⚠️ alignToTarget: element #${targetOnMount} not found`)
+          return false
+        }
         const navOffset = 88
         const currentScrollY = window.scrollY || window.pageYOffset
         const targetY = Math.max(0, el.getBoundingClientRect().top + currentScrollY - navOffset)
+
+        logDiag(`📐 alignToTarget [${reason}] -> targetY: ${targetY}, currentY: ${currentScrollY}`)
 
         window.scrollTo(0, targetY)
         if (smoothScroll?.lenis.value) {
@@ -379,34 +466,35 @@ export function useScrollObserver(
       }
 
       // Initial alignment attempt
-      alignToTarget()
+      alignToTarget('initial-mount')
 
       // Watch for layout expansion (images, fonts, dynamic DOM) during restoration
       if (typeof ResizeObserver !== 'undefined' && document.body) {
         resizeObserver = new ResizeObserver(() => {
           if (isRestoringRoute.value) {
-            alignToTarget()
+            alignToTarget('resize-observer')
           }
         })
         resizeObserver.observe(document.body)
       }
 
-      const finishRestoration = (): void => {
+      const finishRestoration = (trigger = 'settle'): void => {
         if (!isRestoringRoute.value) return
-        alignToTarget()
+        alignToTarget(`finish-${trigger}`)
         isNavigating.value = false
         isRestoringRoute.value = false
         if (resizeObserver) {
           resizeObserver.disconnect()
           resizeObserver = null
         }
+        logDiag(`🎉 Initial restoration complete for #${targetOnMount}. Passive scroll sync is now active.`)
         checkScrollState()
       }
 
       // Allow 450ms for layout settlement before unfreezing normal scroll detection
-      restoreTimeout = setTimeout(finishRestoration, 450)
+      restoreTimeout = setTimeout(() => finishRestoration('timeout-450ms'), 450)
 
-      window.addEventListener('load', finishRestoration, { once: true })
+      window.addEventListener('load', () => finishRestoration('window-load'), { once: true })
     } else {
       activeSection.value = 'home'
       isRestoringRoute.value = false
@@ -420,6 +508,7 @@ export function useScrollObserver(
     window.removeEventListener('keydown', handleKeyDown)
     window.removeEventListener('wheel', onUserManualIntervention)
     window.removeEventListener('touchmove', onUserManualIntervention)
+    window.removeEventListener('popstate', handlePopState)
 
     if (urlSyncTimeout) {
       clearTimeout(urlSyncTimeout)
@@ -466,6 +555,9 @@ export function useScrollObserver(
       isRestoringRoute: () => isRestoringRoute.value,
       isPassiveScrollSync: () => isPassiveScrollSync.value,
       getScrollY: () => getScrollY(),
+      isModalOpen: () => isAnyModalOpen.value,
+      modalLocks: () => activeModalIds.value,
+      isLenisStopped: () => Boolean(smoothScroll?.lenis.value?.isStopped),
     }
   }
 

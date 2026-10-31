@@ -22,6 +22,18 @@ export interface ModalStateController {
   syncScrollState: () => void
 }
 
+function logLock(action: string, details?: unknown): void {
+  if (!import.meta.env.DEV) return
+  const now = new Date()
+  const time = `${now.toTimeString().split(' ')[0]}.${String(now.getMilliseconds()).padStart(3, '0')}`
+  console.log(
+    `%c[${time}] [ScrollLock] %c${action}`,
+    'color: #EC4899; font-weight: bold;',
+    'color: #0F172A; font-weight: 500;',
+    details ?? '',
+  )
+}
+
 function updatePhysicalScrollLock(): void {
   if (typeof document === 'undefined') return
 
@@ -35,11 +47,10 @@ function updatePhysicalScrollLock(): void {
       document.documentElement.classList.add('lenis-stopped')
       stopGlobalLenis()
 
-      if (import.meta.env.DEV) {
-        console.log(
-          `[ScrollLock] 🔒 LOCKED by: [${Array.from(activeModals.value).join(', ')}] | Active locks: ${activeModals.value.size} | Lenis: ${lenis ? 'stopped' : 'not initialized'}`
-        )
-      }
+      logLock(`🔒 LOCKED by: [${Array.from(activeModals.value).join(', ')}]`, {
+        activeLocks: Array.from(activeModals.value),
+        lenisState: lenis?.isStopped ? 'stopped' : 'running',
+      })
     }
   } else {
     // When all active locks are released (count drops to 0):
@@ -53,9 +64,7 @@ function updatePhysicalScrollLock(): void {
       document.documentElement.classList.remove('lenis-stopped')
       startGlobalLenis()
 
-      if (import.meta.env.DEV) {
-        console.log(`[ScrollLock] 🔓 UNLOCKED. All locks released. Lenis resumed naturally.`)
-      }
+      logLock('🔓 UNLOCKED. All locks released. Lenis resumed.')
     }
   }
 }
