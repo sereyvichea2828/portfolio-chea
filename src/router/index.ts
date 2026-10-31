@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
-import { nextTick } from 'vue';
 import HomeView from '../views/HomeView.vue';
 import { useModalState } from '@/composables/useModalState';
 
@@ -89,46 +88,29 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
-  scrollBehavior: async (to, _from, savedPosition) => {
-    if (savedPosition) {
-      return savedPosition;
-    }
-
-    if (to.hash) {
-      return {
-        el: to.hash,
-        top: -88,
-        behavior: 'smooth',
-      };
-    }
-
-    const sectionId = typeof to.meta.sectionId === 'string' ? to.meta.sectionId : null;
-
-    if (!sectionId || sectionId === 'home') {
-      return { top: 0, left: 0 };
-    }
-
-    await nextTick();
-
-    await new Promise<void>((resolve) => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => resolve());
-      });
-    });
-
-    const target = document.getElementById(sectionId);
-
-    if (!target) {
-      console.warn(`[Router] Section "#${sectionId}" was not found. Check the section ID.`);
-      return { top: 0, left: 0 };
-    }
-
-    return {
-      el: target,
-      top: -88,
-      behavior: _from.name == null ? 'auto' : 'smooth',
-    };
+  scrollBehavior: () => {
+    // Disable native browser scroll restoration & smooth scrolling.
+    // Lenis and useScrollObserver provide single-authority smooth scroll coordination.
+    return false;
   },
+});
+
+router.beforeEach((to, _from, next) => {
+  // Normalize trailing slash (except root '/')
+  if (to.path !== '/' && to.path.endsWith('/')) {
+    const cleanPath = to.path.replace(/\/+$/, '');
+    next({ path: cleanPath, hash: to.hash, query: to.query, replace: true });
+    return;
+  }
+
+  // Normalize uppercase paths
+  const lowerPath = to.path.toLowerCase();
+  if (to.path !== lowerPath) {
+    next({ path: lowerPath, hash: to.hash, query: to.query, replace: true });
+    return;
+  }
+
+  next();
 });
 
 router.afterEach((to, from) => {

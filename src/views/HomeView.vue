@@ -41,22 +41,15 @@ const activeSection = inject<Ref<string>>('activeSection');
 const smoothScroll = inject<SmoothScrollController>('smoothScroll');
 
 onMounted(async () => {
-  if (route.path === '/resume') return;
+  // useScrollObserver handles initial section alignment and Lenis coordination.
+  // Fallback only if scrollToSection is not provided and not on a modal route.
+  if (route.path === '/resume' || scrollToSection) return;
 
   const sectionId = typeof route.meta.sectionId === 'string' ? route.meta.sectionId : 'home';
-
   await nextTick();
-
-  requestAnimationFrame(() => {
-    if (scrollToSection) {
-      scrollToSection(sectionId, false, false);
-      return;
-    }
-
-    document.getElementById(sectionId)?.scrollIntoView({
-      behavior: 'auto',
-      block: 'start',
-    });
+  document.getElementById(sectionId)?.scrollIntoView({
+    behavior: 'auto',
+    block: 'start',
   });
 });
 

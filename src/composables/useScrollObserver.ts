@@ -97,13 +97,14 @@ export function useScrollObserver(
     if (candidateId !== activeSection.value) {
       activeSection.value = candidateId
       // Decouple section highlighting from route churning:
-      // Silently update browser address bar without firing heavy Vue Router navigation loops
+      // Silently update browser address bar without wiping Vue Router's history state
       const targetPath = candidateId === 'home' ? '/' : `/${candidateId}`
       if (typeof window !== 'undefined' && window.location.pathname !== targetPath) {
         const currentRoute = router.currentRoute.value
         const isModalRoute = Boolean(currentRoute.meta?.isModalRoute || currentRoute.meta?.hideNavbar)
         if (!isModalRoute) {
-          window.history.replaceState(null, '', targetPath)
+          const nextState = window.history.state ? { ...window.history.state, current: targetPath } : null
+          window.history.replaceState(nextState, '', targetPath)
           const matchedRoute = router.getRoutes().find((r) => r.meta?.sectionId === candidateId)
           if (matchedRoute?.meta?.title && typeof matchedRoute.meta.title === 'string') {
             document.title = matchedRoute.meta.title
@@ -146,11 +147,12 @@ export function useScrollObserver(
     if (Math.abs(targetY - currentY) < 12) {
       if (updateUrl) {
         const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
-        if (window.location.pathname !== targetPath) {
+        if (router.currentRoute.value.path !== targetPath || window.location.pathname !== targetPath) {
           if (pushHistory) {
             router.push(targetPath).catch(() => {})
           } else {
-            window.history.replaceState(null, '', targetPath)
+            const nextState = window.history.state ? { ...window.history.state, current: targetPath } : null
+            window.history.replaceState(nextState, '', targetPath)
           }
         }
       }
@@ -161,11 +163,12 @@ export function useScrollObserver(
 
     if (updateUrl) {
       const targetPath = cleanId === 'home' ? '/' : `/${cleanId}`
-      if (window.location.pathname !== targetPath) {
+      if (router.currentRoute.value.path !== targetPath || window.location.pathname !== targetPath) {
         if (pushHistory) {
           router.push(targetPath).catch(() => {})
         } else {
-          window.history.replaceState(null, '', targetPath)
+          const nextState = window.history.state ? { ...window.history.state, current: targetPath } : null
+          window.history.replaceState(nextState, '', targetPath)
         }
       }
     }
@@ -241,19 +244,6 @@ export function useScrollObserver(
     }
   }
 
-  // Listen to browser Back / Forward buttons natively
-  const handlePopState = (): void => {
-    if (typeof window === 'undefined') return
-    const pathTarget = window.location.pathname.replace(/^\//, '').split('/')[0] || ''
-    const hashTarget = window.location.hash.replace('#', '').replace('/', '')
-    const matched = (sectionIds.includes(hashTarget) ? hashTarget : '') ||
-                    (sectionIds.includes(pathTarget) ? pathTarget : '') ||
-                    'home'
-    if (sectionIds.includes(matched)) {
-      scrollToSection(matched, false, false)
-    }
-  }
-
   onMounted(() => {
     if (typeof window === 'undefined') return
 
@@ -264,7 +254,6 @@ export function useScrollObserver(
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('popstate', handlePopState)
 
     // Synchronize directly with Lenis smooth-scroll updates
     stopLenisWatch = watch(
@@ -280,11 +269,17 @@ export function useScrollObserver(
       { immediate: true },
     )
 
-    // Synchronize route changes from programmatic navigation or history traversal
+    // Synchronize route changes from programmatic navigation or history traversal (Back/Forward)
     routerCleanup = router.afterEach((to, from) => {
-      if (to.path === from.path) return
-      const target = (to.meta?.sectionId as string) || to.path.replace(/^\//, '').split('/')[0] || 'home'
-      if (sectionIds.includes(target) && target !== activeSection.value) {
+      if (to.path === from.path && to.hash === from.hash) return
+
+      const hashTarget = to.hash ? to.hash.replace('#', '').replace('/', '') : ''
+      const pathTarget = (to.meta?.sectionId as string) || to.path.replace(/^\//, '').split('/')[0] || ''
+      const target = (sectionIds.includes(hashTarget) ? hashTarget : '') ||
+                     (sectionIds.includes(pathTarget) ? pathTarget : '') ||
+                     'home'
+
+      if (sectionIds.includes(target)) {
         scrollToSection(target, false, false)
       }
     })
@@ -296,9 +291,9 @@ export function useScrollObserver(
       activeSection.value = initialTarget
       isNavigating.value = true
 
-      const alignToTarget = (): void => {
+      const alignToTarget = (): boolean => {
         const el = document.getElementById(initialTarget)
-        if (!el) return
+        if (!el) return false
         const navOffset = 88
         const currentScrollY = window.scrollY || window.pageYOffset
         const targetY = Math.max(0, el.getBoundingClientRect().top + currentScrollY - navOffset)
@@ -311,22 +306,29 @@ export function useScrollObserver(
             force: true,
           })
         }
+        return true
       }
 
-      // 1. Align immediately on mount
+      // Initial alignment attempt
       alignToTarget()
 
-      // 2. Calibrate on the initial frame
-      requestAnimationFrame(() => {
-        alignToTarget()
-      })
+      // Calibrate across rendering frames to handle async components and font settlement
+      let attempts = 0
+      const maxAttempts = 20
+      const pollTarget = (): void => {
+        attempts++
+        const aligned = alignToTarget()
+        if (aligned || attempts >= maxAttempts) {
+          isNavigating.value = false
+          checkScrollState()
+        } else {
+          setTimeout(pollTarget, 40)
+        }
+      }
 
-      // 3. Final calibration once fonts and dynamic mockup images settle layout heights
-      setTimeout(() => {
-        alignToTarget()
-        isNavigating.value = false
-        checkScrollState()
-      }, 150)
+      requestAnimationFrame(() => {
+        pollTarget()
+      })
     } else {
       activeSection.value = 'home'
       checkScrollState()
@@ -337,7 +339,6 @@ export function useScrollObserver(
     if (typeof window === 'undefined') return
     window.removeEventListener('scroll', handleScroll)
     window.removeEventListener('keydown', handleKeyDown)
-    window.removeEventListener('popstate', handlePopState)
 
     if (stopLenisWatch) {
       stopLenisWatch()
