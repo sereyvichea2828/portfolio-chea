@@ -1,0 +1,41 @@
+# =============================================================================
+# docker-compose.prod.yml — Production Deployment (Explicit File)
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up --build -d
+# =============================================================================
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: ghcr.io/sereyvichea2828/portfolio-chea:latest
+    container_name: portfolio-chea
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 128m
+          cpus: '0.5'
+        reservations:
+          memory: 64m
+          cpus: '0.1'
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+    networks:
+      - proxy-net
+
+networks:
+  proxy-net:
+    external: true

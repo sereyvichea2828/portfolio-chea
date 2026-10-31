@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "golang.go",
+    "llvm-vs-code-extensions.vscode-clangd",
+    "meta.pyrefly",
+    "ms-python.debugpy",
+    "ms-python.python",
+    "ms-python.vscode-python-envs",
+    "oxc.oxc-vscode",
+    "shopify.ruby-lsp",
+    "vue.volar",
+    "yandeu.five-server"
+  ]
+}

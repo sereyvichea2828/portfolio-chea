@@ -1,0 +1,33 @@
+# =============================================================================
+# docker-compose.dev.yml — Development Environment (Live HMR)
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up --build
+# =============================================================================
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: portfolio-chea:dev
+    container_name: portfolio-chea-dev
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "5173:5173"
+    volumes:
+      # Bind-mount workspace for instant live reload
+      - .:/app
+      # Anonymous volumes preserve container Linux dependencies and build outputs
+      - /app/node_modules
+      - /app/dist
+    networks:
+      - portfolio-dev-net
+
+networks:
+  portfolio-dev-net:
+    driver: bridge

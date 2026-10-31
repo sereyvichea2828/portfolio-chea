@@ -1,0 +1,21 @@
+# ─── Build artifacts & local outputs ─────────────────────────────
+dist/
+node_modules/
+
+# ─── Version control & IDE ───────────────────────────────────────
+.git/
+.vscode/
+.idea/
+.agents/
+
+# ─── Logs & caches ───────────────────────────────────────────────
+*.log
+.eslintcache
+
+# ─── Environment files ───────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+!.env.example
+!.env.dev
+!.env.prod

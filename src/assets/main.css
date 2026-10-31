@@ -1,0 +1,360 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   DYTE TECH — UNIFIED EDITORIAL DESIGN SYSTEM
+   Synchronized with the full website: Luminous Pearl (#F7F7FB),
+   Deep Slate Ink (#0F172A), Crisp Slate Borders (#E2E8F0), & Refined Indigo/Violet Accent.
+   ========================================================================== */
+
+@theme {
+  /* Typography Systems — Modern, clean Kantumruy Pro & Koulen display */
+  --font-heading: 'Kantumruy Pro', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Kantumruy Pro', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Koulen', 'Kantumruy Pro', system-ui, -apple-system, sans-serif;
+
+  /* 1. Canvas & Surfaces (Synchronized with Website's Pearl Palette) */
+  --color-canvas: #F7F7FB;          /* Website's luminous pearl background */
+  --color-canvas-subtle: #F1F5F9;   /* Slate 100 for subtle recesses, chips, and tabs */
+  --color-canvas-muted: #E2E8F0;    /* Slate 200 for hairline dividers */
+  --color-surface: #FFFFFF;         /* Crisp pure white for cards, inputs, and modals */
+  --color-surface-hover: #F8FAFC;   /* Slate 50 for interactive surface hovers */
+
+  /* 2. Deep Slate / Ink Typography (Matching All Website Sections) */
+  --color-ink: #0F172A;                 /* Slate 900: Primary headings and titles */
+  --color-ink-secondary: #334155;       /* Slate 700: Subheadings and strong labels */
+  --color-ink-muted: #475569;           /* Slate 600: Readable body copy */
+  --color-ink-faint: #64748B;           /* Slate 500: Captions, timestamps, and icons */
+
+  /* Semantic Aliases for Charcoal */
+  --color-charcoal: #0F172A;
+  --color-charcoal-secondary: #334155;
+  --color-charcoal-muted: #475569;
+  --color-charcoal-faint: #64748B;
+
+  /* 3. Hairlines & Architectural Dividers */
+  --color-line: #E2E8F0;         /* Slate 200: Crisp hairlines & dividers */
+  --color-line-card: #E2E8F0;    /* Card and frame borders */
+  --color-line-hover: #CBD5E1;   /* Slate 300: Active/hovered element borders */
+
+  /* 4. Restrained Accent (Indigo / Violet that harmonizes with slate and pearl) */
+  --color-accent: #6366F1;         /* Indigo 500: Refined primary brand accent */
+  --color-accent-hover: #4F46E5;   /* Indigo 600: Button hover & active states */
+  --color-accent-active: #4338CA;  /* Indigo 700: Deep pressed state */
+  --color-accent-subtle: #EEF2FF;  /* Indigo 50: Active pills & soft badges */
+  --color-accent-border: #C7D2FE;  /* Indigo 200: Highlight borders */
+  --color-accent-violet: #7C3AED;  /* Violet 600: Controlled violet highlight */
+
+  /* 5. Functional & Status Indicators */
+  --color-success: #15803D;
+  --color-success-subtle: #DCFCE7;
+  --color-success-border: #BBF7D0;
+
+  /* 6. Authentic Pearl & Ink Tokens (100% Backwards Compatible) */
+  --color-pearl-bg: #F7F7FB;
+  --color-pearl-white: #FFFFFF;
+  --color-pearl-lavender: #EEF2FF;
+  --color-pearl-mist: #F1F5F9;
+  --color-pearl-gray: #E2E8F0;
+  --color-ink-primary: #0F172A;
+  --color-lavender-accent: #818CF8;
+  --color-periwinkle-accent: #6366F1;
+  --color-aqua-highlight: #6366F1;
+}
+
+/* ==========================================================================
+   CSS Custom Properties (for Inline Styles, GSAP, or Direct Variable Use)
+   ========================================================================== */
+:root {
+  --canvas: #F7F7FB;
+  --canvas-subtle: #F1F5F9;
+  --surface: #FFFFFF;
+  --ink: #0F172A;
+  --ink-muted: #475569;
+  --line: #E2E8F0;
+  --accent: #6366F1;
+  --accent-hover: #4F46E5;
+  --accent-subtle: #EEF2FF;
+  --accent-border: #C7D2FE;
+}
+
+/* ==========================================================================
+   Base Elements
+   ========================================================================== */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color-scheme: light;
+    background-color: #F7F7FB;
+    color: #0F172A;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    line-height: 1.65;
+  }
+
+  section {
+    scroll-margin-top: 5.5rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    letter-spacing: normal;
+    color: #0F172A;
+    line-height: 1.35;
+  }
+
+  /* Universal Underline Removal */
+  a,
+  a:hover,
+  a:focus,
+  a:active {
+    text-decoration: none;
+  }
+}
+
+/* ==========================================================================
+   Khmer Typography Safety
+   Prevents negative tracking from colliding diacritics and subscripts
+   ========================================================================== */
+.tracking-tight,
+.tracking-tighter {
+  letter-spacing: normal;
+}
+
+/* ==========================================================================
+   Reusable Editorial Design Utilities
+   Ready to use across all sections:
+   .editorial-card, .btn-editorial-primary, .btn-editorial-secondary, .tech-chip
+   ========================================================================== */
+@layer components {
+  /* Editorial Card Surface (Matches entire site's pearl glass aesthetic) */
+  .editorial-card {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--color-line, #E2E8F0);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+    transition: all 250ms ease;
+  }
+
+  .editorial-card:hover {
+    border-color: var(--color-line-hover, #CBD5E1);
+    box-shadow: 0 6px 16px 0 rgba(15, 23, 42, 0.06);
+  }
+
+  /* Primary Button (Matches Navbar & About button standards) */
+  .btn-editorial-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #0F172A;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.875rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 200ms ease;
+  }
+
+  .btn-editorial-primary:hover {
+    background-color: #1E293B;
+    box-shadow: 0 2px 6px 0 rgba(15, 23, 42, 0.12);
+  }
+
+  .btn-editorial-primary:active {
+    background-color: #020617;
+  }
+
+  .btn-editorial-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px var(--color-accent, #6366F1);
+  }
+
+  /* Secondary Button (Crisp White with Subtle Border) */
+  .btn-editorial-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #FFFFFF;
+    color: #0F172A;
+    border: 1px solid #E2E8F0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+    transition: all 200ms ease;
+  }
+
+  .btn-editorial-secondary:hover {
+    background-color: #F8FAFC;
+    border-color: #CBD5E1;
+  }
+
+  .btn-editorial-secondary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px var(--color-accent, #6366F1);
+  }
+
+  /* Compact Understated Technology Tag */
+  .tech-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #334155;
+    border: 1px solid #E2E8F0;
+    cursor: default;
+    user-select: none;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.02);
+    transition: all 200ms ease;
+  }
+
+  .tech-chip:hover {
+    background-color: #0F172A;
+    color: #FFFFFF;
+    border-color: #0F172A;
+    box-shadow: 0 2px 4px 0 rgba(15, 23, 42, 0.08);
+  }
+}
+
+/* ==========================================================================
+   Hide Scrollbar Completely Across All Browsers
+   Retains 100% Smooth Scrolling Functionality (Lenis / Trackpad / Wheel / Touch)
+   ========================================================================== */
+html,
+body,
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera, Edge */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ==========================================================================
+   Lenis Ultra-Smooth Scrolling System
+   ========================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Agency-Grade Route Transitions
+   ========================================================================== */
+.page-pan-enter-active {
+  transition:
+    transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-pan-enter-from {
+  opacity: 0;
+  transform: translate3d(20px, 0, 0);
+}
+
+.page-pan-enter-to {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.page-pan-leave-active {
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.page-pan-leave-from {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.page-pan-leave-to {
+  opacity: 0;
+  transform: translate3d(-20px, 0, 0);
+}
+
+.page-fade-enter-active {
+  transition: opacity 300ms ease-out;
+}
+
+.page-fade-leave-active {
+  transition: opacity 200ms ease-in;
+  pointer-events: none;
+}
+
+.page-fade-enter-from,
+.page-fade-leave-to {
+  opacity: 0;
+}
+
+.page-fade-enter-to,
+.page-fade-leave-from {
+  opacity: 1;
+}
+
+.route-transition-container {
+  overflow-x: clip;
+  width: 100%;
+  position: relative;
+  outline: none;
+  border: none;
+}
+
+.route-transition-container > * {
+  outline: none;
+  border: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-pan-enter-active,
+  .page-pan-leave-active {
+    transition: opacity 150ms ease-out !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .page-pan-enter-from,
+  .page-pan-leave-to {
+    opacity: 0 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .page-pan-enter-to,
+  .page-pan-leave-from {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
