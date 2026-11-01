@@ -469,27 +469,10 @@ const closeCaseStudy = (): void => {
             rel="noopener noreferrer"
             class="font-semibold text-slate-900 hover:text-slate-600 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
           >
-            <span>គម្រោងកូដចំហផ្សេងទៀតនៅលើ GitHub</span>
-            <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
-          </a>
-          <a
-            href="https://github.com/sereyvichea2828"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="font-medium text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
-          >
-            <span>github.com/sereyvichea2828</span>
-            <ArrowUpRight class="w-3.5 h-3.5 text-slate-400" />
+            <span>គម្រោងកូដផ្សេងៗទៀតនៅលើ GitHub</span>
+            <ArrowRight class="w-4 h-4 text-slate-400" />
           </a>
         </div>
-        <button
-          type="button"
-          class="inline-flex items-center gap-1.5 font-medium text-slate-700 hover:text-slate-900 cursor-pointer transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 py-1.5"
-          @click="handleNavigate('#experience')"
-        >
-          <span>បន្តទៅកាន់បទពិសោធន៍ការងារ</span>
-          <ArrowRight class="w-4 h-4 text-slate-400" />
-        </button>
       </div>
 
       <!-- 10. Deep-Dive Case Study Modal (Lazy-loaded upon trigger) -->
