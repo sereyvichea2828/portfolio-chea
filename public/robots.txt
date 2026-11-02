@@ -1,6 +1,6 @@
 # ==============================================================================
 # Robots.txt — Try Sereyvichea (ទ្រី សេរីវិជ្ជា) Developer Portfolio
-# Production Domain: https://ite.dytetech.com
+# Production Domain: https://dytetech.com
 # Compatible with: Google Search Console, Googlebot, Bingbot & Standard Crawlers
 # ==============================================================================
 
@@ -16,7 +16,7 @@ Allow: /process
 Allow: /contact
 Allow: /resume
 
-# Static Assets & Resources
+# Static Assets, Favicons & Resources
 Allow: /assets/
 Allow: /images/
 Allow: /certificates/
@@ -35,12 +35,19 @@ Allow: /
 Allow: /assets/
 Allow: /images/
 Allow: /certificates/
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /apple-touch-icon.png
 
-# Image indexing permissions for Google Image Search
+# Image and Favicon indexing permissions for Google
 User-agent: Googlebot-Image
+Allow: /
 Allow: /images/
 Allow: /certificates/
 Allow: /developer-portrait.jpg
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /apple-touch-icon.png
 
 # Polite Crawl Delay for Resource Optimization
 User-agent: Bingbot
@@ -48,5 +55,5 @@ Allow: /
 Crawl-delay: 1
 
 # XML Sitemap Index
-Sitemap: https://ite.dytetech.com/sitemap.xml
+Sitemap: https://dytetech.com/sitemap.xml
 
