@@ -17,7 +17,7 @@ export const SECTION_ROUTES: Array<{
     path: '/',
     name: 'home',
     sectionId: 'home',
-    title: 'ទ្រី សេរីវិជ្ជា — អ្នកអភិវឌ្ឍន៍កម្មវិធីពេញលេញ',
+    title: 'DyteTech — ទ្រី សេរីវិជ្ជា (Try Sereyvichea)',
   },
   { path: '/about', name: 'about', sectionId: 'about', title: 'អំពីខ្ញុំ — ទ្រី សេរីវិជ្ជា' },
   {

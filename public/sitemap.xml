@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
+                            http://www.google.com/schemas/sitemap-image/1.1
+                            http://www.google.com/schemas/sitemap-image/1.1/sitemap-image.xsd">
+
+  <!-- 1. Home / Executive Hero Section -->
+  <url>
+    <loc>https://ite.dytetech.com/</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://ite.dytetech.com/developer-portrait.jpg</image:loc>
+      <image:title>ទ្រី សេរីវិជ្ជា — Full-Stack Software Engineer &amp; System Architect</image:title>
+      <image:caption>Try Sereyvichea Developer Portrait</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 2. About Section -->
+  <url>
+    <loc>https://ite.dytetech.com/about</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 3. Services Section -->
+  <url>
+    <loc>https://ite.dytetech.com/services</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 4. Technical Skills Section -->
+  <url>
+    <loc>https://ite.dytetech.com/skills</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 5. Featured Projects Showcase -->
+  <url>
+    <loc>https://ite.dytetech.com/projects</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://ite.dytetech.com/images/projects/ite-a3.png</image:loc>
+      <image:title>ITE A3 Campus Ecosystem</image:title>
+      <image:caption>Real-time academic management platform with anti-spoof GPS attendance</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ite.dytetech.com/images/projects/healthcare-optimization.png</image:loc>
+      <image:title>Healthcare Resource Optimizer</image:title>
+      <image:caption>Scientific linear systems optimizer with Gaussian elimination</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 6. Professional Experience & Verified Credentials -->
+  <url>
+    <loc>https://ite.dytetech.com/experience</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://ite.dytetech.com/certificates/certificate-TFD-2026-000054.png</image:loc>
+      <image:title>DevOps Essential Certificate — TFDevs</image:title>
+      <image:caption>Verified Credential TFD-2026-000054 awarded to Try Sereyvichea</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 7. Engineering Process & Methodology -->
+  <url>
+    <loc>https://ite.dytetech.com/process</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 8. Contact Section -->
+  <url>
+    <loc>https://ite.dytetech.com/contact</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 9. Curriculum Vitae / Resume -->
+  <url>
+    <loc>https://ite.dytetech.com/resume</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>
+
