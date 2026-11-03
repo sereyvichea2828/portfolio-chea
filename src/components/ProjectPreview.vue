@@ -3,6 +3,7 @@ import { ref, watch, computed } from 'vue';
 import type { Project } from '@/types/portfolio';
 import CampusMockup from '@/components/mockups/CampusMockup.vue';
 import MathMockup from '@/components/mockups/MathMockup.vue';
+import HardwareMockup from '@/components/mockups/HardwareMockup.vue';
 import { Layers } from 'lucide-vue-next';
 
 interface Props {
@@ -60,6 +61,9 @@ const hasValidImage = computed<boolean>(() => {
     </template>
     <template v-else-if="props.project.mockupType === 'math'">
       <MathMockup />
+    </template>
+    <template v-else-if="props.project.mockupType === 'hardware'">
+      <HardwareMockup />
     </template>
 
     <!-- 3. Neutral Fallback Presentation for Unrecognized / Empty Mockup Types (Zero Blank Previews) -->

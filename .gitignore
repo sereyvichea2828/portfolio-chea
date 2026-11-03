@@ -24,3 +24,4 @@ yarn-error.log*
 # Environment files (safety net)
 .env
 .env.*
+skills-lock.json

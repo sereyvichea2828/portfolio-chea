@@ -32,7 +32,7 @@ export interface Project {
   demoUrl: string;
   githubUrl: string;
   accentColor: 'violet' | 'cyan' | 'indigo' | 'emerald';
-  mockupType: 'finance' | 'tasks' | 'api' | 'campus' | 'math';
+  mockupType: 'finance' | 'tasks' | 'api' | 'campus' | 'math' | 'hardware';
   imageUrl?: string;
   imageAlt?: string;
 }

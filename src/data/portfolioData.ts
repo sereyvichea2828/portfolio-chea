@@ -437,6 +437,32 @@ export const PROJECTS: readonly Project[] = [
     imageUrl: '/images/projects/healthcare-optimization.png',
     imageAlt: 'ប្រព័ន្ធគ្រប់គ្រងកាលវិភាគណាត់ជួបមន្ទីរពេទ្យ',
   },
+  {
+    id: 'digital-door-lock-system',
+    title: 'ប្រព័ន្ធគ្រប់គ្រងសោរទ្វារឌីជីថលឆ្លាតវៃ',
+    tagline:
+      'ស្ថាបត្យកម្មសុវត្ថិភាពទ្វារឆ្លាតវៃ Dual-Microcontroller (Arduino Uno & Nano) ជាមួយ ៤ កម្រិតផ្ទៀងផ្ទាត់ និងផ្ទាំងបញ្ជា Web Bluetooth',
+    category: 'Hardware / Embedded Systems',
+    description:
+      'ប្រព័ន្ធសុវត្ថិភាពផ្នែករឹង និងផ្ទាំងគ្រប់គ្រងគេហទំព័រសម្រាប់មហាវិទ្យាល័យវិស្វកម្ម។ ដំណើរការដោយក្បួនដោះស្រាយសមកាលកម្មរវាង Arduino Uno Master និង Nano Slave តាមច្រក I2C/UART រួមបញ្ចូល ៤ ស្រទាប់ផ្ទៀងផ្ទាត់៖ ក្តារចុច ៤x៤, ស្កេនក្រយៅដៃអុបទិក, កាត RFID ឥតខ្សែ, និងការបញ្ជាពីចម្ងាយតាម Web Bluetooth Telemetry។',
+    challenge:
+      'ការសមកាលកម្មទិន្នន័យរវាងម៉ាស៊ីនមីក្រូកុងត្រូល័រទាំងពីរក្នុងល្បឿនលឿនដោយមិនឱ្យគាំងដំណើរការ (Zero Race Conditions), ការគ្រប់គ្រងចរន្តម៉ូទ័រ Solenoid/Servo ដោយសុវត្ថិភាព, និងការបង្កើតផ្ទាំង Web Portal ដែលបញ្ជាតាមរយៈ Web Bluetooth API ដោយផ្ទាល់ពីកម្មវិធីរុករក។',
+    solution:
+      'បានរចនាសៀគ្វីបែងចែក Master-Slave ជាមួយ Hardware Interrupt Handling, ក្បួនដោះស្រាយ State-Machine សម្រាប់ទប់ស្កាត់ការកកស្ទះទិន្នន័យលើ Serial Bus, និងបង្កើតចំណុចប្រទាក់ Web Dashboard ទំនើបតាមរចនាបថ Apple Design ដែលបង្ហាញទិន្នន័យ Telemetry និងប្រវត្តិការចេញចូលក្នុងពេលជាក់ស្តែង។',
+    metrics: [
+      { label: 'ស្រទាប់សុវត្ថិភាព', value: '៤ កម្រិត (Biometrics, RFID, Keypad, BLE)' },
+      { label: 'មីក្រូកុងត្រូល័រ', value: 'Arduino Uno + Nano' },
+      { label: 'ល្បឿនឆ្លើយតប', value: 'ក្រោម ១០០មិល្លីវិនាទី' },
+    ],
+    tags: ['Vue 3', 'IoT / Embedded', 'Arduino', 'Web Bluetooth'],
+    featured: false,
+    demoUrl: '',
+    githubUrl: 'https://github.com/sereyvichea2828/iee-project',
+    accentColor: 'emerald',
+    mockupType: 'hardware',
+    imageUrl: '',
+    imageAlt: 'ប្រព័ន្ធគ្រប់គ្រងសោរទ្វារឌីជីថលឆ្លាតវៃ Digital Door Lock Control System',
+  },
 ] as const;
 
 export const PROCESS_STEPS: readonly ProcessStep[] = [
