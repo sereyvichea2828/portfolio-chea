@@ -7,6 +7,7 @@ import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import { useModalState } from '@/composables/useModalState';
 import { useCertificateModal } from '@/composables/useCertificateModal';
+import { useMotionSystem } from '@/composables/useMotionSystem';
 import {
   Calendar,
   Check,
@@ -19,7 +20,6 @@ import {
   Maximize2,
   Minimize2,
   ArrowRight,
-  ArrowUpRight,
 } from 'lucide-vue-next';
 
 const emit = defineEmits<{
@@ -35,6 +35,19 @@ const handleNavigate = (targetId: string): void => {
 
 const sectionRef = ref<HTMLElement | null>(null);
 const { isReducedMotion } = useReducedMotion();
+const { animateModalEnter, animateModalLeave } = useMotionSystem();
+
+const onModalEnter = (el: Element, done: () => void): void => {
+  const backdrop = el as HTMLElement;
+  const card = backdrop.querySelector<HTMLElement>('.modal-card');
+  animateModalEnter({ backdrop, card }, done);
+};
+
+const onModalLeave = (el: Element, done: () => void): void => {
+  const backdrop = el as HTMLElement;
+  const card = backdrop.querySelector<HTMLElement>('.modal-card');
+  animateModalLeave({ backdrop, card }, done);
+};
 const { registerModal } = useModalState();
 
 // Certificate Lightbox State (shared via useCertificateModal singleton)
@@ -573,7 +586,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 
     <!-- 3. Accessible Certificate Lightbox Modal (Clean, Neutral, Document-Focused) -->
     <Teleport to="body">
-      <Transition name="modal-fade">
+      <Transition :css="false" @enter="onModalEnter" @leave="onModalLeave">
         <div
           v-if="isModalOpen && selectedCert"
           data-lenis-prevent
@@ -805,41 +818,3 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
     </Teleport>
   </section>
 </template>
-
-<style scoped>
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.22s ease-out;
-}
-
-.modal-fade-enter-active .modal-card,
-.modal-fade-leave-active .modal-card {
-  transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.22s ease-out;
-}
-
-.modal-fade-enter-from,
-.modal-fade-leave-to {
-  opacity: 0;
-}
-
-.modal-fade-enter-from .modal-card {
-  transform: scale(0.96) translateY(8px);
-  opacity: 0;
-}
-
-.modal-fade-leave-to .modal-card {
-  transform: scale(0.97) translateY(4px);
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .modal-fade-enter-active,
-  .modal-fade-leave-active,
-  .modal-fade-enter-active .modal-card,
-  .modal-fade-leave-active .modal-card {
-    transition: none !important;
-  }
-}
-</style>

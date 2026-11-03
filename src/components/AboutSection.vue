@@ -30,11 +30,11 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   if (header) {
     tl.fromTo(
       header,
-      { y: 16, opacity: 0 },
+      { y: 20, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.65,
+        duration: 0.7,
         ease: 'power3.out',
         clearProps: 'transform,willChange',
       },
@@ -44,30 +44,30 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
   if (story) {
     tl.fromTo(
       story,
-      { y: 16, opacity: 0 },
+      { y: 20, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.65,
+        duration: 0.7,
         ease: 'power3.out',
         clearProps: 'transform,willChange',
       },
-      '-=0.4',
+      '-=0.45',
     );
   }
 
   if (body) {
     tl.fromTo(
       body,
-      { y: 16, opacity: 0 },
+      { y: 20, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 0.65,
+        duration: 0.7,
         ease: 'power3.out',
         clearProps: 'transform,willChange',
       },
-      '-=0.35',
+      '-=0.4',
     );
   }
 });

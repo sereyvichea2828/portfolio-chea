@@ -240,13 +240,3 @@ const socialLinks = [
   }
 }
 </style>
-
-<style scoped>
-@media (prefers-reduced-motion: reduce) {
-  footer {
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-</style>

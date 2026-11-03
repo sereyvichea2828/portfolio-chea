@@ -13,7 +13,6 @@ import {
 } from 'lucide-vue-next';
 
 const isLocked = ref<boolean>(true);
-const activeTab = ref<'telemetry' | 'modules'>('telemetry');
 
 const toggleLock = (): void => {
   isLocked.value = !isLocked.value;
@@ -190,3 +189,4 @@ const toggleLock = (): void => {
     </div>
   </div>
 </template>
+

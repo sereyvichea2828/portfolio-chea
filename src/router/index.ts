@@ -2,11 +2,6 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomeView from '../views/HomeView.vue';
 import { useModalState } from '@/composables/useModalState';
 
-export interface SectionRouteMeta {
-  sectionId: string;
-  title: string;
-}
-
 export const SECTION_ROUTES: Array<{
   path: string;
   name: string;

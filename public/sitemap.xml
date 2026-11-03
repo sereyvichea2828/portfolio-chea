@@ -60,6 +60,11 @@
       <image:title>Healthcare Resource Optimizer</image:title>
       <image:caption>Scientific linear systems optimizer with Gaussian elimination</image:caption>
     </image:image>
+    <image:image>
+      <image:loc>https://dytetech.com/images/projects/digital-door-lock.png</image:loc>
+      <image:title>Digital Door Lock System</image:title>
+      <image:caption>Dual-microcontroller hardware access system with biometric and BLE telemetry</image:caption>
+    </image:image>
   </url>
 
   <!-- 6. Professional Experience & Verified Credentials -->

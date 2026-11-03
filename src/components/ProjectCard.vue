@@ -30,6 +30,7 @@ const handleOpenCaseStudy = (): void => {
     <!-- Optional Embedded Product Preview Frame -->
     <div
       v-if="props.showPreview"
+      :id="`project-card-${props.project.id}`"
       class="relative w-full aspect-16/10 rounded-xl overflow-hidden border border-slate-200/90 bg-slate-950 mb-4 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
       role="button"
       tabindex="0"

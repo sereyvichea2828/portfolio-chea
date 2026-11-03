@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { PROCESS_STEPS } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import { ArrowUpRight } from 'lucide-vue-next';
 
 const emit = defineEmits<{
   (e: 'navigate', sectionId: string): void;

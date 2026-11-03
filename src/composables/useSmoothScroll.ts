@@ -1,176 +1,225 @@
-import { shallowRef, onMounted, onUnmounted, type ShallowRef } from 'vue'
-import Lenis from 'lenis'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useReducedMotion } from '@/composables/useReducedMotion'
+import { shallowRef, onMounted, onUnmounted, type ShallowRef } from 'vue';
+import Lenis from 'lenis';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useReducedMotion } from '@/composables/useReducedMotion';
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
-let globalLenis: Lenis | null = null
-let tickerListener: ((time: number) => void) | null = null
-let activeSubscribers = 0
+let globalLenis: Lenis | null = null;
+let tickerListener: ((time: number) => void) | null = null;
+let activeSubscribers = 0;
 
 export function getGlobalLenis(): Lenis | null {
-  return globalLenis
+  return globalLenis;
 }
 
 export function startGlobalLenis(): void {
   if (globalLenis) {
-    globalLenis.start()
+    globalLenis.start();
   }
 }
 
 export function stopGlobalLenis(): void {
   if (globalLenis) {
-    globalLenis.stop()
+    globalLenis.stop();
   }
 }
 
 export interface SmoothScrollController {
-  lenis: ShallowRef<Lenis | null>
+  lenis: ShallowRef<Lenis | null>;
   scrollTo: (
     target: string | number | HTMLElement,
     options?: {
-      offset?: number
-      duration?: number
-      immediate?: boolean
-      force?: boolean
-      onComplete?: () => void
-    }
-  ) => void
-  stop: () => void
-  start: () => void
+      offset?: number;
+      duration?: number;
+      immediate?: boolean;
+      force?: boolean;
+      onComplete?: () => void;
+    },
+  ) => void;
+  stop: () => void;
+  start: () => void;
 }
 
 export function useSmoothScroll(): SmoothScrollController {
-  const lenisRef = shallowRef<Lenis | null>(globalLenis)
-  const { isReducedMotion } = useReducedMotion()
+  const lenisRef = shallowRef<Lenis | null>(globalLenis);
+  const { isReducedMotion } = useReducedMotion();
+
+  // Track whether this composable instance subscribed to the global Lenis.
+  let hasSubscribed = false;
+
+  /**
+   * Safely destroy the shared Lenis instance and its GSAP ticker.
+   */
+  const destroyGlobalLenis = (): void => {
+    const hadResources = Boolean(globalLenis || tickerListener);
+
+    if (tickerListener) {
+      gsap.ticker.remove(tickerListener);
+      tickerListener = null;
+    }
+
+    if (globalLenis) {
+      globalLenis.destroy();
+      globalLenis = null;
+    }
+
+    if (hadResources) {
+      gsap.ticker.lagSmoothing(500, 33);
+    }
+  };
 
   const initLenis = (): void => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') return;
 
-    // If reduced motion is requested, do not run smooth scroll interpolation
+    // Respect reduced-motion preferences.
     if (isReducedMotion.value) {
-      if (globalLenis) {
-        globalLenis.destroy()
-        globalLenis = null
-      }
-      return
+      destroyGlobalLenis();
+      lenisRef.value = null;
+      return;
     }
 
     if (!globalLenis) {
       globalLenis = new Lenis({
-        duration: 1.05,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        // Preserve existing scrolling configuration.
+        lerp: 0.12,
+        smoothWheel: true,
         orientation: 'vertical',
         gestureOrientation: 'vertical',
-        smoothWheel: true,
-        wheelMultiplier: 0.95,
-        touchMultiplier: 1.0,
+        wheelMultiplier: 0.9,
+        touchMultiplier: 1.1,
         autoRaf: false,
-      })
+      });
 
-      // Coordinate Lenis scroll updates with GSAP ScrollTrigger
-      globalLenis.on('scroll', ScrollTrigger.update)
+      // Synchronize Lenis with GSAP ScrollTrigger.
+      globalLenis.on('scroll', ScrollTrigger.update);
 
-      tickerListener = (time: number) => {
-        globalLenis?.raf(time * 1000)
-      }
+      // Use the GSAP ticker as the Lenis animation frame loop.
+      tickerListener = (time: number): void => {
+        globalLenis?.raf(time * 1000);
+      };
 
-      gsap.ticker.add(tickerListener)
+      gsap.ticker.add(tickerListener);
 
-      // If document is already locked when Lenis mounts (e.g. direct load on /resume), pause immediately
+      // Prevent GSAP lag smoothing from interfering with Lenis timing.
+      gsap.ticker.lagSmoothing(0);
+
+      // Respect existing modal scroll locks.
       if (typeof document !== 'undefined' && document.body.classList.contains('overflow-hidden')) {
-        globalLenis.stop()
+        globalLenis.stop();
       }
     }
 
-    lenisRef.value = globalLenis
-    activeSubscribers++
-  }
+    lenisRef.value = globalLenis;
+
+    // Register this composable instance only once.
+    if (!hasSubscribed) {
+      activeSubscribers++;
+      hasSubscribed = true;
+    }
+  };
 
   const scrollTo = (
     target: string | number | HTMLElement,
     options?: {
-      offset?: number
-      duration?: number
-      immediate?: boolean
-      force?: boolean
-      onComplete?: () => void
-    }
+      offset?: number;
+      duration?: number;
+      immediate?: boolean;
+      force?: boolean;
+      onComplete?: () => void;
+    },
   ): void => {
-    const navOffset = options?.offset ?? (typeof target === 'number' ? 0 : -84)
+    const navOffset = options?.offset ?? (typeof target === 'number' ? 0 : -84);
 
+    // Native scrolling fallback for reduced-motion or unavailable Lenis.
     if (isReducedMotion.value || !globalLenis) {
-      // Native accessible fallback
-      if (typeof window === 'undefined') return
+      if (typeof window === 'undefined') return;
+
+      const behavior: ScrollBehavior =
+        isReducedMotion.value || options?.immediate ? 'auto' : 'smooth';
+
       if (typeof target === 'string') {
-        const el = document.querySelector(target)
+        const el = document.querySelector<HTMLElement>(target);
+
         if (el) {
-          const top = el.getBoundingClientRect().top + window.scrollY + navOffset
-          window.scrollTo({ top, behavior: options?.immediate ? 'auto' : 'smooth' })
-          options?.onComplete?.()
+          const top = el.getBoundingClientRect().top + window.scrollY + navOffset;
+
+          window.scrollTo({ top, behavior });
+          options?.onComplete?.();
         }
-      } else if (typeof target === 'number') {
-        window.scrollTo({ top: target, behavior: options?.immediate ? 'auto' : 'smooth' })
-        options?.onComplete?.()
-      } else if (target instanceof HTMLElement) {
-        const top = target.getBoundingClientRect().top + window.scrollY + navOffset
-        window.scrollTo({ top, behavior: options?.immediate ? 'auto' : 'smooth' })
-        options?.onComplete?.()
+
+        return;
       }
-      return
+
+      if (typeof target === 'number') {
+        window.scrollTo({
+          top: target,
+          behavior,
+        });
+
+        options?.onComplete?.();
+        return;
+      }
+
+      if (target instanceof HTMLElement) {
+        const top = target.getBoundingClientRect().top + window.scrollY + navOffset;
+
+        window.scrollTo({ top, behavior });
+        options?.onComplete?.();
+      }
+
+      return;
     }
 
-    // Only resume Lenis if scrolling is not currently locked by an active overlay
+    // Never resume Lenis while a modal or overlay locks scrolling.
     if (typeof document !== 'undefined' && !document.body.classList.contains('overflow-hidden')) {
-      globalLenis.start()
+      globalLenis.start();
     }
 
     globalLenis.scrollTo(target, {
       offset: navOffset,
-      duration: options?.duration ?? 0.9,
+      duration: options?.duration ?? 1.1,
       immediate: options?.immediate ?? false,
       force: options?.force ?? true,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: (t: number): number => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       onComplete: options?.onComplete,
-    })
-  }
+    });
+  };
 
   const stop = (): void => {
-    stopGlobalLenis()
-  }
+    stopGlobalLenis();
+  };
 
   const start = (): void => {
-    // Only restart if no overlays are currently locking the body
+    // Never restart while an overlay is locking the body.
     if (typeof document !== 'undefined' && !document.body.classList.contains('overflow-hidden')) {
-      startGlobalLenis()
+      startGlobalLenis();
     }
-  }
+  };
 
   onMounted(() => {
-    initLenis()
-  })
+    initLenis();
+  });
 
   onUnmounted(() => {
-    activeSubscribers--
-    if (activeSubscribers <= 0) {
-      if (tickerListener) {
-        gsap.ticker.remove(tickerListener)
-        tickerListener = null
-      }
-      if (globalLenis) {
-        globalLenis.destroy()
-        globalLenis = null
-      }
-      activeSubscribers = 0
+    // Do not decrement subscribers if this instance never subscribed.
+    if (!hasSubscribed) return;
+
+    hasSubscribed = false;
+    activeSubscribers = Math.max(0, activeSubscribers - 1);
+
+    // Destroy shared resources only after the last subscriber unmounts.
+    if (activeSubscribers === 0) {
+      destroyGlobalLenis();
+      lenisRef.value = null;
     }
-  })
+  });
 
   return {
     lenis: lenisRef,
     scrollTo,
     stop,
     start,
-  }
+  };
 }

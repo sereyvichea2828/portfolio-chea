@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { SERVICES } from '@/data/portfolioData';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
-import { Layout, Server, Layers, Database, Check, ArrowRight, ArrowUpRight } from 'lucide-vue-next';
+import { Layout, Server, Layers, Database, Check, ArrowRight } from 'lucide-vue-next';
 
 const emit = defineEmits<{
   (e: 'navigate', sectionId: string): void;

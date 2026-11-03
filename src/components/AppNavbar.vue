@@ -11,12 +11,10 @@ import { Menu, X, ArrowUpRight } from 'lucide-vue-next';
 interface Props {
   isScrolled: boolean;
   activeSection: string;
-  isFooterVisible?: boolean;
   isHidden?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  isFooterVisible: false,
   isHidden: false,
 });
 
@@ -118,7 +116,7 @@ onUnmounted(() => {
       - When scrolled: Full-width solid/blur background, bottom border, sleek shadow-2xs.
     -->
     <div
-      class="pointer-events-auto w-full transition-all duration-300 ease-out flex justify-center"
+      class="pointer-events-auto w-full transition-[background-color,border-color,box-shadow,padding] duration-300 ease-out flex justify-center"
       :class="[
         props.isScrolled
           ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-2xs py-2 sm:py-2.5'
@@ -131,7 +129,7 @@ onUnmounted(() => {
         - When scrolled: Expands to 100% full width (max-w-full) with px-4 sm:px-6 lg:px-8, STRICTLY EQUAL TO AppFooter.vue!
       -->
       <div
-        class="w-full transition-all duration-300 ease-out px-4 sm:px-6 lg:px-8 mx-auto"
+        class="w-full transition-[max-width,padding] duration-300 ease-out px-4 sm:px-6 lg:px-8 mx-auto"
         :class="[
           props.isScrolled
             ? 'max-w-full'
@@ -144,7 +142,7 @@ onUnmounted(() => {
           - When scrolled: Completely frameless (transparent, border-transparent, rounded-none, shadow-none, zero padding).
         -->
         <div
-          class="w-full transition-all duration-300 ease-out"
+          class="w-full transition-[background-color,border-color,border-radius,box-shadow,padding] duration-300 ease-out"
           :class="[
             props.isScrolled
               ? 'bg-transparent border border-transparent rounded-none shadow-none p-0'

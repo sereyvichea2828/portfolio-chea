@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { PROJECTS } from '@/data/portfolioData';
 import type { Project } from '@/types/portfolio';
 import { useGsapScrollTrigger } from '@/composables/useGsapScrollTrigger';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import ProjectPreview from '@/components/ProjectPreview.vue';
+import ProjectModal from '@/components/ProjectModal.vue';
 import { ArrowUpRight, ArrowRight, Github, ChevronDown, Check } from 'lucide-vue-next';
-
-const ProjectModal = defineAsyncComponent(() => import('@/components/ProjectModal.vue'));
 
 const emit = defineEmits<{
   (e: 'navigate', sectionId: string): void;
@@ -176,8 +175,16 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 });
 
 // Technical Case Study Modal Handling
+export interface OriginRect {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+}
+
 const selectedCaseStudy = ref<Project | null>(null);
 const isModalOpen = ref<boolean>(false);
+const activeOriginRect = ref<OriginRect | null>(null);
 
 const route = useRoute();
 // Automatically close case study modal if route changes
@@ -190,14 +197,36 @@ watch(
   },
 );
 
-const openCaseStudy = (project: Project): void => {
+const openCaseStudy = (project: Project, event?: MouseEvent | KeyboardEvent): void => {
   selectedCaseStudy.value = project;
+
+  // Capture originating card bounding box for Canva Succession shared-element transition
+  const cardEl = document.getElementById(`project-card-${project.id}`);
+  if (cardEl) {
+    const rect = cardEl.getBoundingClientRect();
+    activeOriginRect.value = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+    };
+  } else if (event?.currentTarget instanceof HTMLElement) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    activeOriginRect.value = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+    };
+  } else {
+    activeOriginRect.value = null;
+  }
+
   isModalOpen.value = true;
 };
 
 const closeCaseStudy = (): void => {
   isModalOpen.value = false;
-  selectedCaseStudy.value = null;
 };
 </script>
 
@@ -361,18 +390,20 @@ const closeCaseStudy = (): void => {
           <div :key="currentProject.id" class="w-full flex flex-col">
             <!-- 4. Large Full-Width Website Screenshot Preview Frame -->
             <div
+              :id="`project-card-${currentProject.id}`"
               class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-100 cursor-pointer select-none group shadow-md shadow-slate-900/5 hover:shadow-xl hover:shadow-slate-900/10 transition-all duration-300 isolate"
               role="button"
               tabindex="0"
               :aria-label="`បើកមើលករណីសិក្សាសម្រាប់ ${currentProject.title}`"
-              @click="openCaseStudy(currentProject)"
-              @keydown.enter="openCaseStudy(currentProject)"
+              @click="openCaseStudy(currentProject, $event)"
+              @keydown.enter="openCaseStudy(currentProject, $event)"
+              @keydown.space.prevent="openCaseStudy(currentProject, $event)"
             >
               <ProjectPreview :project="currentProject" />
 
               <!-- High-Definition Crisp Frame Border (Overlay ensures razor-sharp edge definition around photo on all screens) -->
               <div
-                class="pointer-events-none absolute inset-0 rounded-2xl border border-slate-300 ring-1 ring-inset ring-slate-900/10 transition-colors duration-300 group-hover:border-slate-400"
+                class="pointer-events-none absolute inset-0 rounded-2xl border border-slate-300 ring-1 ring-inset ring-slate-200/10 transition-colors duration-300 group-hover:border-slate-400"
                 aria-hidden="true"
               />
 
@@ -402,7 +433,7 @@ const closeCaseStudy = (): void => {
                 <button
                   type="button"
                   class="text-left hover:text-slate-600 transition-colors cursor-pointer"
-                  @click="openCaseStudy(currentProject)"
+                  @click="openCaseStudy(currentProject, $event)"
                 >
                   {{ currentProject.title }}
                 </button>
@@ -435,7 +466,7 @@ const closeCaseStudy = (): void => {
                 <button
                   type="button"
                   class="font-semibold text-slate-700 hover:text-slate-950 transition-colors inline-flex items-center gap-1.5 cursor-pointer py-1.5"
-                  @click="openCaseStudy(currentProject)"
+                  @click="openCaseStudy(currentProject, $event)"
                 >
                   <span>ករណីសិក្សា</span>
                   <ArrowRight class="w-3.5 h-3.5 text-slate-400" />
@@ -475,11 +506,11 @@ const closeCaseStudy = (): void => {
         </div>
       </div>
 
-      <!-- 10. Deep-Dive Case Study Modal (Lazy-loaded upon trigger) -->
+      <!-- 10. Deep-Dive Case Study Modal (Canva Succession Transition) -->
       <ProjectModal
-        v-if="isModalOpen && selectedCaseStudy"
         :project="selectedCaseStudy"
         :is-open="isModalOpen"
+        :origin-rect="activeOriginRect"
         @close="closeCaseStudy"
       />
     </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import TechLogo from '@/components/TechLogo.vue';
+import TechLogo from '@/components/TechnologyLogo.vue';
 import { useReducedMotion } from '@/composables/useReducedMotion';
 import gsap from 'gsap';
 
@@ -316,8 +316,8 @@ onMounted(() => {
         }
       },
       {
-        threshold: 0.15,
-        rootMargin: '100px 0px 50px 0px',
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px',
       },
     );
 
@@ -328,24 +328,13 @@ onMounted(() => {
     requestAnimationFrame(() => {
       if (!containerRef.value) return;
       const rect = containerRef.value.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
+      if (rect.top < window.innerHeight * 0.9 && rect.bottom > 0) {
         if (!hasEntered) {
           hasEntered = true;
           entranceTimeline?.restart();
         }
       }
     });
-
-    safetyTimeoutId = setTimeout(() => {
-      if (!hasEntered) {
-        hasEntered = true;
-        if (entranceTimeline) {
-          entranceTimeline.progress(1);
-        }
-        isRevealed.value = true;
-        startAmbientMotion();
-      }
-    }, 1500);
   }
 });
 

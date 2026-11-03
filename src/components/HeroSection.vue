@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { gsap } from 'gsap';
 import { HERO_CONTENT, CONTACT_INFO } from '@/data/portfolioData';
 import { useReducedMotion } from '@/composables/useReducedMotion';
+import { useMotionSystem } from '@/composables/useMotionSystem';
 import { ArrowDown, FileText, Github, Linkedin, Mail, ChevronDown } from 'lucide-vue-next';
 
 const emit = defineEmits<{
@@ -11,12 +12,18 @@ const emit = defineEmits<{
 }>();
 
 const { isReducedMotion } = useReducedMotion();
+const { registerMagnetic } = useMotionSystem();
 const sectionRef = ref<HTMLElement | null>(null);
+const primaryBtnRef = ref<HTMLButtonElement | null>(null);
+const portraitCardRef = ref<HTMLDivElement | null>(null);
 
 let gsapCtx: gsap.Context | null = null;
 
 onMounted(() => {
   if (typeof window !== 'undefined' && sectionRef.value) {
+    // Tactile magnetic micro-interaction on Primary CTA
+    registerMagnetic(primaryBtnRef, { strength: 0.22 });
+
     gsapCtx = gsap.context(() => {
       if (isReducedMotion.value) {
         gsap.set(
@@ -39,71 +46,104 @@ onMounted(() => {
       // 1. Eyebrow label appears with subtle fade and upward movement
       tl.fromTo(
         '.hero-eyebrow',
-        { y: 12, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, delay: 0.08, clearProps: 'transform,willChange' },
+        { y: 14, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, delay: 0.06, clearProps: 'transform,willChange' },
       );
 
-      // 2. Main Khmer headline reveals smoothly with restrained line-by-line entrance
+      // 2. Editorial typography reveal: headline lines slide up with soft blur-to-focus
       tl.fromTo(
         '.hero-headline-line',
-        { y: 14, opacity: 0 },
+        { y: 20, opacity: 0, filter: 'blur(6px)' },
         {
           y: 0,
           opacity: 1,
-          duration: 0.6,
-          stagger: 0.09,
+          filter: 'blur(0px)',
+          duration: 0.72,
+          stagger: 0.08,
           ease: 'power3.out',
-          clearProps: 'transform,willChange',
+          clearProps: 'transform,filter,willChange',
         },
-        '-=0.35',
+        '-=0.38',
       );
 
       // 3. Personal name and professional title appear naturally
       tl.fromTo(
         '.hero-identity',
-        { y: 10, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, clearProps: 'transform,willChange' },
-        '-=0.35',
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, clearProps: 'transform,willChange' },
+        '-=0.38',
       );
 
       // 4. Supporting description follows
       tl.fromTo(
         '.hero-description',
-        { y: 10, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.55, clearProps: 'transform,willChange' },
+        { y: 12, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, clearProps: 'transform,willChange' },
         '-=0.35',
       );
 
-      // 5. Action buttons appear together with a short stagger
+      // 5. Action buttons appear together with an intentional short stagger
       tl.fromTo(
         '.hero-action-item',
-        { y: 10, opacity: 0 },
+        { y: 12, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.5,
+          duration: 0.52,
           stagger: 0.06,
           ease: 'power3.out',
           clearProps: 'transform,willChange',
         },
-        '-=0.3',
+        '-=0.32',
       );
 
-      // 6. Portrait enters with subtle fade and gentle upward movement (preserving proportions)
+      // 6. Portrait enters with subtle scale & upward presence
       tl.fromTo(
         '.hero-portrait',
-        { opacity: 0, y: 14 },
-        { opacity: 1, y: 0, duration: 0.75, ease: 'power2.out', clearProps: 'transform,willChange' },
-        0.2,
+        { opacity: 0, y: 18, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'power2.out', clearProps: 'transform,willChange' },
+        0.18,
       );
 
       // 7. Scroll indicator appears last
       tl.fromTo(
         '.hero-scroll',
-        { opacity: 0, y: -6 },
+        { opacity: 0, y: -8 },
         { y: 0, opacity: 1, duration: 0.55, ease: 'power2.out', clearProps: 'transform,willChange' },
         '-=0.2',
       );
+
+      // Ambient continuous vertical breath on scroll chevron (replaces abrupt CSS bounce)
+      gsap.to('.hero-scroll-chevron', {
+        y: 4,
+        duration: 1.5,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+
+      // Subtle desktop mouse parallax on developer portrait
+      if (portraitCardRef.value && !window.matchMedia('(hover: none)').matches) {
+        const pX = gsap.quickTo(portraitCardRef.value, 'x', { duration: 0.55, ease: 'power3.out' });
+        const pY = gsap.quickTo(portraitCardRef.value, 'y', { duration: 0.55, ease: 'power3.out' });
+
+        const handlePointerMove = (e: MouseEvent): void => {
+          const rect = sectionRef.value?.getBoundingClientRect();
+          if (!rect) return;
+          const normX = (e.clientX - rect.left) / rect.width - 0.5;
+          const normY = (e.clientY - rect.top) / rect.height - 0.5;
+          pX(normX * 10);
+          pY(normY * 10);
+        };
+
+        const handlePointerLeave = (): void => {
+          pX(0);
+          pY(0);
+        };
+
+        sectionRef.value?.addEventListener('mousemove', handlePointerMove);
+        sectionRef.value?.addEventListener('mouseleave', handlePointerLeave);
+      }
     }, sectionRef.value);
   }
 });
@@ -191,8 +231,9 @@ const handleScrollIndicatorClick = (): void => {
           <div class="hero-actions flex flex-wrap items-center gap-3 pt-1.5 sm:pt-2">
             <!-- Primary CTA: Projects -->
             <button
+              ref="primaryBtnRef"
               type="button"
-              class="hero-action-item inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer min-h-11"
+              class="hero-action-item hero-primary-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer min-h-11"
               @click="handlePrimaryClick"
             >
               <span>{{ HERO_CONTENT.primaryCta }}</span>
@@ -245,7 +286,10 @@ const handleScrollIndicatorClick = (): void => {
           class="hero-portrait order-1 md:order-2 md:col-span-5 flex items-center justify-center md:justify-end w-full"
         >
           <!-- Full width on phone, proportional on tablet and desktop -->
-          <div class="w-full max-w-full sm:max-w-md md:max-w-82.5 lg:max-w-90 xl:max-w-95">
+          <div
+            ref="portraitCardRef"
+            class="w-full max-w-full sm:max-w-md md:max-w-82.5 lg:max-w-90 xl:max-w-95"
+          >
             <div
               class="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-xs select-none bg-slate-900"
               style="aspect-ratio: 1792 / 2400"
@@ -276,7 +320,7 @@ const handleScrollIndicatorClick = (): void => {
           >ស្វែងយល់បន្ថែម</span
         >
         <ChevronDown
-          class="w-4 h-4 animate-bounce text-slate-500 group-hover:text-slate-900 transition-colors shrink-0"
+          class="w-4 h-4 hero-scroll-chevron text-slate-500 group-hover:text-slate-900 transition-colors shrink-0"
         />
       </button>
     </div>
