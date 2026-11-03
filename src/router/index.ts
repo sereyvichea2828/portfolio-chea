@@ -12,7 +12,7 @@ export const SECTION_ROUTES: Array<{
     path: '/',
     name: 'home',
     sectionId: 'home',
-    title: 'DyteTech — ទ្រី សេរីវិជ្ជា (Try Sereyvichea)',
+    title: 'DyteTech — ទ្រី សេរីវិជ្ជា',
   },
   { path: '/about', name: 'about', sectionId: 'about', title: 'អំពីខ្ញុំ — ទ្រី សេរីវិជ្ជា' },
   {
