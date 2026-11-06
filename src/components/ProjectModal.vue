@@ -566,10 +566,10 @@ onUnmounted(() => {
             :href="props.project.demoUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white text-xs sm:text-sm font-semibold transition-colors min-h-11 shadow-xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover active:bg-primary-dark text-white text-xs sm:text-sm font-semibold transition-colors min-h-11 shadow-xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <span>សាកល្បងផ្ទាល់</span>
-            <ArrowUpRight class="w-4 h-4 text-slate-300" />
+            <ArrowUpRight class="w-4 h-4 text-white/90" />
           </a>
         </div>
       </div>

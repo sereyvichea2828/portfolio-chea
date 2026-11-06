@@ -90,7 +90,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             <div class="lg:col-span-5 flex items-start gap-3.5 sm:gap-4">
               <!-- Crisp Monospace Step Index Tile -->
               <div
-                class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-900 text-white font-mono text-xs sm:text-sm font-bold flex items-center justify-center shrink-0 shadow-xs select-none"
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary text-white font-mono text-xs sm:text-sm font-bold flex items-center justify-center shrink-0 shadow-xs select-none"
               >
                 {{ step.number }}
               </div>

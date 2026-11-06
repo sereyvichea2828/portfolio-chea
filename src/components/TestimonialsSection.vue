@@ -63,7 +63,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
           <!-- Quote Content -->
           <div class="space-y-4">
             <div
-              class="w-10 h-10 rounded-xl bg-slate-100 text-indigo-600 flex items-center justify-center border border-slate-200"
+              class="w-10 h-10 rounded-xl bg-slate-100 text-primary flex items-center justify-center border border-slate-200"
             >
               <Quote class="w-5 h-5" />
             </div>
@@ -87,7 +87,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
               </span>
               <span class="text-xs text-slate-500">
                 {{ item.role }} ·
-                <span class="text-indigo-600 font-medium">{{ item.company }}</span>
+                <span class="text-primary font-medium">{{ item.company }}</span>
               </span>
             </div>
           </div>

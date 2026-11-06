@@ -1,0 +1,80 @@
+/* ==========================================================================
+   🎨 CUSTOM COLOR SYSTEM / ក្ដារកំណត់ពណ៌ផ្ទាល់ខ្លួន
+   ==========================================================================
+   💡 HOW TO CUSTOMIZE:
+   Simply change any Hex color code below (#FFFFFF, #1676D2, etc.)
+   Your entire portfolio will update automatically!
+
+   💡 របៀបប្តូរពណ៌៖
+   គ្រាន់តែផ្លាស់ប្តូរលេខកូដពណ៌ (Hex Code) ខាងក្រោម នោះគេហទំព័រទាំងមូលនឹងប្រែពណ៌ភ្លាមៗ!
+   ========================================================================== */
+
+:root {
+  /* ========================================================================
+     1. BUTTON & LOGO ACCENT COLORS (btn & DT logo bg: #1676D2)
+     ======================================================================== */
+  /* Primary Action Buttons & DT Logo Background */
+  --color-primary: #1676D2;
+  --color-primary-dark: #105A9B;
+  --color-primary-light: #48A0F0;
+  --color-primary-hover: #0868C9;
+
+  /* Secondary & Accent colors */
+  --color-secondary: #90C8FF;
+  --color-accent: #8ED9EB;
+  --color-navy: #123B63;
+
+  /* ========================================================================
+     2. BACKGROUND COLORS (my bg use #FFFFFF)
+     ======================================================================== */
+  --color-background: #FFFFFF;          /* Pure white canvas */
+  --color-background-soft: #F8FAFC;     /* Subtle soft recess */
+  --color-background-blue: #EDF7FE;     /* Delicate blue tint */
+  --color-surface: #FFFFFF;             /* Crisp pure white for cards & modals */
+
+  /* ========================================================================
+     3. TYPOGRAPHY (Original High-Contrast Slate Palette - Easy to Read)
+     ======================================================================== */
+  --color-heading: #0F172A;             /* Slate 900: Primary headings */
+  --color-text: #475569;                /* Slate 600: Readable body copy */
+  --color-text-muted: #64748B;          /* Slate 500: Captions & timestamps */
+
+  /* Borders and shadows */
+  --color-border: #E2E8F0;
+  --color-border-light: #F1F5F9;
+  --color-shadow: rgba(22, 118, 210, 0.08);
+
+  /* ========================================================================
+     4. DESIGN SYSTEM TOKEN MAPPING (ការភ្ជាប់ពណ៌ទៅកាន់ប្រព័ន្ធរចនាទូទៅ)
+     ======================================================================== */
+  /* Primary Brand Accent (ប៊ូតុងសកម្មភាព & DT Logo #1676D2) */
+  --accent: var(--color-primary);             /* #1676D2 */
+  --accent-hover: var(--color-primary-hover); /* #0868C9 */
+  --accent-active: var(--color-primary-dark);  /* #105A9B */
+  --accent-subtle: #EEF2FF;
+  --accent-border: #C7D2FE;
+  --accent-violet: #7C3AED;
+
+  /* Background & Canvas (bg: #FFFFFF) */
+  --canvas: var(--color-background);          /* #FFFFFF */
+  --canvas-subtle: var(--color-background-soft); /* #F8FAFC */
+  --canvas-muted: var(--color-border);        /* #E2E8F0 */
+  --surface: var(--color-surface);            /* #FFFFFF */
+  --surface-hover: var(--color-background-soft); /* #F8FAFC */
+
+  /* Original Natural Slate Typography (ងាយស្រួលអាន មិនចាំងភ្នែក) */
+  --ink: #0F172A;                             /* Slate 900 */
+  --ink-secondary: #334155;                   /* Slate 700 */
+  --ink-muted: #475569;                       /* Slate 600 */
+  --ink-faint: #64748B;                       /* Slate 500 */
+
+  /* Borders & Hairlines */
+  --line: var(--color-border);                /* #E2E8F0 */
+  --line-card: var(--color-border);           /* #E2E8F0 */
+  --line-hover: #CBD5E1;
+
+  /* Status & Functional Indicators */
+  --success: #15803D;
+  --success-subtle: #DCFCE7;
+  --success-border: #BBF7D0;
+}

@@ -76,11 +76,11 @@ const handleNavigate = (sectionId: string): void => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-pearl-bg text-ink-primary flex flex-col relative selection:bg-slate-900 selection:text-white">
+  <div class="min-h-screen bg-canvas text-ink flex flex-col relative selection:bg-primary selection:text-white">
     <!-- Ultra-Thin Editorial Scroll Progress Bar (GSAP ScrollTrigger Driven) -->
     <div
       ref="progressBarRef"
-      class="fixed top-0 left-0 right-0 h-0.5 bg-slate-900 origin-left z-50 pointer-events-none scale-x-0"
+      class="fixed top-0 left-0 right-0 h-0.5 bg-primary origin-left z-50 pointer-events-none scale-x-0"
       aria-hidden="true"
     />
 

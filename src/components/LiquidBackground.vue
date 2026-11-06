@@ -119,12 +119,12 @@ void main() {
   float hU = calculateOceanSwell(displacedUv + vec2(0.0, eps), u_time);
   vec3 normal = normalize(vec3(-(hR - hL), -(hU - hD), 0.32));
 
-  // Domain Palette for Calm Architectural Porcelain Aesthetic (Non-AI)
-  vec3 pearlBase = vec3(0.976, 0.980, 0.988);       // #F8FAFC - Pure Slate Porcelain
-  vec3 pearlWhite = vec3(1.0, 1.0, 1.0);             // #FFFFFF - Crisp Light
-  vec3 softSlate = vec3(0.945, 0.953, 0.965);        // #F1F5F9 - Soft Slate
-  vec3 mistNeutral = vec3(0.910, 0.925, 0.945);      // #E2E8F0 - Neutral Mist
-  vec3 slateAccent = vec3(0.580, 0.640, 0.720);      // #94A3B8 - Refined Slate Accent
+  // Domain Palette Synchronized with Pure White Canvas (#FFFFFF)
+  vec3 pearlBase = vec3(1.0, 1.0, 1.0);              // #FFFFFF - Pure White Canvas
+  vec3 pearlWhite = vec3(1.0, 1.0, 1.0);             // #FFFFFF - Crisp Light Specular
+  vec3 softSlate = vec3(0.973, 0.980, 0.988);        // #F8FAFC - Soft Recess
+  vec3 mistNeutral = vec3(0.929, 0.969, 0.996);      // #EDF7FE - Subtle Water Sheen
+  vec3 slateAccent = vec3(0.565, 0.784, 1.0);        // #90C8FF - Secondary Accent Wave Highlight
 
   // Depth gradient across porcelain liquid surface
   float depth = smoothstep(-1.2, 1.2, elevation);

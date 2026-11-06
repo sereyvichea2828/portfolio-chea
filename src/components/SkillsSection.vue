@@ -168,7 +168,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
           class="text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer shrink-0 px-3.5 py-1.5 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 select-none"
           :class="[
             activeTab === tab.id
-              ? 'bg-slate-900 text-white font-semibold shadow-xs'
+              ? 'bg-primary text-white font-semibold shadow-xs'
               : 'bg-white/80 text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200/80',
           ]"
           @click="activeTab = tab.id"
@@ -189,7 +189,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
           <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pb-2">
             <div class="space-y-1">
               <div class="flex items-center gap-2">
-                <span class="w-1 h-3.5 bg-slate-900 rounded-xs shrink-0" aria-hidden="true" />
+                <span class="w-1 h-3.5 bg-primary rounded-xs shrink-0" aria-hidden="true" />
                 <h3 class="text-lg sm:text-xl font-bold text-slate-900 font-heading tracking-tight">
                   {{ group.title }}
                 </h3>

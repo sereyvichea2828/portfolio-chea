@@ -180,7 +180,7 @@ const socialLinks = [
           <div class="pt-1">
             <a
               href="#contact"
-              class="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm tracking-wide shadow-xs transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 min-h-11 cursor-pointer"
+              class="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl bg-primary hover:bg-primary-hover active:bg-primary-dark text-white font-semibold text-xs sm:text-sm tracking-wide shadow-xs transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary min-h-11 cursor-pointer"
               @click.prevent="handleNavClick('#contact')"
             >
               <span>ទាក់ទងមកខ្ញុំ</span>

@@ -128,7 +128,7 @@ const handleOpenCertificate = (): void => {
           {{ ABOUT_CONTENT.credentialNote }}
           <button
             type="button"
-            class="text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center gap-1 cursor-pointer ml-1.5 underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-indigo-400 rounded-xs"
+            class="text-primary hover:text-primary-hover font-medium inline-flex items-center gap-1 cursor-pointer ml-1.5 underline underline-offset-4 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded-xs"
             @click="handleOpenCertificate"
           >
             <span>មើលវិញ្ញាបនបត្រ</span>

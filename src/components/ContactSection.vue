@@ -305,7 +305,7 @@ const handleSubmit = (): void => {
             <div class="pt-2 space-y-3">
               <button
                 type="submit"
-                class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-xs sm:text-sm transition-colors cursor-pointer min-h-11"
+                class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover active:bg-primary-dark text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer min-h-11"
               >
                 <Send class="w-4 h-4" />
                 <span>ផ្ញើសារតាមរយៈអ៊ីមែល</span>

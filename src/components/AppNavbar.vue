@@ -196,7 +196,7 @@ onUnmounted(() => {
             <div class="hidden sm:flex items-center">
               <a
                 href="#contact"
-                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-semibold rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition-colors shadow-2xs select-none cursor-pointer min-h-9 outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-semibold rounded-lg text-white bg-primary hover:bg-primary-hover active:bg-primary-dark transition-colors shadow-2xs select-none cursor-pointer min-h-9 outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 @click.prevent="handleNavClick({ label: 'ទំនាក់ទំនង', href: '#contact' })"
               >
                 <span>ពិភាក្សាការងារ</span>

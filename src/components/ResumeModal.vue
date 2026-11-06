@@ -177,7 +177,7 @@ onUnmounted(() => {
 
             <button
               type="button"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition-all cursor-pointer min-h-11"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover active:bg-primary-dark text-white font-semibold text-xs shadow-xs transition-all cursor-pointer min-h-11"
               @click="handleDownloadAction"
             >
               <Download class="w-4 h-4" />

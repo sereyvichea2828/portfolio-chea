@@ -289,12 +289,12 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
             <!-- Current Stage (Solid Dark Pill / Dot) -->
             <div
               v-if="exp.isCurrent"
-              class="w-3.5 h-3.5 rounded-full bg-slate-900 border-2 border-white ring-2 ring-slate-900/10 shadow-2xs"
+              class="w-3.5 h-3.5 rounded-full bg-primary border-2 border-white ring-2 ring-primary/25 shadow-2xs"
             />
             <!-- Past Stages (Clean Solid Dot) -->
             <div
               v-else
-              class="w-3 h-3 rounded-full bg-slate-400 border-2 border-white shadow-2xs group-hover:bg-slate-900 transition-colors"
+              class="w-3 h-3 rounded-full bg-slate-400 border-2 border-white shadow-2xs group-hover:bg-primary transition-colors"
             />
           </div>
 
@@ -310,7 +310,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                 <!-- Current / Era Badge (Only if current or badge specified) -->
                 <span
                   v-if="exp.isCurrent"
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-600 border border-indigo-200"
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20"
                 >
                   បច្ចុប្បន្ន
                 </span>
@@ -352,7 +352,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                 >
                   •
                 </span>
-                <p v-if="exp.subtitle" class="text-xs sm:text-sm font-semibold text-indigo-600">
+                <p v-if="exp.subtitle" class="text-xs sm:text-sm font-semibold text-primary">
                   {{ exp.subtitle }}
                 </p>
               </div>
@@ -370,7 +370,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                 :key="idx"
                 class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
               >
-                <Check class="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" aria-hidden="true" />
+                <Check class="w-4 h-4 text-primary mt-0.5 shrink-0" aria-hidden="true" />
                 <span class="text-pretty">{{ achieve }}</span>
               </div>
             </div>
@@ -381,7 +381,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                 class="flex items-center justify-between text-xs font-semibold tracking-wider text-slate-500 uppercase"
               >
                 <span class="inline-flex items-center gap-1.5">
-                  <FileText class="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />
+                  <FileText class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
                   <span>វិញ្ញាបនបត្របញ្ជាក់សមត្ថភាព</span>
                 </span>
                 <span
@@ -394,7 +394,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 
               <!-- Document Preview Card (Clickable to open Lightbox) -->
               <div
-                class="rounded-xl border border-slate-200 bg-white hover:border-slate-400 hover:shadow-sm transition-all duration-200 overflow-hidden cursor-pointer group/cert"
+                class="rounded-xl border border-slate-200 bg-white hover:border-primary/40 hover:shadow-primary/5 hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer group/cert"
                 role="button"
                 tabindex="0"
                 :aria-label="`ពិនិត្យមើលវិញ្ញាបនបត្រដើម ${exp.certificate.title}`"
@@ -442,9 +442,9 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                       aria-hidden="true"
                     >
                       <span
-                        class="px-2.5 py-1 rounded-md bg-white/95 text-slate-900 text-xs font-semibold shadow-xs inline-flex items-center gap-1"
+                        class="px-2.5 py-1 rounded-md bg-white/95 text-primary text-xs font-semibold shadow-xs inline-flex items-center gap-1"
                       >
-                        <Eye class="w-3.5 h-3.5" />
+                        <Eye class="w-3.5 h-3.5 text-primary" />
                         <span>មើលពេញទំហំ</span>
                       </span>
                     </div>
@@ -471,7 +471,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
 
                       <!-- Certificate Title -->
                       <h4
-                        class="text-sm sm:text-base font-bold text-slate-900 font-heading leading-snug group-hover/cert:text-indigo-600 transition-colors"
+                        class="text-sm sm:text-base font-bold text-slate-900 font-heading leading-snug group-hover/cert:text-primary transition-colors"
                       >
                         {{ exp.certificate.title }}
                       </h4>
@@ -495,14 +495,14 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                           :href="getCertificateLecturerUrl(exp.certificate)!"
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-medium transition-colors"
+                          class="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary-dark hover:underline font-medium transition-colors"
                           :aria-label="`ចូលទៅកាន់គេហទំព័រគ្រូបង្រៀន Mr. Chau Dara`"
                           @click.stop
                         >
-                          <Globe class="w-3.5 h-3.5 text-indigo-500 shrink-0" aria-hidden="true" />
+                          <Globe class="w-3.5 h-3.5 text-primary shrink-0" aria-hidden="true" />
                           <span>គេហទំព័រគ្រូបង្រៀន — TFDevs</span>
                           <ExternalLink
-                            class="w-3 h-3 text-indigo-400 shrink-0"
+                            class="w-3 h-3 text-primary-light shrink-0"
                             aria-hidden="true"
                           />
                         </a>
@@ -514,7 +514,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                       <!-- View Certificate Action -->
                       <button
                         type="button"
-                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors shadow-2xs min-h-11 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover active:bg-primary-dark text-white text-xs font-semibold transition-colors shadow-2xs min-h-11 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                         @click.stop="openCertificateModal(exp.certificate)"
                       >
                         <Eye class="w-3.5 h-3.5 text-slate-300" aria-hidden="true" />
@@ -739,7 +739,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                   class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200/90 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 min-w-0"
                   :aria-label="`គេហទំព័រគ្រូបង្រៀន (TFDevs)`"
                 >
-                  <Globe class="w-3.5 h-3.5 text-indigo-500 shrink-0" aria-hidden="true" />
+                  <Globe class="w-3.5 h-3.5 text-primary shrink-0" aria-hidden="true" />
                   <span class="truncate">គេហទំព័រគ្រូបង្រៀន (TFDevs)</span>
                   <ExternalLink class="w-3 h-3 text-slate-400 shrink-0" aria-hidden="true" />
                 </a>
@@ -749,7 +749,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                   :href="getCertificateVerifyUrl(selectedCert)!"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 min-w-0"
+                  class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary min-w-0"
                 >
                   <span class="truncate">ផ្ទៀងផ្ទាត់ផ្លូវការ</span>
                   <ExternalLink class="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
@@ -768,7 +768,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                 <!-- Mobile-Only Close Button: Sits symmetrically on Row 2 with the reference link -->
                 <button
                   type="button"
-                  class="md:hidden shrink-0 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer min-h-11 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  class="md:hidden shrink-0 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover active:bg-primary-dark text-white font-semibold text-xs transition-colors cursor-pointer min-h-11 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   @click="closeCertificateModal"
                 >
                   បិទផ្ទាំង
@@ -817,7 +817,7 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                 <!-- Desktop-Only Close Button -->
                 <button
                   type="button"
-                  class="hidden md:inline-flex items-center justify-center px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer min-h-10 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 shrink-0"
+                  class="hidden md:inline-flex items-center justify-center px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover active:bg-primary-dark text-white font-semibold text-xs transition-colors cursor-pointer min-h-10 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
                   @click="closeCertificateModal"
                 >
                   បិទផ្ទាំង

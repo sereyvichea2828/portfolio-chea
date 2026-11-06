@@ -233,7 +233,7 @@ const handleScrollIndicatorClick = (): void => {
             <button
               ref="primaryBtnRef"
               type="button"
-              class="hero-action-item hero-primary-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer min-h-11"
+              class="hero-action-item hero-primary-btn inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-hover active:bg-primary-dark text-white font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer min-h-11"
               @click="handlePrimaryClick"
             >
               <span>{{ HERO_CONTENT.primaryCta }}</span>

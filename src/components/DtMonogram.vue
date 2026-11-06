@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
   <div
     :class="[
       props.sizeClass,
-      'relative rounded-xl bg-slate-900 border border-slate-800 shadow-xs flex items-center justify-center shrink-0 transition-all duration-300 ease-out group-hover:bg-slate-800 group-hover:shadow-md group-hover:scale-105',
+      'relative rounded-xl bg-primary border border-primary-light/40 shadow-xs flex items-center justify-center shrink-0 transition-all duration-300 ease-out group-hover:bg-primary-hover group-hover:shadow-md group-hover:scale-105',
     ]"
     aria-hidden="true"
   >

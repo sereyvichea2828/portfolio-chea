@@ -100,14 +100,14 @@ const getServiceIcon = (name: string) => {
         <div
           v-for="(service, index) in SERVICES"
           :key="service.id"
-          class="service-item group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/70 backdrop-blur-xs p-6 sm:p-8 hover:border-slate-300 hover:bg-white/95 transition-all duration-300 shadow-2xs hover:shadow-xs"
+          class="service-item group flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white/70 backdrop-blur-xs p-6 sm:p-8 hover:border-secondary hover:bg-white/95 transition-all duration-300 shadow-2xs hover:shadow-primary/5"
         >
           <!-- Top Metadata Bar (Icon + Number + Category) -->
           <div class="flex items-center justify-between pb-4 border-b border-slate-100">
             <div class="flex items-center gap-2.5">
               <component
                 :is="getServiceIcon(service.iconName)"
-                class="w-5 h-5 text-slate-700 group-hover:text-slate-900 transition-colors shrink-0"
+                class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors shrink-0"
                 aria-hidden="true"
               />
             </div>
@@ -119,7 +119,7 @@ const getServiceIcon = (name: string) => {
           <!-- Title & Description -->
           <div class="space-y-2 py-4">
             <h3
-              class="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-slate-950 transition-colors font-heading leading-snug"
+              class="text-lg sm:text-xl font-bold text-slate-900 group-hover:text-primary-dark transition-colors font-heading leading-snug"
             >
               {{ service.title }}
             </h3>
@@ -140,7 +140,7 @@ const getServiceIcon = (name: string) => {
                 class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 leading-relaxed"
               >
                 <Check
-                  class="w-3.5 h-3.5 text-slate-400 mt-1 shrink-0 group-hover:text-slate-700 transition-colors"
+                  class="w-3.5 h-3.5 text-slate-400 mt-1 shrink-0 group-hover:text-primary transition-colors"
                   aria-hidden="true"
                 />
                 <span>{{ item }}</span>
