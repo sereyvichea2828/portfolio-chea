@@ -723,23 +723,25 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
               </div>
             </div>
 
-            <!-- Modal Footer (Compact actions, shrink-0) -->
+            <!-- Modal Footer (Compact actions, mobile-first responsive architecture) -->
             <div
-              class="px-4 py-2.5 sm:px-5 sm:py-3 border-t border-slate-200/80 bg-white flex flex-wrap items-center justify-between gap-2.5 shrink-0"
+              class="px-3 py-2.5 sm:px-5 sm:py-3 border-t border-slate-200/80 bg-white flex flex-col md:flex-row md:items-center md:justify-between gap-2.5 shrink-0"
             >
-              <!-- Left: Lecturer's Website reference & External Verification Link -->
-              <div class="flex flex-wrap items-center gap-2">
+              <!-- Tier A (Left on desktop, Bottom row on mobile): Lecturer Website / Verification & Mobile Close -->
+              <div
+                class="order-2 md:order-1 flex items-center justify-between md:justify-start gap-2 w-full md:w-auto"
+              >
                 <a
                   v-if="getCertificateLecturerUrl(selectedCert)"
                   :href="getCertificateLecturerUrl(selectedCert)!"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200/90 text-xs font-semibold transition-colors min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200/90 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 min-w-0"
                   :aria-label="`គេហទំព័រគ្រូបង្រៀន (TFDevs)`"
                 >
-                  <Globe class="w-3.5 h-3.5 text-indigo-500" aria-hidden="true" />
-                  <span>គេហទំព័រគ្រូបង្រៀន (TFDevs)</span>
-                  <ExternalLink class="w-3 h-3 text-slate-400" aria-hidden="true" />
+                  <Globe class="w-3.5 h-3.5 text-indigo-500 shrink-0" aria-hidden="true" />
+                  <span class="truncate">គេហទំព័រគ្រូបង្រៀន (TFDevs)</span>
+                  <ExternalLink class="w-3 h-3 text-slate-400 shrink-0" aria-hidden="true" />
                 </a>
 
                 <a
@@ -747,10 +749,10 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                   :href="getCertificateVerifyUrl(selectedCert)!"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold transition-colors min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                  class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 min-w-0"
                 >
-                  <span>ផ្ទៀងផ្ទាត់ផ្លូវការ</span>
-                  <ExternalLink class="w-3.5 h-3.5" aria-hidden="true" />
+                  <span class="truncate">ផ្ទៀងផ្ទាត់ផ្លូវការ</span>
+                  <ExternalLink class="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                 </a>
 
                 <span
@@ -758,38 +760,47 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                     !getCertificateLecturerUrl(selectedCert) &&
                     !getCertificateVerifyUrl(selectedCert)
                   "
-                  class="text-xs text-slate-500"
+                  class="text-xs text-slate-500 truncate"
                 >
                   ឯកសារបញ្ជាក់សមត្ថភាព និងការបញ្ចប់វគ្គបណ្តុះបណ្តាលជាក់ស្តែង
                 </span>
+
+                <!-- Mobile-Only Close Button: Sits symmetrically on Row 2 with the reference link -->
+                <button
+                  type="button"
+                  class="md:hidden shrink-0 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer min-h-11 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  @click="closeCertificateModal"
+                >
+                  បិទផ្ទាំង
+                </button>
               </div>
 
-              <!-- Right: Utility Actions (Download PDF, Zoom, Open original, Close) -->
-              <div class="flex flex-wrap items-center gap-2">
+              <!-- Tier B (Right on desktop, Top row on mobile): Utility Actions (Download PDF, Zoom, Open original, Desktop Close) -->
+              <div class="order-1 md:order-2 flex items-center gap-2 w-full md:w-auto">
                 <!-- Download PDF Action (Direct file download of actual PDF document) -->
                 <a
                   v-if="getCertificatePdfUrl(selectedCert)"
                   :href="getCertificatePdfUrl(selectedCert)!"
                   :download="getPdfDownloadName(selectedCert)"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 hover:text-slate-900 text-xs font-semibold transition-colors min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 hover:text-slate-900 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 min-w-0"
                 >
-                  <Download class="w-3.5 h-3.5 text-slate-500" aria-hidden="true" />
-                  <span>ទាញយក PDF</span>
+                  <Download class="w-3.5 h-3.5 text-slate-500 shrink-0" aria-hidden="true" />
+                  <span class="truncate">ទាញយក PDF</span>
                 </a>
 
                 <button
                   v-if="getCertificateImage(selectedCert)"
                   type="button"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors min-h-10 shadow-2xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 min-w-0"
                   :title="isZoomed ? 'បង្រួមទំហំធម្មតា' : 'ពង្រីកទំហំ'"
                   @click="toggleZoom"
                 >
                   <component
                     :is="isZoomed ? Minimize2 : Maximize2"
-                    class="w-3.5 h-3.5 text-slate-500"
+                    class="w-3.5 h-3.5 text-slate-500 shrink-0"
                     aria-hidden="true"
                   />
-                  <span>{{ isZoomed ? 'បង្រួម' : 'ពង្រីក' }}</span>
+                  <span class="truncate">{{ isZoomed ? 'បង្រួម' : 'ពង្រីក' }}</span>
                 </button>
 
                 <a
@@ -797,15 +808,16 @@ useGsapScrollTrigger(sectionRef, ({ tl, container }) => {
                   :href="getCertificateImage(selectedCert)!"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  class="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors min-h-11 sm:min-h-10 shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 min-w-0"
                 >
-                  <span>បើកទំហំដើម</span>
-                  <ExternalLink class="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />
+                  <span class="truncate">បើកទំហំដើម</span>
+                  <ExternalLink class="w-3.5 h-3.5 text-slate-400 shrink-0" aria-hidden="true" />
                 </a>
 
+                <!-- Desktop-Only Close Button -->
                 <button
                   type="button"
-                  class="px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer min-h-10 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  class="hidden md:inline-flex items-center justify-center px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors cursor-pointer min-h-10 shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 shrink-0"
                   @click="closeCertificateModal"
                 >
                   បិទផ្ទាំង
